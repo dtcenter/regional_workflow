@@ -1289,12 +1289,12 @@ fi
 POST_OUTPUT_DOMAIN_NAME="${POST_OUTPUT_DOMAIN_NAME:-${PREDEF_GRID_NAME}}"
 POST_OUTPUT_DOMAIN_NAME=$(echo_lowercase "${POST_OUTPUT_DOMAIN_NAME}")
 
-if [ "${RUN_TASK_RUN_FCST}" ] || \
-   [ "${RUN_TASK_RUN_POST}" ] || \
-   [ "${RUN_TASK_VX_GRIDSTAT}" ] || \
-   [ "${RUN_TASK_VX_POINTSTAT}" ] || \
-   [ "${RUN_TASK_VX_ENSGRID}" ] || \
-   [ "${RUN_TASK_VX_ENSPOINT}" ]; then
+if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ] || \
+   [ "${RUN_TASK_RUN_POST}" = "TRUE" ] || \
+   [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
+   [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ] || \
+   [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ] || \
+   [ "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
 
   if [ -z "${POST_OUTPUT_DOMAIN_NAME}" ]; then
     print_err_msg_exit "\
