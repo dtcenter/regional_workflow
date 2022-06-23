@@ -648,27 +648,130 @@ check_var_valid_value \
 #
 #-----------------------------------------------------------------------
 #
+# If running one of the tasks that need the CCPP physics suite defined...
+#
+#-----------------------------------------------------------------------
+#
+# Initialize secondary experiment variables (i.e. those not already 
+# defined in EXPT_DEFAULT_CONFIG_FN).
+#
+CCPP_PHYS_SUITE_FN=""
+CCPP_PHYS_SUITE_IN_CCPP_FP=""
+CCPP_PHYS_SUITE_FP=""
+OZONE_PARAM=""
+SDF_USES_RUC_LSM="FALSE"
+THOMPSON_MP_CLIMO_FN=""
+THOMPSON_MP_CLIMO_FP=""
+SDF_USES_THOMPSON_MP="FALSE"
+
+if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] || \
+   [ "${RUN_TASK_MAKE_ICS}" = "TRUE" ] || \
+   [ "${RUN_TASK_MAKE_LBCS}" = "TRUE" ] || \
+   [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+#
 # Make sure CCPP_PHYS_SUITE is set to a valid value.
 #
-#-----------------------------------------------------------------------
-#
-err_msg="\
+  err_msg="\
 The CCPP physics suite specified in CCPP_PHYS_SUITE is not supported:
   CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\""
-check_var_valid_value \
-  "CCPP_PHYS_SUITE" "valid_vals_CCPP_PHYS_SUITE" "${err_msg}"
+  check_var_valid_value \
+    "CCPP_PHYS_SUITE" "valid_vals_CCPP_PHYS_SUITE" "${err_msg}"
 #
-#-----------------------------------------------------------------------
+# If running the RUN_FCST_TN task...
 #
-# Make sure that USE_MERRA_CLIMO is set to a valid value.
+  if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
 #
-#-----------------------------------------------------------------------
+# Make sure that USE_MERRA_CLIMO is set to a valid value.  Then ensure
+# that this flag is set to "TRUE" if the physics suite is set to
+# FV3_GFS_v15_thompson_mynn_lam3km.
 #
-check_var_valid_value "USE_MERRA_CLIMO" "valid_vals_BOOLEAN"
-USE_MERRA_CLIMO=$(boolify "${USE_MERRA_CLIMO}")
-# Force to "TRUE" in case of FV3_GFS_v15_thompson_mynn_lam3km:
-if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
-  USE_MERRA_CLIMO="TRUE"
+    check_var_valid_value "USE_MERRA_CLIMO" "valid_vals_BOOLEAN"
+    USE_MERRA_CLIMO=$(boolify "${USE_MERRA_CLIMO}")
+    if [ "${CCPP_PHYS_SUITE}" = "FV3_GFS_v15_thompson_mynn_lam3km" ]; then
+      USE_MERRA_CLIMO="TRUE"
+    fi
+#
+# Set:
+#
+# 1) CCPP_PHYS_SUITE_FN to the name of the CCPP physics suite definition
+#    file.
+# 2) CCPP_PHYS_SUITE_IN_CCPP_FP to the full path of this file in the
+#    forecast model's directory structure.
+# 3) CCPP_PHYS_SUITE_FP to the full path of this file in the experiment
+#    directory.
+#
+# Note that the experiment generation scripts will copy this file from
+# CCPP_PHYS_SUITE_IN_CCPP_FP to CCPP_PHYS_SUITE_FP.  Then, for each 
+# cycle, the forecast launch script will create a link in the cycle run
+# directory to the copy of this file at CCPP_PHYS_SUITE_FP.
+#
+    CCPP_PHYS_SUITE_FN="suite_${CCPP_PHYS_SUITE}.xml"
+    CCPP_PHYS_SUITE_IN_CCPP_FP="${UFS_WTHR_MDL_DIR}/FV3/ccpp/suites/${CCPP_PHYS_SUITE_FN}"
+    CCPP_PHYS_SUITE_FP="${EXPTDIR}/${CCPP_PHYS_SUITE_FN}"
+    if [ ! -f "${CCPP_PHYS_SUITE_IN_CCPP_FP}" ]; then
+      print_err_msg_exit "\
+The CCPP suite definition file (CCPP_PHYS_SUITE_IN_CCPP_FP) does not 
+exist in the local clone of the ufs-weather-model:
+  CCPP_PHYS_SUITE_IN_CCPP_FP = \"${CCPP_PHYS_SUITE_IN_CCPP_FP}\""
+    fi
+#
+# Call the function that sets the ozone parameterization being used in
+# the physics suite and modifies associated parameters accordingly. 
+#
+    if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+      set_ozone_param \
+        ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
+        output_varname_ozone_param="OZONE_PARAM"
+    fi
+
+  fi
+#
+# Set parameters associated with the RUC Land Surface Model (LSM).
+# 
+  if [ "${RUN_TASK_MAKE_ICS}" = "TRUE" ] || \
+     [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then                             
+#
+# Call the function that checks whether the RUC land surface model (LSM)
+# is being called by the physics suite and sets the workflow variable 
+# SDF_USES_RUC_LSM to "TRUE" or "FALSE" accordingly.
+#
+    check_ruc_lsm \
+      ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
+      output_varname_sdf_uses_ruc_lsm="SDF_USES_RUC_LSM"
+  fi
+#
+# Set parameters associated with Thompson microphysics.
+#
+  if [ "${RUN_TASK_MAKE_ICS}" = "TRUE" ] || \
+     [ "${RUN_TASK_MAKE_LBCS}" = "TRUE" ] || \
+     [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+#
+# Set the name of the file containing aerosol climatology data that, if
+# necessary, can be used to generate approximate versions of the aerosol
+# fields needed by Thompson microphysics.  This file will be used to 
+# generate such approximate aerosol fields in the ICs and LBCs if Thompson 
+# MP is included in the physics suite and if the exteranl model for ICs
+# or LBCs does not already provide these fields.  Also, set the full path
+# to this file.
+#
+    THOMPSON_MP_CLIMO_FN="Thompson_MP_MONTHLY_CLIMO.nc"
+    THOMPSON_MP_CLIMO_FP="$FIXam/${THOMPSON_MP_CLIMO_FN}"
+#
+# Call the function that, if the Thompson microphysics parameterization
+# is being called by the physics suite, modifies certain workflow arrays
+# to ensure that fixed files needed by this parameterization are copied
+# to the FIXam directory and appropriate symlinks to them are created in
+# the run directories.  This function also sets the workflow variable
+# SDF_USES_THOMPSON_MP that indicates whether Thompson MP is called by 
+# the physics suite.
+#
+    set_thompson_mp_fix_files \
+      ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
+      thompson_mp_climo_fn="${THOMPSON_MP_CLIMO_FN}" \
+      output_varname_sdf_uses_thompson_mp="SDF_USES_THOMPSON_MP"
+  
+  fi
+
 fi
 #
 #-----------------------------------------------------------------------
@@ -1343,7 +1446,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-dot_ccpp_phys_suite_or_null=".${CCPP_PHYS_SUITE}"
+dot_ccpp_phys_suite_or_null="${CCPP_PHYS_SUITE:+.${CCPP_PHYS_SUITE}}"
 
 # Names of input files that the forecast model (ufs-weather-model) expects 
 # to read in.  These should only be changed if the input file names in the 
@@ -1375,34 +1478,6 @@ NEMS_CONFIG_TMPL_FP="${TEMPLATE_DIR}/${NEMS_CONFIG_TMPL_FN}"
 #
 # Set:
 #
-# 1) the variable CCPP_PHYS_SUITE_FN to the name of the CCPP physics 
-#    suite definition file.
-# 2) the variable CCPP_PHYS_SUITE_IN_CCPP_FP to the full path of this 
-#    file in the forecast model's directory structure.
-# 3) the variable CCPP_PHYS_SUITE_FP to the full path of this file in 
-#    the experiment directory.
-#
-# Note that the experiment/workflow generation scripts will copy this
-# file from CCPP_PHYS_SUITE_IN_CCPP_FP to CCPP_PHYS_SUITE_FP.  Then, for
-# each cycle, the forecast launch script will create a link in the cycle
-# run directory to the copy of this file at CCPP_PHYS_SUITE_FP.
-#
-#-----------------------------------------------------------------------
-#
-CCPP_PHYS_SUITE_FN="suite_${CCPP_PHYS_SUITE}.xml"
-CCPP_PHYS_SUITE_IN_CCPP_FP="${UFS_WTHR_MDL_DIR}/FV3/ccpp/suites/${CCPP_PHYS_SUITE_FN}"
-CCPP_PHYS_SUITE_FP="${EXPTDIR}/${CCPP_PHYS_SUITE_FN}"
-if [ ! -f "${CCPP_PHYS_SUITE_IN_CCPP_FP}" ]; then
-  print_err_msg_exit "\
-The CCPP suite definition file (CCPP_PHYS_SUITE_IN_CCPP_FP) does not exist
-in the local clone of the ufs-weather-model:
-  CCPP_PHYS_SUITE_IN_CCPP_FP = \"${CCPP_PHYS_SUITE_IN_CCPP_FP}\""
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Set:
-#
 # 1) the variable FIELD_DICT_FN to the name of the field dictionary
 #    file.
 # 2) the variable FIELD_DICT_IN_UWM_FP to the full path of this
@@ -1421,17 +1496,6 @@ The field dictionary file (FIELD_DICT_IN_UWM_FP) does not exist
 in the local clone of the ufs-weather-model:
   FIELD_DICT_IN_UWM_FP = \"${FIELD_DICT_IN_UWM_FP}\""
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Call the function that sets the ozone parameterization being used and
-# modifies associated parameters accordingly. 
-#
-#-----------------------------------------------------------------------
-#
-set_ozone_param \
-  ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
-  output_varname_ozone_param="OZONE_PARAM"
 #
 #-----------------------------------------------------------------------
 #
@@ -2248,50 +2312,6 @@ write component if it is being used) and the number of nodes are:
   NNODES_RUN_FCST= ${NNODES_RUN_FCST}"
 
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Call the function that checks whether the RUC land surface model (LSM)
-# is being called by the physics suite and sets the workflow variable 
-# SDF_USES_RUC_LSM to "TRUE" or "FALSE" accordingly.
-#
-#-----------------------------------------------------------------------
-#
-check_ruc_lsm \
-  ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
-  output_varname_sdf_uses_ruc_lsm="SDF_USES_RUC_LSM"
-#
-#-----------------------------------------------------------------------
-#
-# Set the name of the file containing aerosol climatology data that, if
-# necessary, can be used to generate approximate versions of the aerosol 
-# fields needed by Thompson microphysics.  This file will be used to 
-# generate such approximate aerosol fields in the ICs and LBCs if Thompson 
-# MP is included in the physics suite and if the exteranl model for ICs
-# or LBCs does not already provide these fields.  Also, set the full path
-# to this file.
-#
-#-----------------------------------------------------------------------
-#
-THOMPSON_MP_CLIMO_FN="Thompson_MP_MONTHLY_CLIMO.nc"
-THOMPSON_MP_CLIMO_FP="$FIXam/${THOMPSON_MP_CLIMO_FN}"
-#
-#-----------------------------------------------------------------------
-#
-# Call the function that, if the Thompson microphysics parameterization
-# is being called by the physics suite, modifies certain workflow arrays
-# to ensure that fixed files needed by this parameterization are copied
-# to the FIXam directory and appropriate symlinks to them are created in
-# the run directories.  This function also sets the workflow variable
-# SDF_USES_THOMPSON_MP that indicates whether Thompson MP is called by 
-# the physics suite.
-#
-#-----------------------------------------------------------------------
-#
-set_thompson_mp_fix_files \
-  ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
-  thompson_mp_climo_fn="${THOMPSON_MP_CLIMO_FN}" \
-  output_varname_sdf_uses_thompson_mp="SDF_USES_THOMPSON_MP"
 #
 #-----------------------------------------------------------------------
 #
