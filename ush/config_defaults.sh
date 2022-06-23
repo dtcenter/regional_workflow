@@ -763,7 +763,7 @@ NOMADS_file_type="nemsio"
 #
 #-----------------------------------------------------------------------
 #
-CCPP_PHYS_SUITE="FV3_GFS_v16"
+CCPP_PHYS_SUITE=""
 #
 #-----------------------------------------------------------------------
 #
@@ -1136,7 +1136,7 @@ QUILTING="TRUE"
 PRINT_ESMF="FALSE"
 
 WRTCMP_write_groups="1"
-WRTCMP_write_tasks_per_group="20"
+WRTCMP_write_tasks_per_group=""
 
 WRTCMP_output_grid="''"
 WRTCMP_cen_lon=""

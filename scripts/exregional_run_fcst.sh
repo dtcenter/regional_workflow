@@ -356,7 +356,6 @@ if [ "${USE_MERRA_CLIMO}" = "TRUE" ]; then
   for f_nm_path in ${FIXclim}/*; do
     f_nm=$( basename "${f_nm_path}" )
     pre_f="${f_nm%%.*}"
-
     if [ "${pre_f}" = "merra2" ]; then
       mnth=$( printf "%s\n" "${f_nm}" | grep -o -P '(?<=2014.m).*(?=.nc)' )
       symlink="${run_dir}/aeroclim.m${mnth}.nc"
@@ -365,7 +364,7 @@ if [ "${USE_MERRA_CLIMO}" = "TRUE" ]; then
     fi
     target="${f_nm_path}"
     create_symlink_to_file target="$target" symlink="$symlink" \
-                         relative="${relative_link_flag}"
+                           relative="${relative_link_flag}"
   done
 fi
 #
