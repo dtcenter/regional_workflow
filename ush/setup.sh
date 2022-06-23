@@ -2144,69 +2144,74 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that WRITE_DOPOST is set to a valid value.
+# Make sure various flags associated with the RUN_FCST_TN task are set 
+# to valid values.
 #
 #-----------------------------------------------------------------------
 #
-check_var_valid_value "WRITE_DOPOST" "valid_vals_BOOLEAN"
-WRITE_DOPOST=$(boolify "${WRITE_DOPOST}")
-
-if [ "$WRITE_DOPOST" = "TRUE" ] ; then
-
-# Turn off run_post
-  RUN_TASK_RUN_POST="FALSE"
-
-# Check if SUB_HOURLY_POST is on
-  if [ "${SUB_HOURLY_POST}" = "TRUE" ]; then
-    print_err_msg_exit "\
-SUB_HOURLY_POST is NOT available with Inline Post yet."
-  fi
-
-fi
-
 check_var_valid_value "QUILTING" "valid_vals_BOOLEAN"
 QUILTING=$(boolify "$QUILTING")
 
 check_var_valid_value "PRINT_ESMF" "valid_vals_BOOLEAN"
 PRINT_ESMF=$(boolify "${PRINT_ESMF}")
 
+check_var_valid_value "WRITE_DOPOST" "valid_vals_BOOLEAN"
+WRITE_DOPOST=$(boolify "${WRITE_DOPOST}")
 #
 #-----------------------------------------------------------------------
+#
+# If running the RUN_FCST_TN task ...
+#
+#-----------------------------------------------------------------------
+#
+PE_MEMBER01=""
+
+if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+#
+# If performing inline post (i.e. calling UPP from within the weather
+# model):
+#
+# 1) Turn off the RUN_POST_TN metatask since it is redundant.
+# 2) If SUB_HOURLY_POST is set to "TRUE", quit out of the experiment
+#    generation task since these two features (inline post and subhourly
+#    model output and post-processing) currently cannot be used together.
+#
+  if [ "${WRITE_DOPOST}" = "TRUE" ] ; then
+    RUN_TASK_RUN_POST="FALSE"
+    if [ "${SUB_HOURLY_POST}" = "TRUE" ]; then
+      print_err_msg_exit "\
+SUB_HOURLY_POST is NOT available with Inline Post yet."
+    fi
+  fi
 #
 # Calculate PE_MEMBER01.  This is the number of MPI tasks used for the
 # forecast, including those for the write component if QUILTING is set
-# to "TRUE".
+# to "TRUE".  First, calculate its value without taking into consideration
+# the processes needed for the write-component (the latter are added 
+# later below).
 #
-#-----------------------------------------------------------------------
+  PE_MEMBER01=$(( LAYOUT_X*LAYOUT_Y ))
 #
-PE_MEMBER01=$(( LAYOUT_X*LAYOUT_Y ))
-if [ "$QUILTING" = "TRUE" ]; then
-  PE_MEMBER01=$(( ${PE_MEMBER01} + ${WRTCMP_write_groups}*${WRTCMP_write_tasks_per_group} ))
-fi
-
-print_info_msg "$VERBOSE" "
-The number of MPI tasks for the forecast (including those for the write
-component if it is being used) are:
-  PE_MEMBER01 = ${PE_MEMBER01}"
+# If the write-component is going to be used to write forecast output 
+# files to disk (i.e. if QUILTING is set to "TRUE")...
 #
-#-----------------------------------------------------------------------
+  if [ "$QUILTING" = "TRUE" ]; then
 #
-# If the write-component is going to be used to write output files to 
-# disk (i.e. if QUILTING is set to "TRUE"), make sure that the grid type 
-# used by the write-component (WRTCMP_output_grid) is set to a valid value.
+# Add to PE_MEMBER01 the processes needed for the write-component.
 #
-#-----------------------------------------------------------------------
+    PE_MEMBER01=$(( ${PE_MEMBER01} + ${WRTCMP_write_groups}*${WRTCMP_write_tasks_per_group} ))
 #
-if [ "$QUILTING" = "TRUE" ]; then
-  err_msg="\
+# Make sure that the grid type used by the write-component (WRTCMP_output_grid) 
+# is set to a valid value.
+#
+    err_msg="\
 The coordinate system used by the write-component output grid specified
 in WRTCMP_output_grid is not supported:
   WRTCMP_output_grid = \"${WRTCMP_output_grid}\""
-  check_var_valid_value \
+    check_var_valid_value \
     "WRTCMP_output_grid" "valid_vals_WRTCMP_output_grid" "${err_msg}"
-fi
-#
-#-----------------------------------------------------------------------
+
+  fi
 #
 # Calculate the number of nodes (NNODES_RUN_FCST) to request from the job
 # scheduler for the forecast task (RUN_FCST_TN).  This is just PE_MEMBER01
@@ -2224,9 +2229,15 @@ fi
 #
 #   NNODES_RUN_FCST = (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST
 #
-#-----------------------------------------------------------------------
-#
-NNODES_RUN_FCST=$(( (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST ))
+  NNODES_RUN_FCST=$(( (PE_MEMBER01 + PPN_RUN_FCST - 1)/PPN_RUN_FCST ))
+
+  print_info_msg "$VERBOSE" "
+The number of MPI tasks for the ${RUN_FCST_TN} task (including those for the 
+write component if it is being used) and the number of nodes are:
+  PE_MEMBER01 = ${PE_MEMBER01}
+  NNODES_RUN_FCST= ${NNODES_RUN_FCST}"
+
+fi
 #
 #-----------------------------------------------------------------------
 #
