@@ -1956,6 +1956,13 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+LON_CTR=""
+LAT_CTR=""
+NX=""
+NY=""
+NHW="6"  # This needs to be removed and moved to constants.sh.
+STRETCH_FAC=""
+
 if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
 
   set_gridparams_GFDLgrid \
@@ -2139,7 +2146,10 @@ fi
 #
 CRES=""
 if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
-  CRES="C${RES_IN_FIXLAM_FILENAMES}"
+# Use the ":+" form of bash parameter expansion to ensure that CRES gets
+# set to a non-empty string only if RES_IN_FIXLAM_FILENAMES is not empty
+# or unset.
+  CRES="${RES_IN_FIXLAM_FILENAMES:+C${RES_IN_FIXLAM_FILENAMES}}"
 fi
 #
 #-----------------------------------------------------------------------
