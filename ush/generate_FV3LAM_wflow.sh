@@ -581,25 +581,27 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Create the FIXam directory under the experiment directory.  In NCO mode,
-# this will be a symlink to the directory specified in FIXgsm, while in
-# community mode, it will be an actual directory with files copied into
-# it from FIXgsm.
+# If running the RUN_FCST_TN task...
 #
 #-----------------------------------------------------------------------
 #
-# First, consider NCO mode.
+if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
 #
-if [ "${RUN_ENVIR}" = "nco" ]; then
+# Create the FIXam directory under the experiment directory.  In NCO mode, 
+# this will be a symlink to the directory specified in FIXgsm, while in 
+# community mode, it will be an actual directory with files copied into 
+# it from FIXgsm.
+#
+  if [ "${RUN_ENVIR}" = "nco" ]; then
 
-  ln_vrfy -fsn "$FIXgsm" "$FIXam"
+    ln_vrfy -fsn "$FIXgsm" "$FIXam"
 #
 # Resolve the target directory that the FIXam symlink points to and check 
 # that it exists.
 #
-  path_resolved=$( $READLINK -m "$FIXam" )
-  if [ ! -d "${path_resolved}" ]; then
-    print_err_msg_exit "\
+    path_resolved=$( $READLINK -m "$FIXam" )
+    if [ ! -d "${path_resolved}" ]; then
+      print_err_msg_exit "\
 In order to be able to generate a forecast experiment in NCO mode (i.e.
 when RUN_ENVIR set to \"nco\"), the path specified by FIXam after resolving
 all symlinks (path_resolved) must be an existing directory (but in this
@@ -609,99 +611,85 @@ case isn't):
   path_resolved = \"${path_resolved}\"
 Please ensure that path_resolved is an existing directory and then rerun
 the experiment generation script."
-  fi
-#
-# Now consider community mode.
-#
-else
+    fi
 
-  print_info_msg "$VERBOSE" "
+  else
+
+    print_info_msg "$VERBOSE" "
 Copying fixed files from system directory (FIXgsm) to a subdirectory
 (FIXam) in the experiment directory:
   FIXgsm = \"$FIXgsm\"
   FIXam = \"$FIXam\""
 
-  check_for_preexist_dir_file "$FIXam" "delete"
-  mkdir_vrfy -p "$FIXam"
-  mkdir_vrfy -p "$FIXam/fix_co2_proj"
+    check_for_preexist_dir_file "$FIXam" "delete"
+    mkdir_vrfy -p "$FIXam"
+    mkdir_vrfy -p "$FIXam/fix_co2_proj"
 
-  num_files=${#FIXgsm_FILES_TO_COPY_TO_FIXam[@]}
-  for (( i=0; i<${num_files}; i++ )); do
-    fn="${FIXgsm_FILES_TO_COPY_TO_FIXam[$i]}"
-    cp_vrfy "$FIXgsm/$fn" "$FIXam/$fn"
-  done
+    num_files=${#FIXgsm_FILES_TO_COPY_TO_FIXam[@]}
+    for (( i=0; i<${num_files}; i++ )); do
+      fn="${FIXgsm_FILES_TO_COPY_TO_FIXam[$i]}"
+      cp_vrfy "$FIXgsm/$fn" "$FIXam/$fn"
+    done
 
-fi
+  fi
 #
-#-----------------------------------------------------------------------
+# Copy templates of various input files to the weather model to the 
+# experiment directory.
 #
-# Copy MERRA2 aerosol climatology data.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${USE_MERRA_CLIMO}" = "TRUE" ]; then
   print_info_msg "$VERBOSE" "
-Copying MERRA2 aerosol climatology data files from system directory
-(FIXaer/FIXlut) to a subdirectory (FIXclim) in the experiment directory:
+Copying templates of various input files to the experiment directory..."
+
+  print_info_msg "$VERBOSE" "
+  Copying the template data table file to the experiment directory..."
+  cp_vrfy "${DATA_TABLE_TMPL_FP}" "${DATA_TABLE_FP}"
+
+  print_info_msg "$VERBOSE" "
+  Copying the template field table file to the experiment directory..."
+  cp_vrfy "${FIELD_TABLE_TMPL_FP}" "${FIELD_TABLE_FP}"
+
+  print_info_msg "$VERBOSE" "
+  Copying the template NEMS configuration file to the experiment directory..."
+  cp_vrfy "${NEMS_CONFIG_TMPL_FP}" "${NEMS_CONFIG_FP}"
+#
+# Copy the CCPP physics suite definition file from its location in the
+# clone of the weather model code repository to the experiment directory
+# (EXPTDIR).
+#
+  print_info_msg "$VERBOSE" "
+Copying the CCPP physics suite definition XML file from its location in
+the forecast model directory sturcture to the experiment directory..."
+  cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
+#
+# Copy the field dictionary file from its location in the clone of the 
+# weather model repository to the experiment directory (EXPTDIR).
+#
+  print_info_msg "$VERBOSE" "
+Copying the field dictionary file from its location in the forecast
+model directory sturcture to the experiment directory..."
+  cp_vrfy "${FIELD_DICT_IN_UWM_FP}" "${FIELD_DICT_FP}"
+#
+# Copy MERRA2 aerosol climatology data from system directories into a
+# directory (FIXclim) under the experiment directory.
+#
+  if [ "${USE_MERRA_CLIMO}" = "TRUE" ]; then
+
+    print_info_msg "$VERBOSE" "
+Copying MERRA2 aerosol climatology data files from system directories
+(FIXaer and FIXlut) to a subdirectory (FIXclim) in the experiment directory:
   FIXaer = \"${FIXaer}\"
   FIXlut = \"${FIXlut}\"
   FIXclim = \"${FIXclim}\""
 
-  check_for_preexist_dir_file "${FIXclim}" "delete"
-  mkdir_vrfy -p "${FIXclim}"
+    check_for_preexist_dir_file "${FIXclim}" "delete"
+    mkdir_vrfy -p "${FIXclim}"
 
-  cp_vrfy "${FIXaer}/merra2.aerclim"*".nc" "${FIXclim}/"
-  cp_vrfy "${FIXlut}/optics"*".dat" "${FIXclim}/"
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Copy templates of various input files to the experiment directory.
-#
-#-----------------------------------------------------------------------
-#
-print_info_msg "$VERBOSE" "
-Copying templates of various input files to the experiment directory..."
+    cp_vrfy "${FIXaer}/merra2.aerclim"*".nc" "${FIXclim}/"
+    cp_vrfy "${FIXlut}/optics"*".dat" "${FIXclim}/"
 
-print_info_msg "$VERBOSE" "
-  Copying the template data table file to the experiment directory..."
-cp_vrfy "${DATA_TABLE_TMPL_FP}" "${DATA_TABLE_FP}"
-
-print_info_msg "$VERBOSE" "
-  Copying the template field table file to the experiment directory..."
-cp_vrfy "${FIELD_TABLE_TMPL_FP}" "${FIELD_TABLE_FP}"
-
-print_info_msg "$VERBOSE" "
-  Copying the template NEMS configuration file to the experiment directory..."
-cp_vrfy "${NEMS_CONFIG_TMPL_FP}" "${NEMS_CONFIG_FP}"
+  fi
 #
-# Copy the CCPP physics suite definition file from its location in the
-# clone of the FV3 code repository to the experiment directory (EXPT-
-# DIR).
+# Create the namelist file that the weather model will read in.
 #
-print_info_msg "$VERBOSE" "
-Copying the CCPP physics suite definition XML file from its location in
-the forecast model directory sturcture to the experiment directory..."
-cp_vrfy "${CCPP_PHYS_SUITE_IN_CCPP_FP}" "${CCPP_PHYS_SUITE_FP}"
-#
-# Copy the field dictionary file from its location in the
-# clone of the FV3 code repository to the experiment directory (EXPT-
-# DIR).
-#
-print_info_msg "$VERBOSE" "
-Copying the field dictionary file from its location in the forecast
-model directory sturcture to the experiment directory..."
-cp_vrfy "${FIELD_DICT_IN_UWM_FP}" "${FIELD_DICT_FP}"
-#
-#-----------------------------------------------------------------------
-#
-# If running the RUN_FCST_TN task, create the namelist file that the 
-# weather model will read in.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
-
   print_info_msg "
 Setting parameters in weather model's namelist file (FV3_NML_FP):
   FV3_NML_FP = \"${FV3_NML_FP}\""
