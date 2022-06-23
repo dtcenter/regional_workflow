@@ -977,51 +977,55 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# The forecast length (in integer hours) cannot contain more than 3 cha-
-# racters.  Thus, its maximum value is 999.  Check whether the specified
-# forecast length exceeds this maximum value.  If so, print out a warn-
-# ing and exit this script.
+# The forecast length (in integer hours) must be an integer and cannot 
+# contain more than 3 digits.  Check for this.
 #
 #-----------------------------------------------------------------------
 #
-fcst_len_hrs_max="999"
-if [ "${FCST_LEN_HRS}" -gt "${fcst_len_hrs_max}" ]; then
+if [[ ! "${FCST_LEN_HRS}" =~ ^[0-9]{1,3}$ ]]; then
   print_err_msg_exit "\
-Forecast length is greater than maximum allowed length:
-  FCST_LEN_HRS = ${FCST_LEN_HRS}
-  fcst_len_hrs_max = ${fcst_len_hrs_max}"
+Forecast length must be at most a 3-digit integer:
+  FCST_LEN_HRS = \"${FCST_LEN_HRS}\""
 fi
 #
 #-----------------------------------------------------------------------
 #
-# Check whether the forecast length (FCST_LEN_HRS) is evenly divisible
-# by the BC update interval (LBC_SPEC_INTVL_HRS).  If not, print out a
-# warning and exit this script.  If so, generate an array of forecast
-# hours at which the boundary values will be updated.
+# If running the RUN_TASK_GET_EXTRN_LBCS or RUN_FCST_TN task, first check 
+# whether the lateral boundary condition update interval (LBC_SPEC_FCST_HRS, 
+# in hours) contains only integers (and at least 1).  Then check whether
+# the forecast length (FCST_LEN_HRS) is evenly divisible by the BC update
+# interval (LBC_SPEC_INTVL_HRS).  If so, generate an array (LBC_SPEC_FCST_HRS)
+# containing the forecast hours at which the lateral boundary conditions
+# will be updated.  [Note that this array does not include the 0-th hour 
+# initial time).]  If not, print out a warning and exit this script.  
 #
 #-----------------------------------------------------------------------
 #
-rem=$(( ${FCST_LEN_HRS}%${LBC_SPEC_INTVL_HRS} ))
+LBC_SPEC_FCST_HRS=()
 
-if [ "$rem" -ne "0" ]; then
-  print_err_msg_exit "\
+if [ "${RUN_TASK_GET_EXTRN_LBCS}" = "TRUE" ] || \
+   [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+
+  if [[ ! "${FCST_LEN_HRS}" =~ ^[0-9]+$ ]]; then
+    print_err_msg_exit "\
+Forecast length must be at most a 3-digit integer:
+  FCST_LEN_HRS = \"${FCST_LEN_HRS}\""
+  fi
+  
+  rem=$(( ${FCST_LEN_HRS}%${LBC_SPEC_INTVL_HRS} ))
+  if [ "$rem" -eq "0" ]; then
+    LBC_SPEC_FCST_HRS=($( seq ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} \
+                          ${FCST_LEN_HRS} ))
+  else
+    print_err_msg_exit "\
 The forecast length (FCST_LEN_HRS) is not evenly divisible by the lateral
 boundary conditions update interval (LBC_SPEC_INTVL_HRS):
   FCST_LEN_HRS = ${FCST_LEN_HRS}
   LBC_SPEC_INTVL_HRS = ${LBC_SPEC_INTVL_HRS}
   rem = FCST_LEN_HRS%%LBC_SPEC_INTVL_HRS = $rem"
+  fi
+
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Set the array containing the forecast hours at which the lateral 
-# boundary conditions (LBCs) need to be updated.  Note that this array
-# does not include the 0-th hour (initial time).
-#
-#-----------------------------------------------------------------------
-#
-LBC_SPEC_FCST_HRS=($( seq ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} \
-                          ${FCST_LEN_HRS} ))
 #
 #-----------------------------------------------------------------------
 #
