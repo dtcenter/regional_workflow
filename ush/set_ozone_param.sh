@@ -3,25 +3,42 @@
 #
 # This file defines a function that:
 # 
-# (1) Determines the ozone parameterization being used by checking in the
-#     CCPP physics suite XML.
+# (1) Determines the ozone parameterization being used by checking in 
+#     the CCPP physics suite XML.
 #
-# (2) Sets the name of the global ozone production/loss file in the FIXgsm
-#     FIXgsm system directory to copy to the experiment's FIXam directory.
+# (2) Sets the name of the global ozone production/loss file in the 
+#     FIXgsm system directory to copy to the experiment's FIXam 
+#     directory.  This is done by searching the CCPP physics suite
+#     XML file for the ozone parameterization being used and accordingly
+#     setting the file name.
 #
-# (3) Resets the last element of the workflow array variable
-#     FIXgsm_FILES_TO_COPY_TO_FIXam that contains the files to copy from
-#     FIXgsm to FIXam (this last element is initially set to a dummy 
-#     value) to the name of the ozone production/loss file set in the
-#     previous step.
+# (3) Resets the last element of the experiment variable 
 #
-# (4) Resets the element of the workflow array variable 
-#     CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING (this array contains the 
-#     mapping between the symlinks to create in any cycle directory and
-#     the files in the FIXam directory that are their targets) that 
-#     specifies the mapping for the ozone symlink/file such that the 
-#     target FIXam file name is set to the name of the ozone production/
-#     loss file set above.
+#       FIXgsm_FILES_TO_COPY_TO_FIXam
+#
+#     to the name of the ozone production/loss file set in the previous 
+#     step.  Note that this variable specifies the names of the files to 
+#     copy from the FIXgsm system directory to the experiment's FIXam 
+#     directory, with the last element representing the name of the
+#     ozone production/loss file to copy.  This last element is 
+#     initialized (elsewhere) to a dummy value and gets reset in this 
+#     function to the name of the appropriate ozone production/loss file.
+#
+# (4) Resets the element of the experiment variable 
+#
+#       CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING
+#
+#     that specifies the symlink-target pair corresponding to the ozone
+#     production/loss file that the weather model will read in.  This
+#     element has the form
+#
+#       "global_o3prdlos.f77        | <fixgsm_ozone_fn>"
+#
+#     where "global_o3prdlos.f77" is the name of the symlink created in 
+#     each cycle directory (and is the file name the weather model looks
+#     for) and <fixgsm_ozone_fn> is the name of the ozone production/
+#     loss file set above (i.e. the name of the file to be copied from
+#     the FIXgsm to the FIXam directory).
 #
 #-----------------------------------------------------------------------
 #
