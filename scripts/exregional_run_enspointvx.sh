@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 #
 #-----------------------------------------------------------------------
@@ -68,7 +67,8 @@ process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
-print_input_args valid_args
+print_input_args "valid_args"
+#
 #-----------------------------------------------------------------------
 #
 # Begin grid-to-point ensemble vx.
@@ -76,7 +76,6 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "Starting point-based ensemble-stat verification"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -97,7 +96,6 @@ export fhr_last
 
 fhr_list=`echo ${FHR} | $SED "s/ /,/g"`
 export fhr_list
-
 #
 #-----------------------------------------------------------------------
 #
@@ -107,7 +105,6 @@ export fhr_list
 #
 INPUT_BASE=${MET_INPUT_DIR}
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
-
 #
 #-----------------------------------------------------------------------
 #
@@ -116,23 +113,22 @@ OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
 #-----------------------------------------------------------------------
 #
 LOG_SUFFIX=${CDATE}
-
 #
 #-----------------------------------------------------------------------
 #
-# Check for existence of top-level OBS_DIR 
+# Check for existence of top-level OBS_DIR.
 #
 #-----------------------------------------------------------------------
 #
 if [[ ! -d "$OBS_DIR" ]]; then
   print_err_msg_exit "\
-  Exiting: OBS_DIR does not exist."
+OBS_DIR does not exist or is not a directory:
+  OBS_DIR = \"${OBS_DIR}\""
 fi
-
 #
 #-----------------------------------------------------------------------
 #
-# Export some environment variables passed in by the XML and run METplus 
+# Export some environment variables passed in by the XML.
 #
 #-----------------------------------------------------------------------
 #
@@ -150,7 +146,13 @@ export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
 export NUM_ENS_MEMBERS
-
+#
+#-----------------------------------------------------------------------
+#
+# Run METplus.
+#
+#-----------------------------------------------------------------------
+#
 if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
 
   ${METPLUS_PATH}/ush/run_metplus.py \
@@ -174,7 +176,6 @@ if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
     -c ${METPLUS_CONF}/EnsembleStat_upper_air.conf
 
 fi
-
 #
 #-----------------------------------------------------------------------
 #

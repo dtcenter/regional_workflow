@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 #
 #-----------------------------------------------------------------------
@@ -69,8 +68,8 @@ process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
-print_input_args valid_args
-
+print_input_args "valid_args"
+#
 #-----------------------------------------------------------------------
 #
 # Begin grid-to-grid ensemble vx.
@@ -78,7 +77,6 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "Starting ensemble-stat verification"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -102,7 +100,6 @@ fhr_list=`echo ${FHR} | $SED "s/ /,/g"`
 export fhr_list
 
 NUM_PAD=${NDIGITS_ENSMEM_NAMES}
-
 #
 #-----------------------------------------------------------------------
 #
@@ -112,7 +109,6 @@ NUM_PAD=${NDIGITS_ENSMEM_NAMES}
 #
 INPUT_BASE=${MET_INPUT_DIR}
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
-
 #
 #-----------------------------------------------------------------------
 #
@@ -120,17 +116,15 @@ OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
 #
 #-----------------------------------------------------------------------
 #
-
 if [ ${VAR} == "APCP" ]; then
   LOG_SUFFIX=${CDATE}_${VAR}_${ACCUM}h
 else
   LOG_SUFFIX=${CDATE}_${VAR}
 fi
-
 #
 #-----------------------------------------------------------------------
 #
-# Export some environment variables passed in by the XML 
+# Export some environment variables passed in by the XML.
 #
 #-----------------------------------------------------------------------
 #
@@ -150,15 +144,13 @@ export POST_OUTPUT_DOMAIN_NAME
 export NUM_ENS_MEMBERS 
 export NUM_PAD
 export LOG_SUFFIX
-
 #
 #-----------------------------------------------------------------------
 #
-# Run METplus 
+# Run METplus.
 #
 #-----------------------------------------------------------------------
 #
-
 if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
 
   if [ ${VAR} == "APCP" ]; then
@@ -188,7 +180,6 @@ if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
   fi
 
 fi
-
 #
 #-----------------------------------------------------------------------
 #

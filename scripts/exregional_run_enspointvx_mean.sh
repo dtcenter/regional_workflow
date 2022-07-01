@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 #
 #-----------------------------------------------------------------------
@@ -68,7 +67,8 @@ process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
-print_input_args valid_args
+print_input_args "valid_args"
+#
 #-----------------------------------------------------------------------
 #
 # Begin grid-to-point vx on ensemble output.
@@ -76,7 +76,6 @@ print_input_args valid_args
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "Starting point-stat verification"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -97,7 +96,6 @@ export fhr_last
 
 fhr_list=`echo ${FHR} | $SED "s/ /,/g"`
 export fhr_list
-
 #
 #-----------------------------------------------------------------------
 #
@@ -107,23 +105,22 @@ export fhr_list
 #
 OUTPUT_BASE=${MET_OUTPUT_DIR}
 LOG_SUFFIX=enspoint_mean_${CDATE}
-
 #
 #-----------------------------------------------------------------------
 #
-# Check for existence of top-level OBS_DIR 
+# Check for existence of top-level OBS_DIR.
 #
 #-----------------------------------------------------------------------
 #
 if [[ ! -d "$OBS_DIR" ]]; then
   print_err_msg_exit "\
-  Exiting: OBS_DIR does not exist."
+OBS_DIR does not exist or is not a directory:
+  OBS_DIR = \"${OBS_DIR}\""
 fi
-
 #
 #-----------------------------------------------------------------------
 #
-# Export some environment variables passed in by the XML and run METplus 
+# Export some environment variables passed in by the XML.
 #
 #-----------------------------------------------------------------------
 #
@@ -139,7 +136,13 @@ export MET_CONFIG
 export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
-
+#
+#-----------------------------------------------------------------------
+#
+# Run METplus.
+#
+#-----------------------------------------------------------------------
+#
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${METPLUS_CONF}/PointStat_conus_sfc_mean.conf

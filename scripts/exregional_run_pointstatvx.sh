@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 #
 #-----------------------------------------------------------------------
@@ -68,8 +67,7 @@ process_args valid_args "$@"
 #
 #-----------------------------------------------------------------------
 #
-print_input_args valid_args
-
+print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
@@ -79,22 +77,43 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
+echo "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+echo "  CDATE = |$CDATE|"
+
 yyyymmdd=${CDATE:0:8}
 hh=${CDATE:8:2}
 cyc=$hh
 export CDATE
 export hh
 
-fhr_last=`echo ${FHR}  | awk '{ print $NF }'`
+echo "  mem_indx = |${mem_indx}|"
+echo "  ENS_DELTA_FCST_LENS_HRS = |${ENS_DELTA_FCST_LENS_HRS[@]}|"
+i=$(( ${mem_indx} - 1 ))
+mem_fcst_len_hrs=$(( ${FCST_LEN_HRS} + ${ENS_DELTA_FCST_LENS_HRS[$i]} ))
+echo "  mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
+
+mem_time_lag_hrs="${ENS_TIME_LAGS_HRS[$i]}"
+echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
+#exit 1
+
+fhr_last=${mem_fcst_len_hrs}
 export fhr_last
 
-fhr_list=`echo ${FHR} | $SED "s/ /,/g"`
+fhr_array=($( seq 1 1 ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+echo "fhr_array = |${fhr_array[@]}|"
+fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 export fhr_list
 
+#echo "mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
+#echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
+echo "fhr_last = |${fhr_last}|"
+echo "fhr_list = |${fhr_list}|"
+#exit 1
 #
 #-----------------------------------------------------------------------
 #
-# Create INPUT_BASE to read into METplus conf files.
+# Create INPUT_BASE, OUTPUT_BASE, and LOG_SUFFIX to read into METplus
+# conf files.
 #
 #-----------------------------------------------------------------------
 #
@@ -109,23 +128,22 @@ elif [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
   MODEL=${MODEL}_${ENSMEM}
   LOG_SUFFIX=pointstat_${CDATE}_${ENSMEM}
 fi
-
 #
 #-----------------------------------------------------------------------
 #
-# Check for existence of top-level OBS_DIR 
+# Check for existence of top-level OBS_DIR.
 #
 #-----------------------------------------------------------------------
 #
 if [[ ! -d "$OBS_DIR" ]]; then
   print_err_msg_exit "\
-  Exiting: OBS_DIR does not exist."
+OBS_DIR does not exist or is not a directory:
+  OBS_DIR = \"${OBS_DIR}\""
 fi
-
 #
 #-----------------------------------------------------------------------
 #
-# Export some environment variables passed in by the XML and run METplus 
+# Export some environment variables passed in by the XML.
 #
 #-----------------------------------------------------------------------
 #
@@ -142,7 +160,13 @@ export MET_CONFIG
 export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
-
+#
+#-----------------------------------------------------------------------
+#
+# Run METplus.
+#
+#-----------------------------------------------------------------------
+#
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${METPLUS_CONF}/PointStat_conus_sfc.conf
@@ -150,7 +174,6 @@ ${METPLUS_PATH}/ush/run_metplus.py \
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${METPLUS_CONF}/PointStat_upper_air.conf
-
 #
 #-----------------------------------------------------------------------
 #
