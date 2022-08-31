@@ -174,11 +174,20 @@ file (template_xml_fp):
   ensmem_indx_name="\"\""
   uscore_ensmem_name="\"\""
   slash_ensmem_subdir="\"\""
+  ens_timelag_var_name="\"\""
+  ens_time_lags_hhmmss="\"\""
+  cyclestr_offset="\"\""
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     ensmem_indx_name="mem"
     uscore_ensmem_name="_mem#${ensmem_indx_name}#"
     slash_ensmem_subdir="/mem#${ensmem_indx_name}#"
+    ens_timelag_var_name="etl" # "etl" stands for "ensemble time lag"
+    ens_time_lags_hhmmss=$( printf "%02d:00:00 " "${ENS_TIME_LAGS_HRS[@]}" )
+    cyclestr_offset=' offset="#'${ens_timelag_var_name}'#"'
   fi
+echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+echo "ens_time_lags_hhmmss = |${ens_time_lags_hhmmss[@]}|"
+#exit 1
 
   settings="\
 #
@@ -210,29 +219,29 @@ file (template_xml_fp):
   'get_obs_ndas_tn': ${GET_OBS_NDAS_TN}
   'get_obs_mrms_tn': ${GET_OBS_MRMS_TN}
   'vx_tn': ${VX_TN}
-  'vx_gridstat_tn': ${VX_GRIDSTAT_TN}
-  'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
-  'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
-  'vx_gridstat_03h_tn': ${VX_GRIDSTAT_03h_TN}
-  'vx_gridstat_06h_tn': ${VX_GRIDSTAT_06h_TN}
-  'vx_gridstat_24h_tn': ${VX_GRIDSTAT_24h_TN}
+  'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
+  'vx_gridstat_refc01h_tn': ${VX_GRIDSTAT_REFC01h_TN}
+  'vx_gridstat_retop01h_tn': ${VX_GRIDSTAT_RETOP01h_TN}
+  'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
+  'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
+  'vx_gridstat_apcp24h_tn': ${VX_GRIDSTAT_APCP24h_TN}
   'vx_pointstat_tn': ${VX_POINTSTAT_TN}
-  'vx_ensgrid_tn': ${VX_ENSGRID_TN}
-  'vx_ensgrid_refc_tn': ${VX_ENSGRID_REFC_TN}
-  'vx_ensgrid_retop_tn': ${VX_ENSGRID_RETOP_TN}
-  'vx_ensgrid_03h_tn': ${VX_ENSGRID_03h_TN}
-  'vx_ensgrid_06h_tn': ${VX_ENSGRID_06h_TN}
-  'vx_ensgrid_24h_tn': ${VX_ENSGRID_24h_TN}
-  'vx_ensgrid_mean_tn': ${VX_ENSGRID_MEAN_TN}
-  'vx_ensgrid_prob_tn': ${VX_ENSGRID_PROB_TN}
-  'vx_ensgrid_mean_03h_tn': ${VX_ENSGRID_MEAN_03h_TN}
-  'vx_ensgrid_prob_03h_tn': ${VX_ENSGRID_PROB_03h_TN}
-  'vx_ensgrid_mean_06h_tn': ${VX_ENSGRID_MEAN_06h_TN}
-  'vx_ensgrid_prob_06h_tn': ${VX_ENSGRID_PROB_06h_TN}
-  'vx_ensgrid_mean_24h_tn': ${VX_ENSGRID_MEAN_24h_TN}
-  'vx_ensgrid_prob_24h_tn': ${VX_ENSGRID_PROB_24h_TN}
-  'vx_ensgrid_prob_refc_tn': ${VX_ENSGRID_PROB_REFC_TN}
-  'vx_ensgrid_prob_retop_tn': ${VX_ENSGRID_PROB_RETOP_TN}
+  'vx_ensgrid_apcp01h_tn': ${VX_ENSGRID_APCP01h_TN}
+  'vx_ensgrid_refc01h_tn': ${VX_ENSGRID_REFC01h_TN}
+  'vx_ensgrid_retop01h_tn': ${VX_ENSGRID_RETOP01h_TN}
+  'vx_ensgrid_apcp03h_tn': ${VX_ENSGRID_APCP03h_TN}
+  'vx_ensgrid_apcp06h_tn': ${VX_ENSGRID_APCP06h_TN}
+  'vx_ensgrid_apcp24h_tn': ${VX_ENSGRID_APCP24h_TN}
+  'vx_ensgrid_apcp01h_mean_tn': ${VX_ENSGRID_APCP01h_MEAN_TN}
+  'vx_ensgrid_apcp01h_prob_tn': ${VX_ENSGRID_APCP01h_PROB_TN}
+  'vx_ensgrid_apcp03h_mean_tn': ${VX_ENSGRID_APCP03h_MEAN_TN}
+  'vx_ensgrid_apcp03h_prob_tn': ${VX_ENSGRID_APCP03h_PROB_TN}
+  'vx_ensgrid_apcp06h_mean_tn': ${VX_ENSGRID_APCP06h_MEAN_TN}
+  'vx_ensgrid_apcp06h_prob_tn': ${VX_ENSGRID_APCP06h_PROB_TN}
+  'vx_ensgrid_apcp24h_mean_tn': ${VX_ENSGRID_APCP24h_MEAN_TN}
+  'vx_ensgrid_apcp24h_prob_tn': ${VX_ENSGRID_APCP24h_PROB_TN}
+  'vx_ensgrid_refc01h_prob_tn': ${VX_ENSGRID_REFC01h_PROB_TN}
+  'vx_ensgrid_retop01h_prob_tn': ${VX_ENSGRID_RETOP01h_PROB_TN}
   'vx_enspoint_tn': ${VX_ENSPOINT_TN}
   'vx_enspoint_mean_tn': ${VX_ENSPOINT_MEAN_TN}
   'vx_enspoint_prob_tn': ${VX_ENSPOINT_PROB_TN}
@@ -436,6 +445,9 @@ file (template_xml_fp):
   'ensmem_indx_name': ${ensmem_indx_name}
   'uscore_ensmem_name': ${uscore_ensmem_name}
   'slash_ensmem_subdir': ${slash_ensmem_subdir}
+  'ens_timelag_var_name': ${ens_timelag_var_name}
+  'ens_time_lags_hrs': ${ens_time_lags_hhmmss[@]}
+  'cyclestr_offset': !!str '${cyclestr_offset}'
 #
 # Parameters associated with subhourly post-processed output
 #

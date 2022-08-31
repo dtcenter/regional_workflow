@@ -14,6 +14,10 @@ degs_per_radian=$( bc -l <<< "360.0/(2.0*${pi_geom})" )
 
 # Radius of the Earth in meters.
 radius_Earth="6371200.0"
+
+# Number of seconds in an hour.
+secs_per_hour="3600"
+
 #
 #-----------------------------------------------------------------------
 #

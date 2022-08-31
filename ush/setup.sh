@@ -1586,6 +1586,7 @@ DO_ENSEMBLE=$(boolify "${DO_ENSEMBLE}")
 NDIGITS_ENSMEM_NAMES="0"
 ENSMEM_NAMES=("")
 FV3_NML_ENSMEM_FPS=("")
+
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   NDIGITS_ENSMEM_NAMES="${#NUM_ENS_MEMBERS}"
 # Strip away all leading zeros in NUM_ENS_MEMBERS by converting it to a 

@@ -22,58 +22,58 @@ Parameters needed by the job scheduler.
 <!--
 Workflow task names.
 -->
-<!ENTITY SLURM_NATIVE_CMD          "{{ slurm_native_cmd }}">
-<!ENTITY MAKE_GRID_TN              "{{ make_grid_tn }}">
-<!ENTITY MAKE_OROG_TN              "{{ make_orog_tn }}">
-<!ENTITY MAKE_SFC_CLIMO_TN         "{{ make_sfc_climo_tn }}">
-<!ENTITY GET_EXTRN_ICS_TN          "{{ get_extrn_ics_tn }}">
-<!ENTITY GET_EXTRN_LBCS_TN         "{{ get_extrn_lbcs_tn }}">
-<!ENTITY MAKE_ICS_TN               "{{ make_ics_tn }}">
-<!ENTITY MAKE_LBCS_TN              "{{ make_lbcs_tn }}">
-<!ENTITY RUN_FCST_TN               "{{ run_fcst_tn }}">
-<!ENTITY RUN_POST_TN               "{{ run_post_tn }}">
-<!ENTITY GET_OBS_CCPA_TN           "{{ get_obs_ccpa_tn }}">
-<!ENTITY GET_OBS_NDAS_TN           "{{ get_obs_ndas_tn }}">
-<!ENTITY GET_OBS_MRMS_TN           "{{ get_obs_mrms_tn }}">
-<!ENTITY VX_TN                     "{{ vx_tn }}">
-<!ENTITY VX_GRIDSTAT_TN            "{{ vx_gridstat_tn }}">
-<!ENTITY VX_GRIDSTAT_REFC_TN       "{{ vx_gridstat_refc_tn }}">
-<!ENTITY VX_GRIDSTAT_RETOP_TN      "{{ vx_gridstat_retop_tn }}">
-<!ENTITY VX_GRIDSTAT_03h_TN        "{{ vx_gridstat_03h_tn }}">
-<!ENTITY VX_GRIDSTAT_06h_TN        "{{ vx_gridstat_06h_tn }}">
-<!ENTITY VX_GRIDSTAT_24h_TN        "{{ vx_gridstat_24h_tn }}">
-<!ENTITY VX_POINTSTAT_TN           "{{ vx_pointstat_tn }}">
-<!ENTITY VX_ENSGRID_TN             "{{ vx_ensgrid_tn }}">
-<!ENTITY VX_ENSGRID_REFC_TN        "{{ vx_ensgrid_refc_tn }}">
-<!ENTITY VX_ENSGRID_RETOP_TN       "{{ vx_ensgrid_retop_tn }}">
-<!ENTITY VX_ENSGRID_03h_TN         "{{ vx_ensgrid_03h_tn }}">
-<!ENTITY VX_ENSGRID_06h_TN         "{{ vx_ensgrid_06h_tn }}">
-<!ENTITY VX_ENSGRID_24h_TN         "{{ vx_ensgrid_24h_tn }}">
-<!ENTITY VX_ENSGRID_MEAN_TN        "{{ vx_ensgrid_mean_tn }}">
-<!ENTITY VX_ENSGRID_PROB_TN        "{{ vx_ensgrid_prob_tn }}">
-<!ENTITY VX_ENSGRID_MEAN_03h_TN    "{{ vx_ensgrid_mean_03h_tn }}">
-<!ENTITY VX_ENSGRID_PROB_03h_TN    "{{ vx_ensgrid_prob_03h_tn }}">
-<!ENTITY VX_ENSGRID_MEAN_06h_TN    "{{ vx_ensgrid_mean_06h_tn }}">
-<!ENTITY VX_ENSGRID_PROB_06h_TN    "{{ vx_ensgrid_prob_06h_tn }}">
-<!ENTITY VX_ENSGRID_MEAN_24h_TN    "{{ vx_ensgrid_mean_24h_tn }}">
-<!ENTITY VX_ENSGRID_PROB_24h_TN    "{{ vx_ensgrid_prob_24h_tn }}">
-<!ENTITY VX_ENSGRID_PROB_REFC_TN   "{{ vx_ensgrid_prob_refc_tn }}">
-<!ENTITY VX_ENSGRID_PROB_RETOP_TN  "{{ vx_ensgrid_prob_retop_tn }}">
-<!ENTITY VX_ENSPOINT_TN            "{{ vx_enspoint_tn }}">
-<!ENTITY VX_ENSPOINT_MEAN_TN       "{{ vx_enspoint_mean_tn }}">
-<!ENTITY VX_ENSPOINT_PROB_TN       "{{ vx_enspoint_prob_tn }}">
+<!ENTITY SLURM_NATIVE_CMD              "{{ slurm_native_cmd }}">
+<!ENTITY MAKE_GRID_TN                  "{{ make_grid_tn }}">
+<!ENTITY MAKE_OROG_TN                  "{{ make_orog_tn }}">
+<!ENTITY MAKE_SFC_CLIMO_TN             "{{ make_sfc_climo_tn }}">
+<!ENTITY GET_EXTRN_ICS_TN              "{{ get_extrn_ics_tn }}">
+<!ENTITY GET_EXTRN_LBCS_TN             "{{ get_extrn_lbcs_tn }}">
+<!ENTITY MAKE_ICS_TN                   "{{ make_ics_tn }}">
+<!ENTITY MAKE_LBCS_TN                  "{{ make_lbcs_tn }}">
+<!ENTITY RUN_FCST_TN                   "{{ run_fcst_tn }}">
+<!ENTITY RUN_POST_TN                   "{{ run_post_tn }}">
+<!ENTITY GET_OBS_CCPA_TN               "{{ get_obs_ccpa_tn }}">
+<!ENTITY GET_OBS_NDAS_TN               "{{ get_obs_ndas_tn }}">
+<!ENTITY GET_OBS_MRMS_TN               "{{ get_obs_mrms_tn }}">
+<!ENTITY VX_TN                         "{{ vx_tn }}">
+<!ENTITY VX_GRIDSTAT_APCP01h_TN        "{{ vx_gridstat_apcp01h_tn }}">
+<!ENTITY VX_GRIDSTAT_REFC01h_TN        "{{ vx_gridstat_refc01h_tn }}">
+<!ENTITY VX_GRIDSTAT_RETOP01h_TN       "{{ vx_gridstat_retop01h_tn }}">
+<!ENTITY VX_GRIDSTAT_APCP03h_TN        "{{ vx_gridstat_apcp03h_tn }}">
+<!ENTITY VX_GRIDSTAT_APCP06h_TN        "{{ vx_gridstat_apcp06h_tn }}">
+<!ENTITY VX_GRIDSTAT_APCP24h_TN        "{{ vx_gridstat_apcp24h_tn }}">
+<!ENTITY VX_POINTSTAT_TN               "{{ vx_pointstat_tn }}">
+<!ENTITY VX_ENSGRID_APCP01h_TN         "{{ vx_ensgrid_apcp01h_tn }}">
+<!ENTITY VX_ENSGRID_REFC01h_TN         "{{ vx_ensgrid_refc01h_tn }}">
+<!ENTITY VX_ENSGRID_RETOP01h_TN        "{{ vx_ensgrid_retop01h_tn }}">
+<!ENTITY VX_ENSGRID_APCP03h_TN         "{{ vx_ensgrid_apcp03h_tn }}">
+<!ENTITY VX_ENSGRID_APCP06h_TN         "{{ vx_ensgrid_apcp06h_tn }}">
+<!ENTITY VX_ENSGRID_APCP24h_TN         "{{ vx_ensgrid_apcp24h_tn }}">
+<!ENTITY VX_ENSGRID_APCP01h_MEAN_TN    "{{ vx_ensgrid_apcp01h_mean_tn }}">
+<!ENTITY VX_ENSGRID_APCP01h_PROB_TN    "{{ vx_ensgrid_apcp01h_prob_tn }}">
+<!ENTITY VX_ENSGRID_APCP03h_MEAN_TN    "{{ vx_ensgrid_apcp03h_mean_tn }}">
+<!ENTITY VX_ENSGRID_APCP03h_PROB_TN    "{{ vx_ensgrid_apcp03h_prob_tn }}">
+<!ENTITY VX_ENSGRID_APCP06h_MEAN_TN    "{{ vx_ensgrid_apcp06h_mean_tn }}">
+<!ENTITY VX_ENSGRID_APCP06h_PROB_TN    "{{ vx_ensgrid_apcp06h_prob_tn }}">
+<!ENTITY VX_ENSGRID_APCP24h_MEAN_TN    "{{ vx_ensgrid_apcp24h_mean_tn }}">
+<!ENTITY VX_ENSGRID_APCP24h_PROB_TN    "{{ vx_ensgrid_apcp24h_prob_tn }}">
+<!ENTITY VX_ENSGRID_REFC01h_PROB_TN    "{{ vx_ensgrid_refc01h_prob_tn }}">
+<!ENTITY VX_ENSGRID_RETOP01h_PROB_TN   "{{ vx_ensgrid_retop01h_prob_tn }}">
+<!ENTITY VX_ENSPOINT_TN                "{{ vx_enspoint_tn }}">
+<!ENTITY VX_ENSPOINT_MEAN_TN           "{{ vx_enspoint_mean_tn }}">
+<!ENTITY VX_ENSPOINT_PROB_TN           "{{ vx_enspoint_prob_tn }}">
 
 <!--
 Entity used to load the module file for each GET_OBS_* task.
 -->
-<!ENTITY GET_OBS            "{{ get_obs }}">
+<!ENTITY GET_OBS                       "{{ get_obs }}">
 
 <!--
 Flags that specify whether to run the preprocessing and/or verification tasks.
 -->
-<!ENTITY RUN_TASK_MAKE_GRID      "{{ run_task_make_grid | upper }}">
-<!ENTITY RUN_TASK_MAKE_OROG      "{{ run_task_make_orog | upper }}">
-<!ENTITY RUN_TASK_MAKE_SFC_CLIMO "{{ run_task_make_sfc_climo | upper }}">
+<!ENTITY RUN_TASK_MAKE_GRID       "{{ run_task_make_grid | upper }}">
+<!ENTITY RUN_TASK_MAKE_OROG       "{{ run_task_make_orog | upper }}">
+<!ENTITY RUN_TASK_MAKE_SFC_CLIMO  "{{ run_task_make_sfc_climo | upper }}">
 
 <!--
 Number of physical cores per node for the current machine.  This is used
@@ -93,13 +93,13 @@ Directories and files.
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
 <!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
 
-<!ENTITY MET_INSTALL_DIR "{{ met_install_dir }}">
-<!ENTITY METPLUS_PATH "{{ metplus_path }}">
-<!ENTITY METPLUS_CONF "{{ metplus_conf }}">
-<!ENTITY MET_CONFIG "{{ met_config }}">
-<!ENTITY CCPA_OBS_DIR "{{ ccpa_obs_dir }}">
-<!ENTITY MRMS_OBS_DIR "{{ mrms_obs_dir }}">
-<!ENTITY NDAS_OBS_DIR "{{ ndas_obs_dir }}">
+<!ENTITY MET_INSTALL_DIR          "{{ met_install_dir }}">
+<!ENTITY METPLUS_PATH             "{{ metplus_path }}">
+<!ENTITY METPLUS_CONF             "{{ metplus_conf }}">
+<!ENTITY MET_CONFIG               "{{ met_config }}">
+<!ENTITY CCPA_OBS_DIR             "{{ ccpa_obs_dir }}">
+<!ENTITY MRMS_OBS_DIR             "{{ mrms_obs_dir }}">
+<!ENTITY NDAS_OBS_DIR             "{{ ndas_obs_dir }}">
 
 <!--
 Reservation types.  Reservations specify the queue/partition and account
@@ -324,18 +324,115 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {%- endif %}
+{%- if run_task_get_obs_ccpa %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&GET_OBS_CCPA_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_obs_ccpa }}">
+
+    &RSRV_HPSS;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_CCPA"</command>
+  {%- if machine in ["WCOSS_DELL_P3"] %}
+    <memory>2048M</memory><native>-R affinity[core]</native>
+  {%- endif %}
+    <nodes>{{ nnodes_get_obs_ccpa }}:ppn={{ ppn_get_obs_ccpa }}</nodes>
+    <walltime>{{ wtime_get_obs_ccpa }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&GET_OBS_CCPA_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_OBS_CCPA_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>ACCUM</name><value>01</value></envar>
+
+  </task>
+{%- endif %}
+{%- if run_task_get_obs_mrms %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&GET_OBS_MRMS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_obs_mrms }}">
+
+    &RSRV_HPSS;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_MRMS"</command>
+  {%- if machine in ["WCOSS_DELL_P3"] %}
+    <memory>2048M</memory><native>-R affinity[core]</native>
+  {%- endif %}
+    <nodes>{{ nnodes_get_obs_mrms }}:ppn={{ ppn_get_obs_mrms }}</nodes>
+    <walltime>{{ wtime_get_obs_mrms }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&GET_OBS_MRMS_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_OBS_MRMS_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>SCRIPTSDIR</name><value>&SCRIPTSDIR;</value></envar>
+    <envar><name>VAR</name><value>REFC RETOP</value></envar>
+ 
+  </task>
+{%- endif %}
+{%- if run_task_get_obs_ndas %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&GET_OBS_NDAS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_obs_ndas }}">
+
+    &RSRV_HPSS;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_NDAS"</command>
+  {%- if machine in ["WCOSS_DELL_P3"] %}
+    <memory>2048M</memory><native>-R affinity[core]</native>
+  {%- endif %}
+    <nodes>{{ nnodes_get_obs_ndas }}:ppn={{ ppn_get_obs_ndas }}</nodes>
+    <walltime>{{ wtime_get_obs_ndas }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&GET_OBS_NDAS_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_OBS_NDAS_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+
+  </task>
+{%- endif %}
 {%- if do_ensemble %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <metatask name="run_ensemble">
+  <metatask name="run_ens_mems">
 
     <var name="{{ ensmem_indx_name }}">
 {%- for m in range(1, num_ens_members+1) -%}
   {%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}
   {{- fmtstr%m -}}
 {%- endfor %} </var>
+    <var name="{{ ens_timelag_var_name }}">{{ ens_time_lags_hrs }}</var>
 {%- endif %}
 {%- if run_task_make_ics %}
 <!--
@@ -721,108 +818,12 @@ the <task> tag to be identical to the ones above for other output times.
   </metatask>
   {%- endif %}
 {%- endif %}
-{%- if run_task_get_obs_ccpa %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&GET_OBS_CCPA_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_obs_ccpa }}">
-
-    &RSRV_HPSS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_CCPA"</command>
-  {%- if machine in ["WCOSS_DELL_P3"] %}
-    <memory>2048M</memory><native>-R affinity[core]</native>
-  {%- endif %}
-    <nodes>{{ nnodes_get_obs_ccpa }}:ppn={{ ppn_get_obs_ccpa }}</nodes>
-    <walltime>{{ wtime_get_obs_ccpa }}</walltime>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
-  {%- endif %}
-    <jobname>&GET_OBS_CCPA_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_OBS_CCPA_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
-    <envar><name>ACCUM</name><value>01</value></envar>
-
-  </task>
-{%- endif %}
-{%- if run_task_get_obs_mrms %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&GET_OBS_MRMS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_obs_mrms }}">
-
-    &RSRV_HPSS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_MRMS"</command>
-  {%- if machine in ["WCOSS_DELL_P3"] %}
-    <memory>2048M</memory><native>-R affinity[core]</native>
-  {%- endif %}
-    <nodes>{{ nnodes_get_obs_mrms }}:ppn={{ ppn_get_obs_mrms }}</nodes>
-    <walltime>{{ wtime_get_obs_mrms }}</walltime>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
-  {%- endif %}
-    <jobname>&GET_OBS_MRMS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_OBS_MRMS_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
-    <envar><name>SCRIPTSDIR</name><value>&SCRIPTSDIR;</value></envar>
-    <envar><name>VAR</name><value>REFC RETOP</value></envar>
- 
-  </task>
-{%- endif %}
-{%- if run_task_get_obs_ndas %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&GET_OBS_NDAS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_obs_ndas }}">
-
-    &RSRV_HPSS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_NDAS"</command>
-  {%- if machine in ["WCOSS_DELL_P3"] %}
-    <memory>2048M</memory><native>-R affinity[core]</native>
-  {%- endif %}
-    <nodes>{{ nnodes_get_obs_ndas }}:ppn={{ ppn_get_obs_ndas }}</nodes>
-    <walltime>{{ wtime_get_obs_ndas }}</walltime>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
-  {%- endif %}
-    <jobname>&GET_OBS_NDAS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_OBS_NDAS_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
-
-  </task>
-{%- endif %}
 {%- if run_task_vx_gridstat %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat }}">
+  <task name="&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -832,19 +833,19 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_GRIDSTAT_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr{{ cyclestr_offset }}>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>01</value></envar>
   {%- if do_ensemble %}
+    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
@@ -873,7 +874,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_REFC_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_refc }}">
+  <task name="&VX_GRIDSTAT_REFC01h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_refc }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -883,18 +884,18 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_REFC_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_GRIDSTAT_REFC_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_REFC01h_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_REFC01h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr{{ cyclestr_offset }}>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>REFC</value></envar>
   {%- if do_ensemble %}
+    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
@@ -923,7 +924,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_RETOP_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_retop }}">
+  <task name="&VX_GRIDSTAT_RETOP01h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_retop }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -933,18 +934,18 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_RETOP_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_GRIDSTAT_RETOP_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_RETOP01h_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_RETOP01h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr{{ cyclestr_offset }}>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>RETOP</value></envar>
   {%- if do_ensemble %}
+    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
@@ -973,7 +974,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_03h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_03h }}">
+  <task name="&VX_GRIDSTAT_APCP03h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_03h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -983,24 +984,24 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_03h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_GRIDSTAT_03h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_APCP03h_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_APCP03h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(3, fcst_len_hrs+1, 3) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr{{ cyclestr_offset }}>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>03</value></envar>
   {%- if do_ensemble %}
+    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
     <dependency>
-      <taskdep task="&VX_GRIDSTAT_TN;{{ uscore_ensmem_name }}"/>
+      <taskdep task="&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}"/>
     </dependency>
 
   </task>
@@ -1010,7 +1011,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_06h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_06h }}">
+  <task name="&VX_GRIDSTAT_APCP06h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_06h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -1020,24 +1021,35 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_06h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_GRIDSTAT_06h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_APCP06h_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_APCP06h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr{{ cyclestr_offset }}>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>06</value></envar>
   {%- if do_ensemble %}
+    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
     <dependency>
-      <taskdep task="&VX_GRIDSTAT_TN;{{ uscore_ensmem_name }}"/>
+      <and>
+        <taskdep task="&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}"/>
+<!--
+The following dependency should ideally not be needed, but it is needed 
+due to a file read bug in MET or METplus when the VX_GRIDSTAT_APCP06h_TN
+is launched at the same time as the VX_GRIDSTAT_APCP03h_TN and/or 
+VX_GRIDSTAT_APCP24h_TN.  Thus, here, we wait until the VX_GRIDSTAT_APCP03h_TN
+is done before launching VX_GRIDSTAT_APCP24h_TN.  This dependency should
+be removed once that bug is fixed.
+-->
+        <taskdep task="&VX_GRIDSTAT_APCP03h_TN;{{ uscore_ensmem_name }}"/>
+      </and>
     </dependency>
 
   </task>
@@ -1047,7 +1059,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_24h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_24h }}">
+  <task name="&VX_GRIDSTAT_APCP24h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_24h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -1057,24 +1069,35 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_24h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_GRIDSTAT_24h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_APCP24h_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_APCP24h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(24, fcst_len_hrs+1, 24) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr{{ cyclestr_offset }}>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>24</value></envar>
   {%- if do_ensemble %}
+    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
     <dependency>
-      <taskdep task="&VX_GRIDSTAT_TN;{{ uscore_ensmem_name }}"/>
+      <and>
+        <taskdep task="&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}"/>
+<!--
+The following dependency should ideally not be needed, but it is needed 
+due to a file read bug in MET or METplus when the VX_GRIDSTAT_APCP24h_TN
+is launched at the same time as the VX_GRIDSTAT_APCP03h_TN and/or 
+VX_GRIDSTAT_APCP06h_TN.  Thus, here, we wait until the VX_GRIDSTAT_APCP06h_TN
+is done before launching VX_GRIDSTAT_APCP24h_TN.  This dependency should
+be removed once that bug is fixed.
+-->
+        <taskdep task="&VX_GRIDSTAT_APCP06h_TN;{{ uscore_ensmem_name }}"/>
+      </and>
     </dependency>
 
   </task>
@@ -1094,17 +1117,17 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_POINTSTAT_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_POINTSTAT_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_POINTSTAT_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_POINTSTAT_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr{{ cyclestr_offset }}>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
   {%- if do_ensemble %}
+    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
@@ -1137,7 +1160,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid }}">
+  <task name="&VX_ENSGRID_APCP01h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
@@ -1147,8 +1170,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP01h_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP01h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1156,12 +1179,36 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>01</value></envar>
 
     <dependency>
-      <metataskdep metatask="run_ensemble"/>
+  {%- if run_task_get_obs_ccpa or run_task_run_post or do_ensemble %}
+      <and>
+  {%- endif %}
+  {%- if run_task_get_obs_ccpa %}
+        <taskdep task="&GET_OBS_CCPA_TN;"/>
+  {%- endif %}
+  {%- if run_task_run_post %}
+    {%- for m in range(1, num_ens_members+1) -%}
+      {%- set fmtstr="%0"~ndigits_ensmem_names~"d" %}
+        <metataskdep metatask="&RUN_POST_TN;_{{ ensmem_indx_name }}{{- fmtstr%m -}}"/>
+    {%- endfor %}
+  {%- endif %}
+<!--
+The following dependecy isn't actually needed.  It is a way to throttle
+the number of rocoto tasks (so that the deterministic verification tasks
+in the run_ens_metatask complete before the ensemble verification tasks
+can launch.  But the taskthrottle attribute should really be used for 
+this purpose.
+-->
+  {%- if do_ensemble %}
+        <metataskdep metatask="run_ens_mems"/>
+  {%- endif %}
+  {%- if run_task_get_obs_ccpa or run_task_run_post or do_ensemble %}
+      </and>
+  {%- endif %}
     </dependency>
 
   </task>
@@ -1170,7 +1217,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_03h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_03h }}">
+  <task name="&VX_ENSGRID_REFC01h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_refc }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
@@ -1180,8 +1227,118 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_03h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_03h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_REFC01h_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC01h_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+<!--    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
+    <envar><name>VAR</name><value>REFC</value></envar>
+
+    <dependency>
+  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+      <and>
+  {%- endif %}
+  {%- if run_task_get_obs_mrms %}
+        <taskdep task="&GET_OBS_MRMS_TN;"/>
+  {%- endif %}
+  {%- if run_task_run_post %}
+    {%- for m in range(1, num_ens_members+1) -%}
+      {%- set fmtstr="%0"~ndigits_ensmem_names~"d" %}
+        <metataskdep metatask="&RUN_POST_TN;_{{ ensmem_indx_name }}{{- fmtstr%m -}}"/>
+    {%- endfor %}
+  {%- endif %}
+<!--
+The following dependecy isn't actually needed.  It is a way to throttle
+the number of rocoto tasks (so that the deterministic verification tasks
+in the run_ens_metatask complete before the ensemble verification tasks
+can launch.  But the taskthrottle attribute should really be used for 
+this purpose.
+-->
+  {%- if do_ensemble %}
+        <metataskdep metatask="run_ens_mems"/>
+  {%- endif %}
+  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+      </and>
+  {%- endif %}
+    </dependency>
+
+  </task>
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&VX_ENSGRID_RETOP01h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_retop }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
+    <nodes>{{ nnodes_vx_ensgrid }}:ppn={{ ppn_vx_ensgrid }}</nodes>
+    <walltime>{{ wtime_vx_ensgrid }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&VX_ENSGRID_RETOP01h_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP01h_TN;_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+<!--    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
+    <envar><name>VAR</name><value>RETOP</value></envar>
+
+    <dependency>
+  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+      <and>
+  {%- endif %}
+  {%- if run_task_get_obs_mrms %}
+        <taskdep task="&GET_OBS_MRMS_TN;"/>
+  {%- endif %}
+  {%- if run_task_run_post %}
+    {%- for m in range(1, num_ens_members+1) -%}
+      {%- set fmtstr="%0"~ndigits_ensmem_names~"d" %}
+        <metataskdep metatask="&RUN_POST_TN;_{{ ensmem_indx_name }}{{- fmtstr%m -}}"/>
+    {%- endfor %}
+  {%- endif %}
+<!--
+The following dependecy isn't actually needed.  It is a way to throttle
+the number of rocoto tasks (so that the deterministic verification tasks
+in the run_ens_metatask complete before the ensemble verification tasks
+can launch.  But the taskthrottle attribute should really be used for 
+this purpose.
+-->
+  {%- if do_ensemble %}
+        <metataskdep metatask="run_ens_mems"/>
+  {%- endif %}
+  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+      </and>
+  {%- endif %}
+    </dependency>
+
+  </task>
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&VX_ENSGRID_APCP03h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_03h }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
+    <nodes>{{ nnodes_vx_ensgrid }}:ppn={{ ppn_vx_ensgrid }}</nodes>
+    <walltime>{{ wtime_vx_ensgrid }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&VX_ENSGRID_APCP03h_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP03h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1189,12 +1346,32 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(3, fcst_len_hrs+1, 3) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--    <envar><name>FHR</name><value><cyclestr>{% for h in range(3, fcst_len_hrs+1, 3) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>03</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_TN;"/>
+  {%- if run_task_get_obs_ccpa or do_ensemble %}
+      <and>
+  {%- endif %}
+  {%- if run_task_get_obs_ccpa %}
+        <taskdep task="&GET_OBS_CCPA_TN;"/>
+  {%- endif %}
+  {%- if do_ensemble %}
+<!--
+The VX_ENSGRID_APCP03h_TN task depends on the presence of NetCDF files
+generated by the PcpCombine tool in the deterministic verification tasks
+for all ensemble members.  Thus, the run_ens_mems metatask (which 
+contains the deterministic vx tasks, among others) must first complete
+before this task can be launched.
+-->
+        <metataskdep metatask="run_ens_mems"/>
+  {%- endif %}
+<!-- The following is probably not necessary.  Commenting out. -->
+<!--    <taskdep task="&VX_ENSGRID_APCP01h_TN;"/> -->
+  {%- if run_task_get_obs_ccpa or do_ensemble %}
+      </and>
+  {%- endif %}
     </dependency>
 
   </task>
@@ -1204,7 +1381,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_06h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_06h }}">
+  <task name="&VX_ENSGRID_APCP06h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_06h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
@@ -1214,8 +1391,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_06h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_06h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP06h_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP06h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1223,12 +1400,32 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar> 
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--    <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>06</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_TN;"/>
+  {%- if run_task_get_obs_ccpa or do_ensemble %}
+      <and>
+  {%- endif %}
+  {%- if run_task_get_obs_ccpa %}
+        <taskdep task="&GET_OBS_CCPA_TN;"/>
+  {%- endif %}
+  {%- if do_ensemble %}
+<!--
+The VX_ENSGRID_APCP06h_TN task depends on the presence of NetCDF files
+generated by the PcpCombine tool in the deterministic verification tasks
+for all ensemble members.  Thus, the run_ens_mems metatask (which 
+contains the deterministic vx tasks, among others) must first complete
+before this task can be launched.
+-->
+        <metataskdep metatask="run_ens_mems"/>
+  {%- endif %}
+<!-- The following is probably not necessary.  Commenting out. -->
+<!--    <taskdep task="&VX_ENSGRID_APCP01h_TN;"/> -->
+  {%- if run_task_get_obs_ccpa or do_ensemble %}
+      </and>
+  {%- endif %}
     </dependency>
 
   </task>
@@ -1238,7 +1435,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_24h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_24h }}">
+  <task name="&VX_ENSGRID_APCP24h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_24h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
@@ -1248,8 +1445,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_24h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_24h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP24h_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP24h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1257,12 +1454,32 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(24, fcst_len_hrs+1, 24) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(24, fcst_len_hrs+1, 24) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>24</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_TN;"/>
+  {%- if run_task_get_obs_ccpa or do_ensemble %}
+      <and>
+  {%- endif %}
+  {%- if run_task_get_obs_ccpa %}
+        <taskdep task="&GET_OBS_CCPA_TN;"/>
+  {%- endif %}
+  {%- if do_ensemble %}
+<!--
+The VX_ENSGRID_APCP24h_TN task depends on the presence of NetCDF files
+generated by the PcpCombine tool in the deterministic verification tasks
+for all ensemble members.  Thus, the run_ens_mems metatask (which 
+contains the deterministic vx tasks, among others) must first complete
+before this task can be launched.
+-->
+        <metataskdep metatask="run_ens_mems"/>
+  {%- endif %}
+<!-- The following is probably not necessary.  Commenting out. -->
+<!--    <taskdep task="&VX_ENSGRID_APCP01h_TN;"/> -->
+  {%- if run_task_get_obs_ccpa or do_ensemble %}
+      </and>
+  {%- endif %}
     </dependency>
 
   </task>
@@ -1271,69 +1488,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_REFC_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_refc }}">
-
-    &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
-    <nodes>{{ nnodes_vx_ensgrid }}:ppn={{ ppn_vx_ensgrid }}</nodes>
-    <walltime>{{ wtime_vx_ensgrid }}</walltime>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
-  {%- endif %}
-    <jobname>&VX_ENSGRID_REFC_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
-    <envar><name>VAR</name><value>REFC</value></envar>
-
-    <dependency>
-      <metataskdep metatask="run_ensemble"/>
-    </dependency>
-
-  </task>
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&VX_ENSGRID_RETOP_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_retop }}">
-
-    &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
-    <nodes>{{ nnodes_vx_ensgrid }}:ppn={{ ppn_vx_ensgrid }}</nodes>
-    <walltime>{{ wtime_vx_ensgrid }}</walltime>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
-  {%- endif %}
-    <jobname>&VX_ENSGRID_RETOP_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
-    <envar><name>VAR</name><value>RETOP</value></envar>
-
-    <dependency>
-      <metataskdep metatask="run_ensemble"/>
-    </dependency>
-
-  </task>
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&VX_ENSGRID_MEAN_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean }}">
+  <task name="&VX_ENSGRID_APCP01h_MEAN_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_MEAN"</command>
@@ -1343,8 +1498,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_MEAN_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP01h_MEAN_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP01h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1352,12 +1507,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>01</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP01h_TN;"/>
     </dependency>
 
   </task>
@@ -1365,7 +1520,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob }}">
+  <task name="&VX_ENSGRID_APCP01h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1375,8 +1530,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_PROB_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP01h_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP01h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1384,12 +1539,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>01</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP01h_TN;"/>
     </dependency>
 
   </task>
@@ -1398,7 +1553,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_MEAN_03h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean_03h }}">
+  <task name="&VX_ENSGRID_APCP03h_MEAN_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean_03h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_MEAN"</command>
@@ -1408,8 +1563,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_MEAN_03h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_MEAN_03h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP03h_MEAN_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP03h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1417,12 +1572,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(3, fcst_len_hrs+1, 3) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(3, fcst_len_hrs+1, 3) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>03</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_03h_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP03h_TN;"/>
     </dependency>
 
   </task>
@@ -1430,7 +1585,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_PROB_03h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_03h }}">
+  <task name="&VX_ENSGRID_APCP03h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_03h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1440,8 +1595,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_PROB_03h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_PROB_03h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP03h_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP03h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1449,12 +1604,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(3, fcst_len_hrs+1, 3) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(3, fcst_len_hrs+1, 3) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>03</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_03h_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP03h_TN;"/>
     </dependency>
 
   </task>
@@ -1464,7 +1619,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_MEAN_06h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean_06h }}">
+  <task name="&VX_ENSGRID_APCP06h_MEAN_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean_06h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_MEAN"</command>
@@ -1474,8 +1629,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_MEAN_06h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_MEAN_06h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP06h_MEAN_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP06h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1483,12 +1638,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>06</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_06h_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP06h_TN;"/>
     </dependency>
 
   </task>
@@ -1496,7 +1651,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_PROB_06h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_06h }}">
+  <task name="&VX_ENSGRID_APCP06h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_06h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1506,8 +1661,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_PROB_06h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_PROB_06h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP06h_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP06h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1515,12 +1670,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>06</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_06h_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP06h_TN;"/>
     </dependency>
 
   </task>
@@ -1530,7 +1685,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_MEAN_24h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean_24h }}">
+  <task name="&VX_ENSGRID_APCP24h_MEAN_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean_24h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_MEAN"</command>
@@ -1540,8 +1695,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_MEAN_24h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_MEAN_24h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP24h_MEAN_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP24h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1549,12 +1704,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(24, fcst_len_hrs+1, 24) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(24, fcst_len_hrs+1, 24) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>24</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_24h_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP24h_TN;"/>
     </dependency>
 
   </task>
@@ -1562,7 +1717,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_PROB_24h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_24h }}">
+  <task name="&VX_ENSGRID_APCP24h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_24h }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1572,8 +1727,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_PROB_24h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_PROB_24h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_APCP24h_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP24h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1581,12 +1736,12 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(24, fcst_len_hrs+1, 24) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(24, fcst_len_hrs+1, 24) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>24</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_24h_TN;"/>
+      <taskdep task="&VX_ENSGRID_APCP24h_TN;"/>
     </dependency>
 
   </task>
@@ -1595,7 +1750,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_PROB_REFC_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_refc }}">
+  <task name="&VX_ENSGRID_REFC01h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_refc }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1605,8 +1760,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_PROB_REFC_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_PROB_REFC_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_REFC01h_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC01h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -1614,11 +1769,11 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>REFC</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_REFC_TN;"/>
+      <taskdep task="&VX_ENSGRID_REFC01h_TN;"/>
     </dependency>
 
   </task>
@@ -1626,7 +1781,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_PROB_RETOP_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_retop }}">
+  <task name="&VX_ENSGRID_RETOP01h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_retop }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1636,8 +1791,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_PROB_RETOP_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_PROB_RETOP_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_RETOP01h_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP01h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -1645,11 +1800,11 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--    <envar><name>FHR</name><value><cyclestr>{% for h in range(1, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>RETOP</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_RETOP_TN;"/>
+      <taskdep task="&VX_ENSGRID_RETOP01h_TN;"/>
     </dependency>
 
   </task>
@@ -1678,10 +1833,34 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
 
     <dependency>
-      <metataskdep metatask="run_ensemble"/>
+  {%- if run_task_get_obs_ndas or run_task_run_post or do_ensemble %}
+      <and>
+  {%- endif %}
+  {%- if run_task_get_obs_ndas %}
+        <taskdep task="&GET_OBS_NDAS_TN;"/>
+  {%- endif %}
+  {%- if run_task_run_post %}
+    {%- for m in range(1, num_ens_members+1) -%}
+      {%- set fmtstr="%0"~ndigits_ensmem_names~"d" %}
+        <metataskdep metatask="&RUN_POST_TN;_{{ ensmem_indx_name }}{{- fmtstr%m -}}"/>
+    {%- endfor %}
+  {%- endif %}
+<!--
+The following dependecy isn't actually needed.  It is a way to throttle
+the number of rocoto tasks (so that the deterministic verification tasks
+in the run_ens_metatask complete before the ensemble verification tasks
+can launch.  But the taskthrottle attribute should really be used for 
+this purpose.
+-->
+  {%- if do_ensemble %}
+        <metataskdep metatask="run_ens_mems"/>
+  {%- endif %}
+  {%- if run_task_get_obs_ndas or run_task_run_post or do_ensemble %}
+      </and>
+  {%- endif %}
     </dependency>
 
   </task>
@@ -1708,7 +1887,7 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
 
     <dependency>
       <taskdep task="&VX_ENSPOINT_TN;"/>
@@ -1738,7 +1917,7 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
+<!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
 
     <dependency>
       <taskdep task="&VX_ENSPOINT_TN;"/>

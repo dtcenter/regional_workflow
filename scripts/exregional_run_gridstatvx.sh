@@ -45,7 +45,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs METplus for grid-stat on
 the UPP output files by initialization time for all forecast hours.
 ========================================================================"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -72,20 +71,20 @@ print_input_args "valid_args"
 #-----------------------------------------------------------------------
 #
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE. Also read in FHR and create a comma-separated list
-# for METplus to run over.
+# ively) from CDATE.
 #
 #-----------------------------------------------------------------------
 #
 echo "KKKKKKKKKKKKKKKKKKKKKKKKKKK"
 echo "  CDATE = |$CDATE|"
-
-yyyymmdd=${CDATE:0:8}
-hh=${CDATE:8:2}
-cyc=$hh
-export CDATE
-export hh
-
+#
+#-----------------------------------------------------------------------
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+#mem_indx=$(( mem_indx+1))  # This needs to be removed after running the 2021050712 case.
 echo "  mem_indx = |${mem_indx}|"
 echo "  ENS_DELTA_FCST_LENS_HRS = |${ENS_DELTA_FCST_LENS_HRS[@]}|"
 i=$(( ${mem_indx} - 1 ))
@@ -99,7 +98,8 @@ echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
 fhr_last=${mem_fcst_len_hrs}
 export fhr_last
 
-fhr_array=($( seq 1 1 ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+#fhr_array=($( seq 1 ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
 echo "fhr_array = |${fhr_array[@]}|"
 fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 export fhr_list
@@ -112,29 +112,71 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-# Create INPUT_BASE, OUTPUT_BASE, and LOG_SUFFIX to read into METplus
-# conf files.
+# Set variables that the METplus conf files assume exist in the
+# environment.
 #
 #-----------------------------------------------------------------------
 #
-if [[ ${DO_ENSEMBLE} == "FALSE" ]]; then
-  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/postprd
-  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
-  if [ ${VAR} == "APCP" ]; then
-    LOG_SUFFIX=gridstat_${CDATE}_${VAR}_${ACCUM}h
-  else
-    LOG_SUFFIX=gridstat_${CDATE}_${VAR}
-  fi
-elif [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
-  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR}/postprd
-  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR}
-  ENSMEM=`echo ${SLASH_ENSMEM_SUBDIR} | cut -d"/" -f2`
-  MODEL=${MODEL}_${ENSMEM}
-  if [ ${VAR} == "APCP" ]; then
-    LOG_SUFFIX=gridstat_${CDATE}_${ENSMEM}_${VAR}_${ACCUM}h
-  else
-    LOG_SUFFIX=gridstat_${CDATE}_${ENSMEM}_${VAR}
-  fi
+uscore_ensmem_or_null=""
+slash_ensmem_subdir_or_null=""
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  uscore_ensmem_or_null="_${mem_indx}"
+  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR}"
+fi
+
+INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
+OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
+
+acc=""
+if [ "${VAR}" = "APCP" ]; then
+  acc="${ACCUM}h"
+fi
+config_fn_str="${VAR}${acc}"
+LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${VAR}${acc:+_${acc}}"
+
+
+#if [ "${DO_ENSEMBLE}" = "FALSE" ]; then
+#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/postprd
+#  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
+#  if [ "${VAR}" = "APCP" ]; then
+#    LOG_SUFFIX=gridstat_${CDATE}_${VAR}_${ACCUM}h
+#  else
+#    LOG_SUFFIX=gridstat_${CDATE}_${VAR}
+#  fi
+#elif [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR}/postprd
+#  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR}
+#  ENSMEM=`echo ${SLASH_ENSMEM_SUBDIR} | cut -d"/" -f2`
+#  MODEL=${MODEL}_${ENSMEM}
+#  if [ "${VAR}" = "APCP" ]; then
+#    LOG_SUFFIX=gridstat_${CDATE}_${ENSMEM}_${VAR}_${ACCUM}h
+#  else
+#    LOG_SUFFIX=gridstat_${CDATE}_${ENSMEM}_${VAR}
+#  fi
+#fi
+#
+#-----------------------------------------------------------------------
+#
+# Create the directory(ies) in which MET/METplus will place its output
+# from this script.  We do this here because (as of 20220811), when 
+# multiple workflow tasks are launched that all require METplus to create
+# the same directory, some of the METplus tasks can fail.  This is a 
+# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
+# If/when it is fixed, the following directory creation step can be 
+# removed from this script.
+#
+#-----------------------------------------------------------------------
+#
+mkdir_vrfy -p "${OUTPUT_BASE}/metprd/grid_stat"
+#
+# If the variable is accumulated precipitation for a time interval 
+# (bucket) other than 1 hour, the MET/METplus tools called below will
+# include pcp_combine.  In that case, create (if necessary) directories
+# needed by pcp_combine.
+#
+if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
+  mkdir_vrfy -p "${EXPTDIR}/metprd/pcp_combine"      # For observations
+  mkdir_vrfy -p "${OUTPUT_BASE}/metprd/pcp_combine"  # For forecast
 fi
 #
 #-----------------------------------------------------------------------
@@ -143,7 +185,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [[ ! -d "$OBS_DIR" ]]; then
+if [ ! -d "${OBS_DIR}" ]; then
   print_err_msg_exit "\
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
@@ -151,13 +193,14 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Export some environment variables passed in by the XML.
+# Export variables to environment to make them accessible in METplus
+# configuration files.
 #
 #-----------------------------------------------------------------------
 #
-export SCRIPTSDIR
 export EXPTDIR
 export LOGDIR
+export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
@@ -169,6 +212,7 @@ export MET_CONFIG
 export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
+export acc
 #
 #-----------------------------------------------------------------------
 #
@@ -176,16 +220,18 @@ export POST_OUTPUT_DOMAIN_NAME
 #
 #-----------------------------------------------------------------------
 #
-if [ ${VAR} == "APCP" ]; then
-  export acc="${ACCUM}h" # for stats output prefix in GridStatConfig
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${METPLUS_CONF}/GridStat_${VAR}${acc}.conf
-else
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${METPLUS_CONF}/GridStat_${VAR}.conf
-fi
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GridStat tool..."
+metplus_config_fp="${METPLUS_CONF}/GridStat_${config_fn_str}.conf"
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+#print_info_msg "
+#METplus/GridStat returned with the following non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #

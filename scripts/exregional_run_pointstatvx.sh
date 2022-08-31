@@ -45,7 +45,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs METplus for point-stat on
 the UPP output files by initialization time for all forecast hours.
 ========================================================================"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -86,6 +85,7 @@ cyc=$hh
 export CDATE
 export hh
 
+#mem_indx=$(( mem_indx+1))  # This needs to be removed after running the 2021050712 case.
 echo "  mem_indx = |${mem_indx}|"
 echo "  ENS_DELTA_FCST_LENS_HRS = |${ENS_DELTA_FCST_LENS_HRS[@]}|"
 i=$(( ${mem_indx} - 1 ))
@@ -99,7 +99,8 @@ echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
 fhr_last=${mem_fcst_len_hrs}
 export fhr_last
 
-fhr_array=($( seq 1 1 ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+#fhr_array=($( seq 1 ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+fhr_array=($( seq 0 1 ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
 echo "fhr_array = |${fhr_array[@]}|"
 fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 export fhr_list
@@ -112,22 +113,57 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-# Create INPUT_BASE, OUTPUT_BASE, and LOG_SUFFIX to read into METplus
-# conf files.
+# Set variables that the METplus conf files assume exist in the 
+# environment.
 #
 #-----------------------------------------------------------------------
 #
-if [[ ${DO_ENSEMBLE} == "FALSE" ]]; then
-  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/postprd
-  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
-  LOG_SUFFIX=pointstat_${CDATE}
-elif [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
-  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}/postprd
-  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}
-  ENSMEM=`echo ${SLASH_ENSMEM_SUBDIR} | cut -d"/" -f2`
-  MODEL=${MODEL}_${ENSMEM}
-  LOG_SUFFIX=pointstat_${CDATE}_${ENSMEM}
+uscore_ensmem_or_null=""
+slash_ensmem_subdir_or_null=""
+if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  uscore_ensmem_or_null="_${mem_indx}"
+  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR}"
 fi
+
+INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
+OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
+LOG_SUFFIX="pointstat_${CDATE}${uscore_ensmem_or_null}"
+MODEL=${MODEL}${uscore_ensmem_or_null}
+
+##
+##-----------------------------------------------------------------------
+##
+## Create INPUT_BASE, OUTPUT_BASE, and LOG_SUFFIX to read into METplus
+## conf files.
+##
+##-----------------------------------------------------------------------
+##
+#if [ "${DO_ENSEMBLE}" = "FALSE" ]; then
+#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/postprd
+#  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
+#  LOG_SUFFIX=pointstat_${CDATE}
+#elif [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}/postprd
+#  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}
+#  ENSMEM=`echo ${SLASH_ENSMEM_SUBDIR} | cut -d"/" -f2`
+#  MODEL=${MODEL}_${ENSMEM}
+#  LOG_SUFFIX=pointstat_${CDATE}_${ENSMEM}
+#fi
+#
+#-----------------------------------------------------------------------
+#
+# Create the directory(ies) in which MET/METplus will place its output
+# from this script.  We do this here because (as of 20220811), when
+# multiple workflow tasks are launched that all require METplus to create
+# the same directory, some of the METplus tasks can fail.  This is a
+# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
+# If/when it is fixed, the following directory creation step can be
+# removed from this script.
+#
+#-----------------------------------------------------------------------
+#
+mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"           # Output directory for pb2nc tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/metprd/point_stat"  # Output directory for point_stat tool.
 #
 #-----------------------------------------------------------------------
 #
@@ -135,7 +171,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [[ ! -d "$OBS_DIR" ]]; then
+if [ ! -d "${OBS_DIR}" ]; then
   print_err_msg_exit "\
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
@@ -167,13 +203,33 @@ export POST_OUTPUT_DOMAIN_NAME
 #
 #-----------------------------------------------------------------------
 #
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for surface fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_conus_sfc.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
-  -c ${METPLUS_CONF}/PointStat_conus_sfc.conf
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+#print_info_msg "
+#METplus/PointStat for surface fields returned with the following
+#non-zero return code: $?"
 
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for upper air fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_upper_air.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
-  -c ${METPLUS_CONF}/PointStat_upper_air.conf
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+#print_info_msg "
+#METplus/PointStat for upper air fields returned with the following
+#non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #

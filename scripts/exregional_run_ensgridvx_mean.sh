@@ -46,7 +46,6 @@ This is the ex-script for the task that runs METplus for grid-stat on
 the UPP output files by initialization time for all forecast hours for 
 gridded data.
 ========================================================================"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -81,36 +80,47 @@ print_info_msg "$VERBOSE" "Starting grid-stat verification"
 #-----------------------------------------------------------------------
 #
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE. Also read in FHR and create a comma-separated list
-# for METplus to run over.
+# ively) from CDATE.
 #
 #-----------------------------------------------------------------------
 #
-yyyymmdd=${CDATE:0:8}
-hh=${CDATE:8:2}
-cyc=$hh
-export CDATE
-export hh
-
-fhr_last=`echo ${FHR}  | awk '{ print $NF }'`
-export fhr_last
-
-fhr_list=`echo ${FHR} | $SED "s/ /,/g"`
-export fhr_list
+echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+set -x
 #
 #-----------------------------------------------------------------------
 #
-# Create OUTPUT_BASE and LOG_SUFFIX to read into METplus conf files.
+# Create a comma-separated list of forecast hours for METplus to step
+# through.
+#
+#-----------------------------------------------------------------------
+#
+export fhr_last=${FCST_LEN_HRS}
+
+fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
+export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "fhr_list = |${fhr_list}|"
+#
+#-----------------------------------------------------------------------
+#
+# Set OUTPUT_BASE for use in METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
 OUTPUT_BASE=${MET_OUTPUT_DIR}
-
-if [ ${VAR} == "APCP" ]; then
-  LOG_SUFFIX=ensgrid_mean_${CDATE}_${VAR}_${ACCUM}h
-else
-  LOG_SUFFIX=ensgrid_mean_${CDATE}_${VAR}
-fi
+#
+#-----------------------------------------------------------------------
+#
+# Create the directory(ies) in which MET/METplus will place its output
+# from this script.  We do this here because (as of 20220811), when
+# multiple workflow tasks are launched that all require METplus to create
+# the same directory, some of the METplus tasks can fail.  This is a
+# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
+# If/when it is fixed, the following directory creation step can be
+# removed from this script.
+#
+#-----------------------------------------------------------------------
+#
+mkdir_vrfy -p "${OUTPUT_BASE}/$CDATE/metprd/grid_stat_mean"
 #
 #-----------------------------------------------------------------------
 #
@@ -118,7 +128,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [[ ! -d "$OBS_DIR" ]]; then
+if [ ! -d "${OBS_DIR}" ]; then
   print_err_msg_exit "\
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
@@ -126,13 +136,28 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Export some environment variables passed in by the XML.
+# Set variables needed in forming the names of METplus configuration and
+# log files.
 #
 #-----------------------------------------------------------------------
 #
-export SCRIPTSDIR
+acc=""
+if [ "${VAR}" = "APCP" ]; then
+  acc="${ACCUM}h"
+fi
+config_fn_str="${VAR}${acc}_mean"
+LOG_SUFFIX="ensgrid_mean_${CDATE}_${VAR}${acc:+_${acc}}"
+#
+#-----------------------------------------------------------------------
+#
+# Export variables to environment to make them accessible in METplus
+# configuration files.
+#
+#-----------------------------------------------------------------------
+#
 export EXPTDIR
 export LOGDIR
+export CDATE
 export OUTPUT_BASE
 export LOG_SUFFIX
 export MET_INSTALL_DIR
@@ -143,6 +168,7 @@ export MET_CONFIG
 export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
+export acc
 #
 #-----------------------------------------------------------------------
 #
@@ -150,16 +176,18 @@ export POST_OUTPUT_DOMAIN_NAME
 #
 #-----------------------------------------------------------------------
 #
-if [ ${VAR} == "APCP" ]; then
-  export acc="${ACCUM}h"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${METPLUS_CONF}/GridStat_${VAR}${acc}_mean.conf
-else
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${METPLUS_CONF}/GridStat_${VAR}_mean.conf
-fi
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GridStat tool..."
+metplus_config_fp="${METPLUS_CONF}/GridStat_${config_fn_str}.conf"
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+#print_info_msg "
+#METplus/GridStat returned with the following non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #

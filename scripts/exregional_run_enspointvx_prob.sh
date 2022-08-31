@@ -45,7 +45,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs METplus for point-stat on
 the UPP output files by initialization time for all forecast hours.
 ========================================================================"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -85,21 +84,31 @@ print_info_msg "$VERBOSE" "Starting point-stat verification"
 #
 #-----------------------------------------------------------------------
 #
-yyyymmdd=${CDATE:0:8}
-hh=${CDATE:8:2}
-cyc=$hh
-export CDATE
-export hh
+echo "WWWWWWWWWWWWWWWWWWWWWWWWW"
+set -x
 
-fhr_last=`echo ${FHR}  | awk '{ print $NF }'`
-export fhr_last
-
-fhr_list=`echo ${FHR} | $SED "s/ /,/g"`
-export fhr_list
+#yyyymmdd=${CDATE:0:8}
+#hh=${CDATE:8:2}
+#cyc=$hh
+#export CDATE
+#export hh
 #
 #-----------------------------------------------------------------------
 #
-# Create OUTPUT_BASE and LOG_SUFFIX to read into METplus conf files.
+# Create a comma-separated list of forecast hours for METplus to step
+# through.
+#
+#-----------------------------------------------------------------------
+#
+export fhr_last=${FCST_LEN_HRS}
+
+fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
+export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "fhr_list = |${fhr_list}|"
+#
+#-----------------------------------------------------------------------
+#
+# Set OUTPUT_BASE and LOG_SUFFIX for use in METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
@@ -108,11 +117,26 @@ LOG_SUFFIX=enspoint_prob_${CDATE}
 #
 #-----------------------------------------------------------------------
 #
+# Create the directory(ies) in which MET/METplus will place its output
+# from this script.  We do this here because (as of 20220811), when
+# multiple workflow tasks are launched that all require METplus to create
+# the same directory, some of the METplus tasks can fail.  This is a
+# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
+# If/when it is fixed, the following directory creation step can be
+# removed from this script.
+#
+#-----------------------------------------------------------------------
+#
+mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"                         # Output directory for pb2nc tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/point_stat_prob"  # Output directory for point_stat tool.
+#
+#-----------------------------------------------------------------------
+#
 # Check for existence of top-level OBS_DIR.
 #
 #-----------------------------------------------------------------------
 #
-if [[ ! -d "$OBS_DIR" ]]; then
+if [ ! -d "${OBS_DIR}" ]; then
   print_err_msg_exit "\
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
@@ -120,12 +144,14 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Export some environment variables passed in by the XML.
+# Export variables to environment to make them accessible in METplus
+# configuration files.
 #
 #-----------------------------------------------------------------------
 #
 export EXPTDIR
 export LOGDIR
+export CDATE
 export OUTPUT_BASE
 export LOG_SUFFIX
 export MET_INSTALL_DIR
@@ -143,13 +169,33 @@ export POST_OUTPUT_DOMAIN_NAME
 #
 #-----------------------------------------------------------------------
 #
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for surface fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_conus_sfc_prob.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
-  -c ${METPLUS_CONF}/PointStat_conus_sfc_prob.conf
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+#print_info_msg "
+#METplus/PointStat for surface fields returned with the following
+#non-zero return code: $?"
 
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for upper air fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_upper_air_prob.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
-  -c ${METPLUS_CONF}/PointStat_upper_air_prob.conf
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+#print_info_msg "
+#METplus/PointStat for upper air fields returned with the following
+#non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #
