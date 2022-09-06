@@ -175,18 +175,18 @@ file (template_xml_fp):
   uscore_ensmem_name="\"\""
   slash_ensmem_subdir="\"\""
   ens_timelag_var_name="\"\""
-  ens_time_lags_hhmmss="\"\""
+  ens_time_lag_hhmmss="\"\""
   cyclestr_offset="\"\""
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     ensmem_indx_name="mem"
     uscore_ensmem_name="_mem#${ensmem_indx_name}#"
     slash_ensmem_subdir="/mem#${ensmem_indx_name}#"
     ens_timelag_var_name="etl" # "etl" stands for "ensemble time lag"
-    ens_time_lags_hhmmss=$( printf "%02d:00:00 " "${ENS_TIME_LAGS_HRS[@]}" )
+    ens_time_lag_hhmmss=$( printf "%02d:00:00 " "${ENS_TIME_LAG_HRS[@]}" )
     cyclestr_offset=' offset="#'${ens_timelag_var_name}'#"'
   fi
 echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-echo "ens_time_lags_hhmmss = |${ens_time_lags_hhmmss[@]}|"
+echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
 #exit 1
 
   settings="\
@@ -446,7 +446,7 @@ echo "ens_time_lags_hhmmss = |${ens_time_lags_hhmmss[@]}|"
   'uscore_ensmem_name': ${uscore_ensmem_name}
   'slash_ensmem_subdir': ${slash_ensmem_subdir}
   'ens_timelag_var_name': ${ens_timelag_var_name}
-  'ens_time_lags_hrs': ${ens_time_lags_hhmmss[@]}
+  'ens_time_lag_hrs': ${ens_time_lag_hhmmss[@]}
   'cyclestr_offset': !!str '${cyclestr_offset}'
 #
 # Parameters associated with subhourly post-processed output

@@ -432,7 +432,7 @@ MODULES_RUN_TASK_FP script.
   {%- set fmtstr=" %0"~ndigits_ensmem_names~"d" -%}
   {{- fmtstr%m -}}
 {%- endfor %} </var>
-    <var name="{{ ens_timelag_var_name }}">{{ ens_time_lags_hrs }}</var>
+    <var name="{{ ens_timelag_var_name }}">{{ ens_time_lag_hrs }}</var>
 {%- endif %}
 {%- if run_task_make_ics %}
 <!--

@@ -87,12 +87,12 @@ export hh
 
 #mem_indx=$(( mem_indx+1))  # This needs to be removed after running the 2021050712 case.
 echo "  mem_indx = |${mem_indx}|"
-echo "  ENS_DELTA_FCST_LENS_HRS = |${ENS_DELTA_FCST_LENS_HRS[@]}|"
+echo "  ENS_DELTA_FCST_LEN_HRS = |${ENS_DELTA_FCST_LEN_HRS[@]}|"
 i=$(( ${mem_indx} - 1 ))
-mem_fcst_len_hrs=$(( ${FCST_LEN_HRS} + ${ENS_DELTA_FCST_LENS_HRS[$i]} ))
+mem_fcst_len_hrs=$(( ${FCST_LEN_HRS} + ${ENS_DELTA_FCST_LEN_HRS[$i]} ))
 echo "  mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
 
-mem_time_lag_hrs="${ENS_TIME_LAGS_HRS[$i]}"
+mem_time_lag_hrs="${ENS_TIME_LAG_HRS[$i]}"
 echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
 #exit 1
 

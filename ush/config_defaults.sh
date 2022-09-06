@@ -1851,8 +1851,8 @@ CRTM_DIR=""
 #
 DO_ENSEMBLE="FALSE"
 NUM_ENS_MEMBERS="1"
-ENS_DELTA_FCST_LENS_HRS=()
-ENS_TIME_LAGS_HRS=()
+ENS_DELTA_FCST_LEN_HRS=()
+ENS_TIME_LAG_HRS=()
 #
 #-----------------------------------------------------------------------
 #
