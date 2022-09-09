@@ -37,15 +37,15 @@ Workflow task names.
 <!ENTITY GET_OBS_MRMS_TN               "{{ get_obs_mrms_tn }}">
 <!ENTITY VX_TN                         "{{ vx_tn }}">
 <!ENTITY VX_GRIDSTAT_APCP01h_TN        "{{ vx_gridstat_apcp01h_tn }}">
-<!ENTITY VX_GRIDSTAT_REFC01h_TN        "{{ vx_gridstat_refc01h_tn }}">
-<!ENTITY VX_GRIDSTAT_RETOP01h_TN       "{{ vx_gridstat_retop01h_tn }}">
+<!ENTITY VX_GRIDSTAT_REFC_TN           "{{ vx_gridstat_refc_tn }}">
+<!ENTITY VX_GRIDSTAT_RETOP_TN          "{{ vx_gridstat_retop_tn }}">
 <!ENTITY VX_GRIDSTAT_APCP03h_TN        "{{ vx_gridstat_apcp03h_tn }}">
 <!ENTITY VX_GRIDSTAT_APCP06h_TN        "{{ vx_gridstat_apcp06h_tn }}">
 <!ENTITY VX_GRIDSTAT_APCP24h_TN        "{{ vx_gridstat_apcp24h_tn }}">
 <!ENTITY VX_POINTSTAT_TN               "{{ vx_pointstat_tn }}">
 <!ENTITY VX_ENSGRID_APCP01h_TN         "{{ vx_ensgrid_apcp01h_tn }}">
-<!ENTITY VX_ENSGRID_REFC01h_TN         "{{ vx_ensgrid_refc01h_tn }}">
-<!ENTITY VX_ENSGRID_RETOP01h_TN        "{{ vx_ensgrid_retop01h_tn }}">
+<!ENTITY VX_ENSGRID_REFC_TN            "{{ vx_ensgrid_refc_tn }}">
+<!ENTITY VX_ENSGRID_RETOP_TN           "{{ vx_ensgrid_retop_tn }}">
 <!ENTITY VX_ENSGRID_APCP03h_TN         "{{ vx_ensgrid_apcp03h_tn }}">
 <!ENTITY VX_ENSGRID_APCP06h_TN         "{{ vx_ensgrid_apcp06h_tn }}">
 <!ENTITY VX_ENSGRID_APCP24h_TN         "{{ vx_ensgrid_apcp24h_tn }}">
@@ -57,8 +57,8 @@ Workflow task names.
 <!ENTITY VX_ENSGRID_APCP06h_PROB_TN    "{{ vx_ensgrid_apcp06h_prob_tn }}">
 <!ENTITY VX_ENSGRID_APCP24h_MEAN_TN    "{{ vx_ensgrid_apcp24h_mean_tn }}">
 <!ENTITY VX_ENSGRID_APCP24h_PROB_TN    "{{ vx_ensgrid_apcp24h_prob_tn }}">
-<!ENTITY VX_ENSGRID_REFC01h_PROB_TN    "{{ vx_ensgrid_refc01h_prob_tn }}">
-<!ENTITY VX_ENSGRID_RETOP01h_PROB_TN   "{{ vx_ensgrid_retop01h_prob_tn }}">
+<!ENTITY VX_ENSGRID_REFC_PROB_TN       "{{ vx_ensgrid_refc_prob_tn }}">
+<!ENTITY VX_ENSGRID_RETOP_PROB_TN      "{{ vx_ensgrid_retop_prob_tn }}">
 <!ENTITY VX_ENSPOINT_TN                "{{ vx_enspoint_tn }}">
 <!ENTITY VX_ENSPOINT_MEAN_TN           "{{ vx_enspoint_mean_tn }}">
 <!ENTITY VX_ENSPOINT_PROB_TN           "{{ vx_enspoint_prob_tn }}">
@@ -874,7 +874,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_REFC01h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_refc }}">
+  <task name="&VX_GRIDSTAT_REFC_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_refc }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -884,8 +884,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_REFC01h_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_REFC01h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_REFC_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_REFC_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -924,7 +924,7 @@ the <task> tag to be identical to the ones above for other output times.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_RETOP01h_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_retop }}">
+  <task name="&VX_GRIDSTAT_RETOP_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat_retop }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT"</command>
@@ -934,8 +934,8 @@ the <task> tag to be identical to the ones above for other output times.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_GRIDSTAT_RETOP01h_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_RETOP01h_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_GRIDSTAT_RETOP_TN;{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr{{ cyclestr_offset }}>&LOGDIR;/&VX_GRIDSTAT_RETOP_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -1217,7 +1217,7 @@ this purpose.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_REFC01h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_refc }}">
+  <task name="&VX_ENSGRID_REFC_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_refc }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
@@ -1227,8 +1227,8 @@ this purpose.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_REFC01h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC01h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_REFC_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -1272,7 +1272,7 @@ this purpose.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_RETOP01h_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_retop }}">
+  <task name="&VX_ENSGRID_RETOP_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_retop }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID"</command>
@@ -1282,8 +1282,8 @@ this purpose.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_RETOP01h_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP01h_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_RETOP_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -1750,7 +1750,7 @@ before this task can be launched.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_REFC01h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_refc }}">
+  <task name="&VX_ENSGRID_REFC_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_refc }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1760,8 +1760,8 @@ before this task can be launched.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_REFC01h_PROB_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC01h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_REFC_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -1773,7 +1773,7 @@ before this task can be launched.
     <envar><name>VAR</name><value>REFC</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_REFC01h_TN;"/>
+      <taskdep task="&VX_ENSGRID_REFC_TN;"/>
     </dependency>
 
   </task>
@@ -1781,7 +1781,7 @@ before this task can be launched.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_RETOP01h_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_retop }}">
+  <task name="&VX_ENSGRID_RETOP_PROB_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob_retop }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_PROB"</command>
@@ -1791,8 +1791,8 @@ before this task can be launched.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSGRID_RETOP01h_PROB_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP01h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&VX_ENSGRID_RETOP_PROB_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
@@ -1804,7 +1804,7 @@ before this task can be launched.
     <envar><name>VAR</name><value>RETOP</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_RETOP01h_TN;"/>
+      <taskdep task="&VX_ENSGRID_RETOP_TN;"/>
     </dependency>
 
   </task>

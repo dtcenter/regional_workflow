@@ -220,15 +220,15 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'get_obs_mrms_tn': ${GET_OBS_MRMS_TN}
   'vx_tn': ${VX_TN}
   'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
-  'vx_gridstat_refc01h_tn': ${VX_GRIDSTAT_REFC01h_TN}
-  'vx_gridstat_retop01h_tn': ${VX_GRIDSTAT_RETOP01h_TN}
+  'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
+  'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
   'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
   'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
   'vx_gridstat_apcp24h_tn': ${VX_GRIDSTAT_APCP24h_TN}
   'vx_pointstat_tn': ${VX_POINTSTAT_TN}
   'vx_ensgrid_apcp01h_tn': ${VX_ENSGRID_APCP01h_TN}
-  'vx_ensgrid_refc01h_tn': ${VX_ENSGRID_REFC01h_TN}
-  'vx_ensgrid_retop01h_tn': ${VX_ENSGRID_RETOP01h_TN}
+  'vx_ensgrid_refc_tn': ${VX_ENSGRID_REFC_TN}
+  'vx_ensgrid_retop_tn': ${VX_ENSGRID_RETOP_TN}
   'vx_ensgrid_apcp03h_tn': ${VX_ENSGRID_APCP03h_TN}
   'vx_ensgrid_apcp06h_tn': ${VX_ENSGRID_APCP06h_TN}
   'vx_ensgrid_apcp24h_tn': ${VX_ENSGRID_APCP24h_TN}
@@ -240,8 +240,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'vx_ensgrid_apcp06h_prob_tn': ${VX_ENSGRID_APCP06h_PROB_TN}
   'vx_ensgrid_apcp24h_mean_tn': ${VX_ENSGRID_APCP24h_MEAN_TN}
   'vx_ensgrid_apcp24h_prob_tn': ${VX_ENSGRID_APCP24h_PROB_TN}
-  'vx_ensgrid_refc01h_prob_tn': ${VX_ENSGRID_REFC01h_PROB_TN}
-  'vx_ensgrid_retop01h_prob_tn': ${VX_ENSGRID_RETOP01h_PROB_TN}
+  'vx_ensgrid_refc_prob_tn': ${VX_ENSGRID_REFC_PROB_TN}
+  'vx_ensgrid_retop_prob_tn': ${VX_ENSGRID_RETOP_PROB_TN}
   'vx_enspoint_tn': ${VX_ENSPOINT_TN}
   'vx_enspoint_mean_tn': ${VX_ENSPOINT_MEAN_TN}
   'vx_enspoint_prob_tn': ${VX_ENSPOINT_PROB_TN}
