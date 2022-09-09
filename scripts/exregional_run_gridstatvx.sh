@@ -127,12 +127,22 @@ fi
 INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
 
-acc=""
+#accumh_or_null=""
+varname_in_arrays=""
+varname_in_filenames=""
 if [ "${VAR}" = "APCP" ]; then
-  acc="${ACCUM}h"
+#  accumh_or_null="${ACCUM}h"
+  varname_in_arrays="${VAR}_${ACCUM}"
+  varname_in_filenames="${VAR}${ACCUM}h"
+else
+  export ACCUM="01"  # If we're going to use ACCUM for REFC and RETOP, then define ACCUM in the rocoto xml.  For now, keep it here until hear back.
+  varname_in_arrays="${VAR}_${ACCUM}"
+  varname_in_filenames="${VAR}${ACCUM}h"
 fi
-config_fn_str="${VAR}${acc}"
-LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${VAR}${acc:+_${acc}}"
+#config_fn_str="${VAR}${accumh_or_null}"
+#LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${VAR}${accumh_or_null:+_${accumh_or_null}}"
+LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${varname_in_filenames}"
+
 
 
 #if [ "${DO_ENSEMBLE}" = "FALSE" ]; then
@@ -212,7 +222,9 @@ export MET_CONFIG
 export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
-export acc
+export VAR
+export varname_in_arrays
+export varname_in_filenames
 #
 #-----------------------------------------------------------------------
 #
@@ -222,7 +234,8 @@ export acc
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
-metplus_config_fp="${METPLUS_CONF}/GridStat_${config_fn_str}.conf"
+#metplus_config_fp="${METPLUS_CONF}/GridStat_${config_fn_str}.conf"
+metplus_config_fp="${METPLUS_CONF}/GridStat_${varname_in_filenames}.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
