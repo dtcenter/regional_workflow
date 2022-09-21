@@ -846,7 +846,8 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>ACCUM</name><value>01</value></envar>
   {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
   {%- if run_task_run_fcst or run_task_get_obs_ccpa %}
@@ -896,7 +897,8 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>VAR</name><value>REFC</value></envar>
   {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
   {%- if run_task_run_fcst or run_task_get_obs_mrms %}
@@ -946,7 +948,8 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>VAR</name><value>RETOP</value></envar>
   {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
   {%- if run_task_run_fcst or run_task_get_obs_mrms %}
@@ -997,7 +1000,8 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>ACCUM</name><value>03</value></envar>
   {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
     <dependency>
@@ -1034,7 +1038,8 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>ACCUM</name><value>06</value></envar>
   {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
     <dependency>
@@ -1082,7 +1087,8 @@ be removed once that bug is fixed.
     <envar><name>ACCUM</name><value>24</value></envar>
   {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
-    <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
+    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
+    <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
     <dependency>

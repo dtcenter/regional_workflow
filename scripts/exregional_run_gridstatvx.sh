@@ -117,15 +117,17 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-uscore_ensmem_or_null=""
-slash_ensmem_subdir_or_null=""
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  uscore_ensmem_or_null="_${mem_indx}"
-  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR}"
-fi
+#uscore_ensmem_or_null=""
+#slash_ensmem_subdir_or_null=""
+#if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+#  uscore_ensmem_or_null="_${mem_indx}"
+#  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR}"
+#fi
 
-INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
-OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
+#INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
+#OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
+INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
+OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 
 #accumh_or_null=""
 varname_in_arrays=""
