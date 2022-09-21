@@ -446,7 +446,7 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'uscore_ensmem_name': ${uscore_ensmem_name}
   'slash_ensmem_subdir': ${slash_ensmem_subdir}
   'ens_timelag_var_name': ${ens_timelag_var_name}
-  'ens_time_lag_hrs': ${ens_time_lag_hhmmss[@]}
+  'ens_time_lag_hhmmss': ${ens_time_lag_hhmmss[@]}
   'cyclestr_offset': !!str '${cyclestr_offset}'
 #
 # Parameters associated with subhourly post-processed output
