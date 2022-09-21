@@ -1128,7 +1128,7 @@ be removed once that bug is fixed.
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
   {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
-    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>#{{ uscore_ensmem_name }}#</value></envar>
+    <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
   {%- endif %}
 
