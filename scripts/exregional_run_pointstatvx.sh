@@ -118,17 +118,21 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-uscore_ensmem_or_null=""
-slash_ensmem_subdir_or_null=""
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  uscore_ensmem_or_null="_${mem_indx}"
-  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR}"
-fi
+#uscore_ensmem_or_null=""
+#slash_ensmem_subdir_or_null=""
+#if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+#  uscore_ensmem_or_null="_${mem_indx}"
+#  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+#fi
 
-INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
-OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
-LOG_SUFFIX="pointstat_${CDATE}${uscore_ensmem_or_null}"
-MODEL=${MODEL}${uscore_ensmem_or_null}
+#INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
+#OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
+#LOG_SUFFIX="pointstat_${CDATE}${uscore_ensmem_or_null}"
+#MODEL=${MODEL}${uscore_ensmem_or_null}
+INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
+OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
+LOG_SUFFIX="pointstat_${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}"
+MODEL=${MODEL}${USCORE_ENSMEM_NAME_OR_NULL}
 
 ##
 ##-----------------------------------------------------------------------
