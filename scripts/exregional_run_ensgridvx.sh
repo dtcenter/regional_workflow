@@ -12,6 +12,15 @@
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that sets various parameters
+# needed by MET/METplus verification tasks.
+#
+#-----------------------------------------------------------------------
+#
+. $USHDIR/set_MET_vx_params.sh
+#
+#-----------------------------------------------------------------------
+#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -152,12 +161,30 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Leave the variable acc in this script for now since it's needed in 
+# setting fcst_pcp_combine_output_template.  May be able to remove it
+# once pcp_combine is placed in its own task.  If not, probably best to
+# calculate it in the set_MET_vx_params function.
 acc=""
 if [ "${VAR}" = "APCP" ]; then
   acc="${ACCUM}h"
 fi
-config_fn_str="${VAR}${acc}"
-LOG_SUFFIX="${CDATE}_${VAR}${acc:+_${acc}}"
+#LOG_SUFFIX="${CDATE}_${VAR}${acc:+_${acc}}"
+
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
+                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+
+LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+
+echo
+echo "VAR = |$VAR|"
+echo "ACCUM = |${ACCUM:-}|"
+echo "FIELDNAME_IN_MET_OUTPUT = |${FIELDNAME_IN_MET_OUTPUT}|"
+echo "FIELDNAME_IN_MET_FILEDIR_NAMES = |${FIELDNAME_IN_MET_FILEDIR_NAMES}|"
+#exit 1
 #
 #-----------------------------------------------------------------------
 #
@@ -172,7 +199,6 @@ LOG_SUFFIX="${CDATE}_${VAR}${acc:+_${acc}}"
 fcst_postprd_output_template=""
 fcst_pcp_combine_output_template=""
 for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
-#for (( i=1; i<${NUM_ENS_MEMBERS}+1; i++ )); do  # This needs to be removed after the 2021050712 test runs are done.
 
   mem_indx=$(($i+1))
   mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
@@ -180,7 +206,6 @@ for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
   mns_time_lag=$(( -${time_lag} ))
 
   template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
-#  if [ $i -eq "0" ]; then
   if [ -z "${fcst_postprd_output_template}" ]; then
     fcst_postprd_output_template="  ${template}"
   else
@@ -190,7 +215,6 @@ ${fcst_postprd_output_template},
   fi
 
   template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
-#  if [ $i -eq "0" ]; then
   if [ -z "${fcst_pcp_combine_output_template}" ]; then
     fcst_pcp_combine_output_template="  ${template}"
   else
@@ -198,6 +222,7 @@ ${fcst_postprd_output_template},
 ${fcst_pcp_combine_output_template},
   ${template}"
   fi
+
 done
 
 echo
@@ -233,6 +258,9 @@ export NUM_ENS_MEMBERS
 export NUM_PAD
 export acc
 
+export FIELDNAME_IN_MET_OUTPUT
+export FIELDNAME_IN_MET_FILEDIR_NAMES
+
 export fcst_postprd_output_template
 export fcst_pcp_combine_output_template
 #
@@ -245,7 +273,7 @@ export fcst_pcp_combine_output_template
 if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GenEnsProd tool..."
-  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${config_fn_str}.conf"
+  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \
@@ -253,14 +281,12 @@ Calling METplus to run MET's GenEnsProd tool..."
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-#  print_info_msg "
-#METplus/GenEnsProd returned with the following non-zero return code: $?"
 fi
 
 if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's EnsembleStat tool..."
-  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${config_fn_str}.conf"
+  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \
@@ -268,8 +294,6 @@ Calling METplus to run MET's EnsembleStat tool..."
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-#  print_info_msg "
-#METplus/EnsembleStat returned with the following non-zero return code: $?"
 fi
 #
 #-----------------------------------------------------------------------

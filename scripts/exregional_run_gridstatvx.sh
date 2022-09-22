@@ -12,6 +12,15 @@
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that sets various parameters
+# needed by MET/METplus verification tasks.
+#
+#-----------------------------------------------------------------------
+#
+. $USHDIR/set_MET_vx_params.sh
+#
+#-----------------------------------------------------------------------
+#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -117,49 +126,16 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-#uscore_ensmem_or_null=""
-#slash_ensmem_subdir_or_null=""
-#if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-#  uscore_ensmem_or_null="_${mem_indx}"
-#  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR}"
-#fi
-
-#INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
-#OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
 INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 
-#accumh_or_null=""
-VARNAME_IN_MET_OUTPUT=""
-VARNAME_IN_MET_FILEDIR_NAMES=""
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
+                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
 
-case "${VAR}" in
-
-  "APCP")
-    VARNAME_IN_MET_OUTPUT="${VAR}_${ACCUM}"
-    VARNAME_IN_MET_FILEDIR_NAMES="${VAR}${ACCUM}h"
-    ;;
-
-  "REFC" | "RETOP")
-    VARNAME_IN_MET_OUTPUT="${VAR}"
-    VARNAME_IN_MET_FILEDIR_NAMES="${VAR}"
-    ;;
-
-  *)
-    print_err_msg_exit "\
-A method for setting various verification parameters has not been
-specified for this field (VAR):
-  VAR = \"${VAR}\""
-    ;;
-
-esac
-
-#config_fn_str="${VAR}${accumh_or_null}"
-#LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${VAR}${accumh_or_null:+_${accumh_or_null}}"
-#LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${VARNAME_IN_MET_FILEDIR_NAMES}"
-LOG_SUFFIX="gridstat_${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${VARNAME_IN_MET_FILEDIR_NAMES}"
-
-
+LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 
 #if [ "${DO_ENSEMBLE}" = "FALSE" ]; then
 #  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/postprd
@@ -239,8 +215,8 @@ export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
 export VAR
-export VARNAME_IN_MET_OUTPUT
-export VARNAME_IN_MET_FILEDIR_NAMES
+export FIELDNAME_IN_MET_OUTPUT
+export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 #-----------------------------------------------------------------------
 #
@@ -250,8 +226,7 @@ export VARNAME_IN_MET_FILEDIR_NAMES
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
-#metplus_config_fp="${METPLUS_CONF}/GridStat_${config_fn_str}.conf"
-metplus_config_fp="${METPLUS_CONF}/GridStat_${VARNAME_IN_MET_FILEDIR_NAMES}.conf"
+metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -259,8 +234,6 @@ print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-#print_info_msg "
-#METplus/GridStat returned with the following non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #
