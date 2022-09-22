@@ -134,6 +134,10 @@ OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 LOG_SUFFIX="pointstat_${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}"
 MODEL=${MODEL}${USCORE_ENSMEM_NAME_OR_NULL}
 
+echo "USCORE_ENSMEM_NAME_OR_NULL = |${USCORE_ENSMEM_NAME_OR_NULL}|"
+echo "MODEL = |$MODEL|"
+#exit 1
+
 ##
 ##-----------------------------------------------------------------------
 ##
