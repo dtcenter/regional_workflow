@@ -130,20 +130,34 @@ INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 
 #accumh_or_null=""
-varname_in_arrays=""
-varname_in_filenames=""
-if [ "${VAR}" = "APCP" ]; then
-#  accumh_or_null="${ACCUM}h"
-  varname_in_arrays="${VAR}_${ACCUM}"
-  varname_in_filenames="${VAR}${ACCUM}h"
-else
-  export ACCUM="01"  # If we're going to use ACCUM for REFC and RETOP, then define ACCUM in the rocoto xml.  For now, keep it here until hear back.
-  varname_in_arrays="${VAR}_${ACCUM}"
-  varname_in_filenames="${VAR}${ACCUM}h"
-fi
+VARNAME_IN_MET_OUTPUT=""
+VARNAME_IN_MET_FILEDIR_NAMES=""
+
+case "${VAR}" in
+
+  "APCP")
+    VARNAME_IN_MET_OUTPUT="${VAR}_${ACCUM}"
+    VARNAME_IN_MET_FILEDIR_NAMES="${VAR}${ACCUM}h"
+    ;;
+
+  "REFC" | "RETOP")
+    VARNAME_IN_MET_OUTPUT="${VAR}"
+    VARNAME_IN_MET_FILEDIR_NAMES="${VAR}"
+    ;;
+
+  *)
+    print_err_msg_exit "\
+A method for setting various verification parameters has not been
+specified for this field (VAR):
+  VAR = \"${VAR}\""
+    ;;
+
+esac
+
 #config_fn_str="${VAR}${accumh_or_null}"
 #LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${VAR}${accumh_or_null:+_${accumh_or_null}}"
-LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${varname_in_filenames}"
+#LOG_SUFFIX="gridstat_${CDATE}${uscore_ensmem_or_null}_${VARNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="gridstat_${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${VARNAME_IN_MET_FILEDIR_NAMES}"
 
 
 
@@ -225,8 +239,8 @@ export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
 export VAR
-export varname_in_arrays
-export varname_in_filenames
+export VARNAME_IN_MET_OUTPUT
+export VARNAME_IN_MET_FILEDIR_NAMES
 #
 #-----------------------------------------------------------------------
 #
@@ -237,7 +251,7 @@ export varname_in_filenames
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
 #metplus_config_fp="${METPLUS_CONF}/GridStat_${config_fn_str}.conf"
-metplus_config_fp="${METPLUS_CONF}/GridStat_${varname_in_filenames}.conf"
+metplus_config_fp="${METPLUS_CONF}/GridStat_${VARNAME_IN_MET_FILEDIR_NAMES}.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
