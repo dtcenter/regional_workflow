@@ -12,6 +12,15 @@
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that sets various parameters
+# needed by MET/METplus verification tasks.
+#
+#-----------------------------------------------------------------------
+#
+. $USHDIR/set_MET_vx_params.sh
+#
+#-----------------------------------------------------------------------
+#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -120,7 +129,7 @@ OUTPUT_BASE=${MET_OUTPUT_DIR}
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/$CDATE/metprd/grid_stat_mean"
+mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/grid_stat_mean"  # Output directory for GridStat tool.
 #
 #-----------------------------------------------------------------------
 #
@@ -141,12 +150,21 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Once acc is no longer used in all the conf files, remove it from here.
 acc=""
 if [ "${VAR}" = "APCP" ]; then
   acc="${ACCUM}h"
 fi
-config_fn_str="${VAR}${acc}_mean"
-LOG_SUFFIX="ensgrid_mean_${CDATE}_${VAR}${acc:+_${acc}}"
+#config_fn_str="${VAR}${acc}_mean"
+#LOG_SUFFIX="ensgrid_mean_${CDATE}_${VAR}${acc:+_${acc}}"
+
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
+                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+
+LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
 #
@@ -169,6 +187,8 @@ export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
 export acc
+export FIELDNAME_IN_MET_OUTPUT
+export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 #-----------------------------------------------------------------------
 #
@@ -178,7 +198,7 @@ export acc
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
-metplus_config_fp="${METPLUS_CONF}/GridStat_${config_fn_str}.conf"
+metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -186,8 +206,6 @@ print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-#print_info_msg "
-#METplus/GridStat returned with the following non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #
