@@ -128,7 +128,6 @@ mkdir_vrfy -p "${filter_dir}"
 shave_dir="${OROG_DIR}/shave_tmp"
 mkdir_vrfy -p "${shave_dir}"
 #
-#
 #-----------------------------------------------------------------------
 #
 # Preparatory steps before calling raw orography generation code.
@@ -329,8 +328,8 @@ fi
 # Note that the orography filtering code assumes that the regional grid
 # is a GFDLgrid type of grid; it is not designed to handle ESGgrid type
 # regional grids.  If the flag "regional" in the orography filtering
-# namelist file is set to .TRUE. (which it always is will be here; see
-# below), then filtering code will first calculate a resolution (i.e.
+# namelist file is set to .TRUE. (which it always will be here; see
+# below), then the filtering code will first calculate a resolution (i.e.
 # number of grid points) value named res_regional for the assumed GFDLgrid
 # type regional grid using the formula
 #
