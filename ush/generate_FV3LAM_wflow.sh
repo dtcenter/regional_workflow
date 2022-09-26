@@ -219,6 +219,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'get_obs_ndas_tn': ${GET_OBS_NDAS_TN}
   'get_obs_mrms_tn': ${GET_OBS_MRMS_TN}
   'vx_tn': ${VX_TN}
+  'vx_pcpcombine_obs_apcp03h_tn': ${VX_PCPCOMBINE_OBS_APCP03h_TN}
+  'vx_pcpcombine_fcst_apcp03h_tn': ${VX_PCPCOMBINE_FCST_APCP03h_TN}
   'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
   'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
   'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
@@ -264,6 +266,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'nnodes_get_obs_ccpa': ${NNODES_GET_OBS_CCPA}
   'nnodes_get_obs_mrms': ${NNODES_GET_OBS_MRMS}
   'nnodes_get_obs_ndas': ${NNODES_GET_OBS_NDAS}
+  'nnodes_vx_pcpcombine_obs': ${NNODES_VX_PCPCOMBINE_OBS}
+  'nnodes_vx_pcpcombine_fcst': ${NNODES_VX_PCPCOMBINE_FCST}
   'nnodes_vx_gridstat': ${NNODES_VX_GRIDSTAT}
   'nnodes_vx_pointstat': ${NNODES_VX_POINTSTAT}
   'nnodes_vx_ensgrid': ${NNODES_VX_ENSGRID}
@@ -293,6 +297,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'ppn_get_obs_ccpa': ${PPN_GET_OBS_CCPA}
   'ppn_get_obs_mrms': ${PPN_GET_OBS_MRMS}
   'ppn_get_obs_ndas': ${PPN_GET_OBS_NDAS}
+  'ppn_vx_pcpcombine_obs': ${PPN_VX_PCPCOMBINE_OBS}
+  'ppn_vx_pcpcombine_fcst': ${PPN_VX_PCPCOMBINE_FCST}
   'ppn_vx_gridstat': ${PPN_VX_GRIDSTAT}
   'ppn_vx_pointstat': ${PPN_VX_POINTSTAT}
   'ppn_vx_ensgrid': ${PPN_VX_ENSGRID}
@@ -316,6 +322,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'wtime_get_obs_ccpa': '${WTIME_GET_OBS_CCPA}'
   'wtime_get_obs_mrms': '${WTIME_GET_OBS_MRMS}'
   'wtime_get_obs_ndas': '${WTIME_GET_OBS_NDAS}'
+  'wtime_vx_pcpcombine_obs': '${WTIME_VX_PCPCOMBINE_OBS}'
+  'wtime_vx_pcpcombine_fcst': '${WTIME_VX_PCPCOMBINE_FCST}'
   'wtime_vx_gridstat': '${WTIME_VX_GRIDSTAT}'
   'wtime_vx_pointstat': '${WTIME_VX_POINTSTAT}'
   'wtime_vx_ensgrid': '${WTIME_VX_ENSGRID}'
@@ -339,6 +347,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'maxtries_get_obs_ccpa': ${MAXTRIES_GET_OBS_CCPA}
   'maxtries_get_obs_mrms': ${MAXTRIES_GET_OBS_MRMS}
   'maxtries_get_obs_ndas': ${MAXTRIES_GET_OBS_NDAS}
+  'maxtries_vx_pcpcombine_obs': ${MAXTRIES_VX_PCPCOMBINE_OBS}
+  'maxtries_vx_pcpcombine_fcst': ${MAXTRIES_VX_PCPCOMBINE_FCST}
   'maxtries_vx_gridstat': ${MAXTRIES_VX_GRIDSTAT}
   'maxtries_vx_gridstat_refc': ${MAXTRIES_VX_GRIDSTAT_REFC}
   'maxtries_vx_gridstat_retop': ${MAXTRIES_VX_GRIDSTAT_RETOP}
@@ -381,6 +391,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'run_task_get_obs_ccpa': ${RUN_TASK_GET_OBS_CCPA}
   'run_task_get_obs_mrms': ${RUN_TASK_GET_OBS_MRMS}
   'run_task_get_obs_ndas': ${RUN_TASK_GET_OBS_NDAS}
+  'run_task_vx_pcpcombine_obs': ${RUN_TASK_VX_PCPCOMBINE_OBS}
+  'run_task_vx_pcpcombine_fcst': ${RUN_TASK_VX_PCPCOMBINE_FCST}
   'run_task_vx_gridstat': ${RUN_TASK_VX_GRIDSTAT}
   'run_task_vx_pointstat': ${RUN_TASK_VX_POINTSTAT}
   'run_task_vx_ensgrid': ${RUN_TASK_VX_ENSGRID}
