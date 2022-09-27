@@ -79,6 +79,26 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
+# Set the names to use to identify the field in various types of MET
+# output.  Definitions:
+#
+# FIELDNAME_IN_MET_OUTPUT:
+# Specifies the name of the array to use in MET output NetCDF files.
+#
+# FIELDNAME_IN_MET_FILEDIR_NAMES:
+# Specifies the name of the field as it appears in files and directories
+# that the MET-based verification tasks create.
+#
+#-----------------------------------------------------------------------
+#
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
+                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+#
+#-----------------------------------------------------------------------
+#
 # Set the array of forecast hours for which to run pcp_combine.
 #
 # Note that for ensemble forecasts (which may contain time-lagged
@@ -130,13 +150,6 @@ MNS_TIME_LAG=$((-${TIME_LAG}))
 INPUT_BASE=${MET_INPUT_DIR}
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 OUTPUT_SUBDIR="metprd/pcp_combine3"
-
-FIELDNAME_IN_MET_OUTPUT=""
-FIELDNAME_IN_MET_FILEDIR_NAMES=""
-set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
-                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
-                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
-
 LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
@@ -152,15 +165,6 @@ LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAM
 #-----------------------------------------------------------------------
 #
 mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
-#
-# If the variable is accumulated precipitation for a time interval 
-# (bucket) other than 1 hour, the MET/METplus tools called below will
-# include pcp_combine.  In that case, create (if necessary) directories
-# needed by pcp_combine.
-#
-if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
-fi
 #
 #-----------------------------------------------------------------------
 #

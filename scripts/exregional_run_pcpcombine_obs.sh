@@ -79,6 +79,26 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
+# Set the names to use to identify the field in various types of MET
+# output.  Definitions:
+#
+# FIELDNAME_IN_MET_OUTPUT:
+# Specifies the name of the array to use in MET output NetCDF files.
+#
+# FIELDNAME_IN_MET_FILEDIR_NAMES:
+# Specifies the name of the field as it appears in files and directories
+# that the MET-based verification tasks create.
+#
+#-----------------------------------------------------------------------
+#
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
+                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+#
+#-----------------------------------------------------------------------
+#
 # Set the array of forecast hours for which to run pcp_combine.  Note 
 # that for ensemble forecasts that contain time-lagged members, these
 # forecast hours are relative to the non-time-lagged initialization
@@ -96,7 +116,7 @@ echo "  CDATE = |$CDATE|"
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "FHR_LIST = |${FHR_LIST}|"
+echo "FHR_LIST = |${FHR_LIST[@]}|"
 #
 #-----------------------------------------------------------------------
 #
@@ -106,15 +126,8 @@ echo "FHR_LIST = |${FHR_LIST}|"
 #-----------------------------------------------------------------------
 #
 INPUT_BASE=${OBS_DIR}
-OUTPUT_BASE=${EXPTDIR}
+OUTPUT_BASE=${MET_OUTPUT_DIR}
 OUTPUT_SUBDIR="metprd/pcp_combine3"
-
-FIELDNAME_IN_MET_OUTPUT=""
-FIELDNAME_IN_MET_FILEDIR_NAMES=""
-set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
-                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
-                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
-
 LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
