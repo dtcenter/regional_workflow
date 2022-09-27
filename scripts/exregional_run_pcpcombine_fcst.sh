@@ -149,7 +149,7 @@ MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 INPUT_BASE=${MET_INPUT_DIR}
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
-OUTPUT_SUBDIR="metprd/pcp_combine3"
+OUTPUT_SUBDIR="metprd/pcp_combine_nogridstat"
 LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
