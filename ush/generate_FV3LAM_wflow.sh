@@ -224,6 +224,7 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
   'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
   'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
+  'vx_gridstat_nopcpcombine_apcp_tn': ${VX_GRIDSTAT_NOPCPCOMBINE_APCP_TN}
   'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
   'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
   'vx_gridstat_apcp24h_tn': ${VX_GRIDSTAT_APCP24h_TN}

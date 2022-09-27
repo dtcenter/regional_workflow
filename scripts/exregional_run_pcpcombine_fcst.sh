@@ -128,7 +128,7 @@ echo "  CDATE = |$CDATE|"
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "FHR_LIST = |${FHR_LIST[@]}|"
+echo "FHR_LIST = |${FHR_LIST}|"
 
 TIME_LAG="0"
 mem_indx="${mem_indx:-}"
