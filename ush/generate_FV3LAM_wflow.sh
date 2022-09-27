@@ -220,7 +220,7 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'get_obs_mrms_tn': ${GET_OBS_MRMS_TN}
   'vx_tn': ${VX_TN}
   'vx_pcpcombine_obs_apcp_tn': ${VX_PCPCOMBINE_OBS_APCP_TN}
-  'vx_pcpcombine_fcst_apcp03h_tn': ${VX_PCPCOMBINE_FCST_APCP03h_TN}
+  'vx_pcpcombine_fcst_apcp_tn': ${VX_PCPCOMBINE_FCST_APCP_TN}
   'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
   'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
   'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
