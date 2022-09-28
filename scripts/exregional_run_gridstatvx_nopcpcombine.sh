@@ -99,37 +99,58 @@ set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
 #
 #-----------------------------------------------------------------------
 #
+# Define the accumulation precipitation thresholds to consider.  These
+# depend on the accumulation period (ACCUM).
 #
+#-----------------------------------------------------------------------
+#
+BOTH_VAR1_THRESH=""
+case "$ACCUM" in
+
+  "03")
+    BOTH_VAR1_THRESH="gt0.0,ge0.254,ge0.508,ge1.27,ge2.54,ge3.810,ge6.350"
+    ;;
+
+  "06")
+    BOTH_VAR1_THRESH="gt0.0,ge0.254,ge0.508,ge1.27,ge2.54,ge3.810,ge6.350,ge8.890,ge12.700"
+    ;;
+
+  "24")
+    BOTH_VAR1_THRESH="gt0.0,ge0.254,ge0.508,ge1.27,ge2.54,ge3.810,ge6.350,ge8.890,ge12.700,ge25.400"
+    ;;
+
+  *)
+    print_err_msg_exit "\
+Thresholds have not been defined for this accumulated precipitation 
+period (ACCUM, in hours):
+  ACCUM = \"${ACCUM}\""
+    ;;
+
+esac
+#
+#-----------------------------------------------------------------------
+#
+# Set the array of forecast hours for which to run pcp_combine.
+#
+# Note that for ensemble forecasts (which may contain time-lagged
+# members), the forecast hours set below are relative to the non-time-
+# lagged initialization time of the cycle regardless of whether or not
+# the current ensemble member is time-lagged, i.e. the forecast hours
+# are not shifted to take the time-lagging into account.
+#
+# Note:
+# Need to add a step here to to remove those forecast hours for which
+# obs are not available (i.e. for which obs files do not exist).
 #
 #-----------------------------------------------------------------------
 #
 echo "KKKKKKKKKKKKKKKKKKKKKKKKKKK"
 echo "  CDATE = |$CDATE|"
 
-if [ 0 = 1 ]; then
-#mem_indx=$(( mem_indx+1))  # This needs to be removed after running the 2021050712 case.
-echo "  mem_indx = |${mem_indx}|"
-echo "  ENS_DELTA_FCST_LEN_HRS = |${ENS_DELTA_FCST_LEN_HRS[@]}|"
-i=$(( ${mem_indx} - 1 ))
-mem_fcst_len_hrs=$(( ${FCST_LEN_HRS} + ${ENS_DELTA_FCST_LEN_HRS[$i]} ))
-echo "  mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
-
-mem_time_lag_hrs="${ENS_TIME_LAG_HRS[$i]}"
-echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
-#exit 1
-
-fhr_last=${mem_fcst_len_hrs}
-export fhr_last
-
-#fhr_array=($( seq 1 ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
-fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
-fi
-
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
-#exit 1
 #
 #-----------------------------------------------------------------------
 #
@@ -199,6 +220,7 @@ export MODEL
 export NET
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
+export BOTH_VAR1_THRESH
 export FHR_LIST
 #
 #-----------------------------------------------------------------------

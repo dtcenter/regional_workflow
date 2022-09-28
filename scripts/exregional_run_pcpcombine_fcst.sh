@@ -105,15 +105,15 @@ set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
 # members), the forecast hours set below are relative to the non-time-
 # lagged initialization time of the cycle regardless of whether or not
 # the current ensemble member is time-lagged, i.e. the forecast hours
-# are not shifted to take the time-lagging into account.  
+# are not shifted to take the time-lagging into account.
 #
 # The time-lagging is taken into account in the METplus configuration
-# file used by the call below to METplus (which in turn calls MET's 
+# file used by the call below to METplus (which in turn calls MET's
 # pcp_combine tool).  In that configuration file, the locations and
 # names of the input grib2 files to MET's pcp_combine tool are set using
 # the time-lagging information.  This information is calculated and
 # stored below in the variable TIME_LAG (and MNS_TIME_LAG) and then
-# exported to the environment to make it available to the METplus 
+# exported to the environment to make it available to the METplus
 # configuration file.
 #
 # Note:
