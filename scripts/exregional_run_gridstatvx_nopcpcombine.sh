@@ -85,7 +85,7 @@ print_input_args "valid_args"
 #-----------------------------------------------------------------------
 #
 FIELDNAME_IN_OBS_INPUT=""
-FIELDNAME_IN_OBS_OUTPUT=""
+FIELDNAME_IN_FCST_INPUT=""
 FIELDNAME_IN_MET_OUTPUT=""
 FIELDNAME_IN_MET_FILEDIR_NAMES=""
 set_vx_fieldname_params \
