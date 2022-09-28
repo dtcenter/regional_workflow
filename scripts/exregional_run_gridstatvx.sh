@@ -12,12 +12,12 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that sets various parameters
-# needed by MET/METplus verification tasks.
+# Source the file containing the function that sets various field-
+# dependent naming parameters needed by MET/METplus verification tasks.
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/set_MET_vx_params.sh
+. $USHDIR/set_vx_fieldname_params.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -79,20 +79,31 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE.
+# Set various field name parameters associated with the field to be
+# verified.
+#
+#-----------------------------------------------------------------------
+#
+FIELDNAME_IN_OBS_INPUT=""
+FIELDNAME_IN_FCST_INPUT=""
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_vx_fieldname_params \
+  field="$VAR" accum="${ACCUM:-}" \
+  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
+  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
+  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+#
+#-----------------------------------------------------------------------
+#
+#
 #
 #-----------------------------------------------------------------------
 #
 echo "KKKKKKKKKKKKKKKKKKKKKKKKKKK"
 echo "  CDATE = |$CDATE|"
-#
-#-----------------------------------------------------------------------
-#
-#
-#
-#-----------------------------------------------------------------------
-#
+
 #mem_indx=$(( mem_indx+1))  # This needs to be removed after running the 2021050712 case.
 echo "  mem_indx = |${mem_indx}|"
 echo "  ENS_DELTA_FCST_LEN_HRS = |${ENS_DELTA_FCST_LEN_HRS[@]}|"

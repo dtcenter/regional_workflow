@@ -12,12 +12,12 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that sets various parameters
-# needed by MET/METplus verification tasks.
+# Source the file containing the function that sets various field-
+# dependent naming parameters needed by MET/METplus verification tasks.
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/set_MET_vx_params.sh
+. $USHDIR/set_vx_fieldname_params.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -88,13 +88,21 @@ print_info_msg "$VERBOSE" "Starting ensemble-stat verification"
 #
 #-----------------------------------------------------------------------
 #
-# Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE.
+# Set various field name parameters associated with the field to be
+# verified.
 #
 #-----------------------------------------------------------------------
 #
-echo "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
-set -x
+FIELDNAME_IN_OBS_INPUT=""
+FIELDNAME_IN_FCST_INPUT=""
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_vx_fieldname_params \
+  field="$VAR" accum="${ACCUM:-}" \
+  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
+  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
+  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
 #
 #-----------------------------------------------------------------------
 #
@@ -103,6 +111,9 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
+echo "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+set -x
+
 export fhr_last=${FCST_LEN_HRS}
 
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
@@ -163,19 +174,12 @@ fi
 #
 # Leave the variable acc in this script for now since it's needed in 
 # setting fcst_pcp_combine_output_template.  May be able to remove it
-# once pcp_combine is placed in its own task.  If not, probably best to
-# calculate it in the set_MET_vx_params function.
+# once pcp_combine is placed in its own task.
 acc=""
 if [ "${VAR}" = "APCP" ]; then
   acc="${ACCUM}h"
 fi
 #LOG_SUFFIX="${CDATE}_${VAR}${acc:+_${acc}}"
-
-FIELDNAME_IN_MET_OUTPUT=""
-FIELDNAME_IN_MET_FILEDIR_NAMES=""
-set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
-                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
-                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
 
 LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 

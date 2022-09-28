@@ -12,12 +12,12 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that sets various parameters
-# needed by MET/METplus verification tasks.
+# Source the file containing the function that sets various field-
+# dependent naming parameters needed by MET/METplus verification tasks.
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/set_MET_vx_params.sh
+. $USHDIR/set_vx_fieldname_params.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -79,23 +79,21 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Set the names to use to identify the field in various types of MET
-# output.  Definitions:
-#
-# FIELDNAME_IN_MET_OUTPUT:
-# Specifies the name of the array to use in MET output NetCDF files.
-#
-# FIELDNAME_IN_MET_FILEDIR_NAMES:
-# Specifies the name of the field as it appears in files and directories
-# that the MET-based verification tasks create.
+# Set various field name parameters associated with the field to be
+# verified.
 #
 #-----------------------------------------------------------------------
 #
+FIELDNAME_IN_OBS_INPUT=""
+FIELDNAME_IN_FCST_INPUT=""
 FIELDNAME_IN_MET_OUTPUT=""
 FIELDNAME_IN_MET_FILEDIR_NAMES=""
-set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
-                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
-                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+set_vx_fieldname_params \
+  field="$VAR" accum="${ACCUM:-}" \
+  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
+  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
+  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
 #
 #-----------------------------------------------------------------------
 #
