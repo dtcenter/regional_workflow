@@ -137,30 +137,10 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
-OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
+INPUT_BASE="${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 
 LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-
-#if [ "${DO_ENSEMBLE}" = "FALSE" ]; then
-#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/postprd
-#  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
-#  if [ "${VAR}" = "APCP" ]; then
-#    LOG_SUFFIX=gridstat_${CDATE}_${VAR}_${ACCUM}h
-#  else
-#    LOG_SUFFIX=gridstat_${CDATE}_${VAR}
-#  fi
-#elif [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR}/postprd
-#  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR}
-#  ENSMEM=`echo ${SLASH_ENSMEM_SUBDIR} | cut -d"/" -f2`
-#  MODEL=${MODEL}_${ENSMEM}
-#  if [ "${VAR}" = "APCP" ]; then
-#    LOG_SUFFIX=gridstat_${CDATE}_${ENSMEM}_${VAR}_${ACCUM}h
-#  else
-#    LOG_SUFFIX=gridstat_${CDATE}_${ENSMEM}_${VAR}
-#  fi
-#fi
 #
 #-----------------------------------------------------------------------
 #
@@ -206,15 +186,22 @@ fi
 #-----------------------------------------------------------------------
 #
 export EXPTDIR
+# Variables needed in the common METplus configuration file (at 
+# ${METPLUS_CONF}/common.conf).
+#
+export MET_INSTALL_DIR
+export METPLUS_PATH
+export MET_BIN_EXEC
+export METPLUS_CONF
 export LOGDIR
+#
+# Variables needed in the METplus configuration file metplus_config_fp
+# defined below.
+#
 export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
-export MET_INSTALL_DIR
-export MET_BIN_EXEC
-export METPLUS_PATH
-export METPLUS_CONF
 export MET_CONFIG
 export MODEL
 export NET
@@ -248,7 +235,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus grid-stat completed successfully.
+METplus grid_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
