@@ -140,12 +140,6 @@ echo "fhr_list = |${fhr_list}|"
 INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 
-FIELDNAME_IN_MET_OUTPUT=""
-FIELDNAME_IN_MET_FILEDIR_NAMES=""
-set_MET_vx_params field="$VAR" accum="${ACCUM:-}" \
-                  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
-                  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
-
 LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 
 #if [ "${DO_ENSEMBLE}" = "FALSE" ]; then
