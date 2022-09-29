@@ -121,14 +121,8 @@ export fhr_last
 #fhr_array=($( seq 1 ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
 echo "fhr_array = |${fhr_array[@]}|"
-fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-export fhr_list
-
-#echo "mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
-#echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
-echo "fhr_last = |${fhr_last}|"
-echo "fhr_list = |${fhr_list}|"
-#exit 1
+FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "FHR_LIST = |${FHR_LIST}|"
 #
 #-----------------------------------------------------------------------
 #
@@ -202,13 +196,13 @@ export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
-export MET_CONFIG
 export MODEL
 export NET
-export POST_OUTPUT_DOMAIN_NAME
-export VAR
+export FIELDNAME_IN_OBS_INPUT
+export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
+export FHR_LIST
 #
 #-----------------------------------------------------------------------
 #
