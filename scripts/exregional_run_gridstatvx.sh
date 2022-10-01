@@ -97,7 +97,16 @@ set_vx_fieldname_params \
 #
 #-----------------------------------------------------------------------
 #
+# Check whether the field to verify is APCP with an accumulation interval
+# greater than 1 hour and set the flag field_is_APCPgt01h accordingly.
 #
+#-----------------------------------------------------------------------
+#
+if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
+  field_is_APCPgt01h="TRUE"
+else
+  field_is_APCPgt01h="FALSE"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -118,8 +127,7 @@ echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
 fhr_last=${mem_fcst_len_hrs}
 export fhr_last
 
-#fhr_array=($( seq 1 ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
-fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${mem_fcst_len_hrs} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
@@ -155,7 +163,7 @@ mkdir_vrfy -p "${OUTPUT_BASE}/metprd/grid_stat"
 # include pcp_combine.  In that case, create (if necessary) directories
 # needed by pcp_combine.
 #
-if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   mkdir_vrfy -p "${EXPTDIR}/metprd/pcp_combine"      # For observations
   mkdir_vrfy -p "${OUTPUT_BASE}/metprd/pcp_combine"  # For forecast
 fi
@@ -179,7 +187,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-export EXPTDIR
 # Variables needed in the common METplus configuration file (at 
 # ${METPLUS_CONF}/common.conf).
 #
@@ -198,11 +205,12 @@ export OUTPUT_BASE
 export LOG_SUFFIX
 export MODEL
 export NET
+export FHR_LIST
 export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-export FHR_LIST
+export EXPTDIR
 #
 #-----------------------------------------------------------------------
 #

@@ -114,19 +114,19 @@ echo "  CDATE = |$CDATE|"
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "FHR_LIST = |${FHR_LIST[@]}|"
+echo "FHR_LIST = |${FHR_LIST}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set variables that the METplus conf files assume exist in the
-# environment.
+# Set paths for input to and output from pcp_combine.  Also, set the
+# suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
 INPUT_BASE=${OBS_DIR}
 OUTPUT_BASE=${MET_OUTPUT_DIR}
-OUTPUT_SUBDIR="metprd/pcp_combine_nogridstat"
-LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+OUTPUT_SUBDIR="metprd/pcp_combine_obs_nogridstat"
+LOG_SUFFIX="${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -178,9 +178,9 @@ export INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
 export LOG_SUFFIX
+export FHR_LIST
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-export FHR_LIST
 #
 #-----------------------------------------------------------------------
 #
@@ -190,7 +190,7 @@ export FHR_LIST
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's PcpCombine tool..."
-metplus_config_fp="${METPLUS_CONF}/PcpCombine_obs_APCP.conf"
+metplus_config_fp="${METPLUS_CONF}/PcpCombine_obs.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \

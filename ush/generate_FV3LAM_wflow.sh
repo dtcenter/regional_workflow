@@ -219,11 +219,12 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'get_obs_ndas_tn': ${GET_OBS_NDAS_TN}
   'get_obs_mrms_tn': ${GET_OBS_MRMS_TN}
   'vx_tn': ${VX_TN}
-  'vx_pcpcombine_obs_apcp_tn': ${VX_PCPCOMBINE_OBS_APCP_TN}
-  'vx_pcpcombine_fcst_apcp_tn': ${VX_PCPCOMBINE_FCST_APCP_TN}
+  'vx_pcpcombine_obs_tn': ${VX_PCPCOMBINE_OBS_TN}
+  'vx_pcpcombine_fcst_tn': ${VX_PCPCOMBINE_FCST_TN}
   'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
   'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
   'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
+  'vx_gridstat_nopcpcombine_tn': ${VX_GRIDSTAT_NOPCPCOMBINE_TN}
   'vx_gridstat_nopcpcombine_apcp_tn': ${VX_GRIDSTAT_NOPCPCOMBINE_APCP_TN}
   'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
   'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
@@ -253,10 +254,19 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
 #
   'get_obs': ${GET_OBS}
 #
-# Accumulated precipitation intervals that are greater than 1 hour that
-# should be verified.
+# Verification related parameters.  Definitions:
 #
-  'accums_gt_1h': [ 03, 06, 24 ]
+# vx_fields:
+# Specifies the names of the fields to verify using MET's grid_stat tool.
+# (There are others that are verified using other MET tools, e.g. point_stat,
+# but those are specified in the METplus configuration files).
+#
+# vx_accums:
+# For accumulated precipitaton (APCP), the accumulation periods to 
+# verify in units of hours.
+#
+  'vx_fields': [ 'APCP', 'REFC', 'RETOP' ]
+  'vx_accums': [ 01, 03, 06, 24 ]
 #
 # Number of nodes to use for each task.
 #

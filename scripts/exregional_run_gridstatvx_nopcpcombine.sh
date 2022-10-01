@@ -97,31 +97,54 @@ set_vx_fieldname_params \
 #
 #-----------------------------------------------------------------------
 #
-# Define the accumulation precipitation thresholds to consider.  These
-# depend on the accumulation period (ACCUM).
+# Check whether the field to verify is APCP with an accumulation interval
+# greater than 1 hour and set the flag field_is_APCPgt01h accordingly.
 #
 #-----------------------------------------------------------------------
 #
-BOTH_VAR1_THRESH=""
-case "$ACCUM" in
+if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
+  field_is_APCPgt01h="TRUE"
+else
+  field_is_APCPgt01h="FALSE"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Define any field thresholds to consider in the verification.
+#
+#-----------------------------------------------------------------------
+#
+FIELD_THRESHOLDS=""
+case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
 
-  "03")
-    BOTH_VAR1_THRESH="gt0.0,ge0.254,ge0.508,ge1.27,ge2.54,ge3.810,ge6.350"
+  "APCP01h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54"
     ;;
 
-  "06")
-    BOTH_VAR1_THRESH="gt0.0,ge0.254,ge0.508,ge1.27,ge2.54,ge3.810,ge6.350,ge8.890,ge12.700"
+  "APCP03h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350"
     ;;
 
-  "24")
-    BOTH_VAR1_THRESH="gt0.0,ge0.254,ge0.508,ge1.27,ge2.54,ge3.810,ge6.350,ge8.890,ge12.700,ge25.400"
+  "APCP06h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700"
+    ;;
+
+  "APCP24h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700, ge25.400"
+    ;;
+
+  "REFC")
+    FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
+    ;;
+
+  "RETOP")
+    FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
     ;;
 
   *)
     print_err_msg_exit "\
-Thresholds have not been defined for this accumulated precipitation 
-period (ACCUM, in hours):
-  ACCUM = \"${ACCUM}\""
+Thresholds have not been defined for this field (FIELDNAME_IN_MET_FILEDIR_NAMES):
+  FIELDNAME_IN_MET_FILEDIR_NAMES = \"${FIELDNAME_IN_MET_FILEDIR_NAMES}\""
     ;;
 
 esac
@@ -136,6 +159,15 @@ esac
 # the current ensemble member is time-lagged, i.e. the forecast hours
 # are not shifted to take the time-lagging into account.
 #
+# The time-lagging is taken into account in the METplus configuration
+# file used by the call below to METplus (which in turn calls MET's
+# pcp_combine tool).  In that configuration file, the locations and
+# names of the input grib2 files to MET's pcp_combine tool are set using
+# the time-lagging information.  This information is calculated and
+# stored below in the variable TIME_LAG (and MNS_TIME_LAG) and then
+# exported to the environment to make it available to the METplus
+# configuration file.
+#
 # Note:
 # Need to add a step here to to remove those forecast hours for which
 # obs are not available (i.e. for which obs files do not exist).
@@ -149,19 +181,36 @@ fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
+
+TIME_LAG="0"
+mem_indx="${mem_indx:-}"
+if [ ! -z "mem_indx" ]; then
+  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[$mem_indx-1]}*${secs_per_hour} ))
+fi
+# Calculate the negative of the time lag.  This is needed because in the
+# METplus configuration file, simply placing a minus sign in front of
+# TIME_LAG causes an error.
+MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 #-----------------------------------------------------------------------
 #
-# Set variables that the METplus conf files assume exist in the
-# environment.
+# Set paths for input to and output from grid_stat.  Also, set the
+# suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_nogridstat"
-FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_nogridstat"
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
+#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_nogridstat"
+  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
+else
+  OBS_INPUT_BASE="${OBS_DIR}"
+#  FCST_INPUT_BASE="${MET_INPUT_DIR}/${CDATE_TIME_LAGGED}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd"
+  FCST_INPUT_BASE="${MET_INPUT_DIR}"
+fi
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 OUTPUT_SUBDIR="metprd/grid_stat_nopcpcombine"
-LOG_SUFFIX="nopcpcombine_${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -216,10 +265,14 @@ export OUTPUT_SUBDIR
 export LOG_SUFFIX
 export MODEL
 export NET
+export FHR_LIST
+export TIME_LAG
+export MNS_TIME_LAG
+export FIELDNAME_IN_OBS_INPUT
+export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-export BOTH_VAR1_THRESH
-export FHR_LIST
+export FIELD_THRESHOLDS
 #
 #-----------------------------------------------------------------------
 #
@@ -229,7 +282,13 @@ export FHR_LIST
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
-metplus_config_fp="${METPLUS_CONF}/GridStat_nopcpcombine_APCP.conf"
+
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+  metplus_config_fp="${METPLUS_CONF}/GridStat_nopcpcombine_APCPgt01h.conf"
+else
+  metplus_config_fp="${METPLUS_CONF}/GridStat_nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+fi
+
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
