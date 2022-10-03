@@ -244,16 +244,22 @@ ${fcst_pcp_combine_output_template}"
 #
 #-----------------------------------------------------------------------
 #
-export EXPTDIR
+# Variables needed in the common METplus configuration file (at 
+# ${METPLUS_CONF}/common.conf).
+#
+export MET_INSTALL_DIR
+export METPLUS_PATH
+export MET_BIN_EXEC
+export METPLUS_CONF
 export LOGDIR
+#
+# Variables needed in the METplus configuration file metplus_config_fp
+# defined below.
+#
 export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
-export MET_INSTALL_DIR
-export MET_BIN_EXEC
-export METPLUS_PATH
-export METPLUS_CONF
 export MET_CONFIG
 export MODEL
 export NET
@@ -267,6 +273,7 @@ export FIELDNAME_IN_MET_FILEDIR_NAMES
 
 export fcst_postprd_output_template
 export fcst_pcp_combine_output_template
+export EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
@@ -308,7 +315,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-METplus ensemble-stat grid completed successfully.
+METplus gen_ens_prod and ensemble_stat tools completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

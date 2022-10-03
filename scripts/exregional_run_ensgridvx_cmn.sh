@@ -51,8 +51,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs METplus for grid-stat on
-the UPP output files by initialization time for all forecast hours.
+This is the ex-script for the task that runs the MET/METplus gen_ens_prod
+and ensemble_stat tools.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -118,19 +118,19 @@ FIELD_THRESHOLDS=""
 case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
 
   "APCP01h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54"
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge2.54"
     ;;
 
   "APCP03h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350"
+    FIELD_THRESHOLDS="gt0.0, ge0.508, ge2.54, ge6.350"
     ;;
 
   "APCP06h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700"
+    FIELD_THRESHOLDS="gt0.0, ge2.54, ge6.350, ge12.700"
     ;;
 
   "APCP24h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700, ge25.400"
+    FIELD_THRESHOLDS="gt0.0, ge6.350, ge12.700, ge25.400"
     ;;
 
   "REFC")
@@ -151,66 +151,47 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run pcp_combine.
-#
-# Note that for ensemble forecasts (which may contain time-lagged
-# members), the forecast hours set below are relative to the non-time-
-# lagged initialization time of the cycle regardless of whether or not
-# the current ensemble member is time-lagged, i.e. the forecast hours
-# are not shifted to take the time-lagging into account.
-#
-# The time-lagging is taken into account in the METplus configuration
-# file used by the call below to METplus (which in turn calls MET's
-# pcp_combine tool).  In that configuration file, the locations and
-# names of the input grib2 files to MET's pcp_combine tool are set using
-# the time-lagging information.  This information is calculated and
-# stored below in the variable TIME_LAG (and MNS_TIME_LAG) and then
-# exported to the environment to make it available to the METplus
-# configuration file.
-#
-# Note:
-# Need to add a step here to to remove those forecast hours for which
-# obs are not available (i.e. for which obs files do not exist).
+# Create a comma-separated list of forecast hours for METplus to step
+# through.
 #
 #-----------------------------------------------------------------------
 #
-echo "KKKKKKKKKKKKKKKKKKKKKKKKKKK"
-echo "  CDATE = |$CDATE|"
+echo "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+set -x
+
+export fhr_last=${FCST_LEN_HRS}
 
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
-echo "fhr_array = |${fhr_array[@]}|"
-FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "FHR_LIST = |${FHR_LIST}|"
+export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "fhr_list = |${fhr_list}|"
 
-TIME_LAG="0"
-mem_indx="${mem_indx:-}"
-if [ ! -z "mem_indx" ]; then
-  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[$mem_indx-1]}*${secs_per_hour} ))
-fi
-# Calculate the negative of the time lag.  This is needed because in the
-# METplus configuration file, simply placing a minus sign in front of
-# TIME_LAG causes an error.
-MNS_TIME_LAG=$((-${TIME_LAG}))
+# Determine the number padding needed based on number of ensemble members.
+NUM_PAD=${NDIGITS_ENSMEM_NAMES}
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from grid_stat.  Also, set the
-# suffix for the name of the log file that METplus will generate.
+# Set INPUT_BASE and OUTPUT_BASE for use in METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
-#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_nogridstat"
-  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
+#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}/metprd/pcp_combine_fcst_nogridstat"
+  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
-#  FCST_INPUT_BASE="${MET_INPUT_DIR}/${CDATE_TIME_LAGGED}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd"
+#  FCST_INPUT_BASE="${MET_INPUT_DIR}/${CDATE_TIME_LAGGED}/postprd"
   FCST_INPUT_BASE="${MET_INPUT_DIR}"
 fi
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-OUTPUT_SUBDIR="metprd/grid_stat_nopcpcombine"
-LOG_SUFFIX="nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
+#OUTPUT_BASE=${MET_OUTPUT_DIR}
+#OUTPUT_SUBDIR="${CDATE}/metprd/gen_ens_prod_cmn"
+OUTPUT_SUBDIR_GEN_ENS_PROD="metprd/gen_ens_prod_cmn"
+OUTPUT_SUBDIR_ENSEMBLE_STAT="metprd/ensemble_stat_cmn"
+
+LOG_SUFFIX="cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -219,12 +200,18 @@ LOG_SUFFIX="nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_O
 # multiple workflow tasks are launched that all require METplus to create
 # the same directory, some of the METplus tasks can fail.  This is a
 # known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be
+# If/when it is fixed, the following directory creation steps can be
 # removed from this script.
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
+if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
+  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/gen_ens_prod"  # Output directory for GenEnsProd tool
+fi
+
+if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
+  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/ensemble_stat" # Output directory for EnsembleStat tool
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -237,6 +224,90 @@ if [ ! -d "${OBS_DIR}" ]; then
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Set variables needed in forming the names of METplus configuration and
+# log files.
+#
+#-----------------------------------------------------------------------
+#
+# Leave the variable acc in this script for now since it's needed in 
+# setting fcst_pcp_combine_output_template.  May be able to remove it
+# once pcp_combine is placed in its own task.
+acc=""
+if [ "${VAR}" = "APCP" ]; then
+  acc="${ACCUM}h"
+fi
+#LOG_SUFFIX="${CDATE}_${VAR}${acc:+_${acc}}"
+#LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+
+echo
+echo "VAR = |$VAR|"
+echo "ACCUM = |${ACCUM:-}|"
+echo "FIELDNAME_IN_MET_OUTPUT = |${FIELDNAME_IN_MET_OUTPUT}|"
+echo "FIELDNAME_IN_MET_FILEDIR_NAMES = |${FIELDNAME_IN_MET_FILEDIR_NAMES}|"
+#exit 1
+#
+#-----------------------------------------------------------------------
+#
+# Construct the variable fcst_pcp_combine_output_template that contains
+# a template (that METplus can read) of the paths to the files that the
+# pcp_combine tool has generated (in previous workflow tasks).  This
+# will be exported to the environment and read into various variables in
+# the METplus configuration files.
+#
+#-----------------------------------------------------------------------
+#
+fcst_postprd_output_template=""
+fcst_pcp_combine_output_template_gep=""
+fcst_pcp_combine_output_template_es=""
+
+for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
+
+  mem_indx=$(($i+1))
+  mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
+  time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
+  mns_time_lag=$(( -${time_lag} ))
+
+  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
+  if [ -z "${fcst_postprd_output_template}" ]; then
+    fcst_postprd_output_template="  ${template}"
+  else
+    fcst_postprd_output_template="\
+${fcst_postprd_output_template},
+  ${template}"
+  fi
+
+#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
+#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
+#  template='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
+  template_gep='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$acc'.nc'
+  template_es='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$acc'.nc'
+  if [ -z "${fcst_pcp_combine_output_template_gep}" ]; then
+    fcst_pcp_combine_output_template_gep="  ${template_gep}"
+    fcst_pcp_combine_output_template_es="  ${template_es}"
+  else
+    fcst_pcp_combine_output_template_gep="\
+${fcst_pcp_combine_output_template_gep},
+  ${template_gep}"
+    fcst_pcp_combine_output_template_es="\
+${fcst_pcp_combine_output_template_es},
+  ${template_es}"
+  fi
+
+done
+
+echo
+echo "fcst_postprd_output_template = 
+${fcst_postprd_output_template}"
+echo
+echo "fcst_pcp_combine_output_template_gep = 
+${fcst_pcp_combine_output_template_gep}"
+echo
+echo "fcst_pcp_combine_output_template_es = 
+${fcst_pcp_combine_output_template_es}"
+
 #
 #-----------------------------------------------------------------------
 #
@@ -261,18 +332,26 @@ export CDATE
 export OBS_INPUT_BASE
 export FCST_INPUT_BASE
 export OUTPUT_BASE
-export OUTPUT_SUBDIR
+export OUTPUT_SUBDIR_GEN_ENS_PROD
+export OUTPUT_SUBDIR_ENSEMBLE_STAT
 export LOG_SUFFIX
 export MODEL
 export NET
-export FHR_LIST
-export TIME_LAG
-export MNS_TIME_LAG
+export NUM_ENS_MEMBERS
+#export NUM_PAD
+export acc
+#export time_lag
+#export mns_time_lag
+
 export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 export FIELD_THRESHOLDS
+
+export fcst_postprd_output_template
+export fcst_pcp_combine_output_template_gep
+export fcst_pcp_combine_output_template_es
 #
 #-----------------------------------------------------------------------
 #
@@ -280,22 +359,47 @@ export FIELD_THRESHOLDS
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GridStat tool..."
+if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
 
-if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  metplus_config_fp="${METPLUS_CONF}/GridStat_nopcpcombine_APCPgt01h.conf"
-else
-  metplus_config_fp="${METPLUS_CONF}/GridStat_nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
-fi
+  print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GenEnsProd tool..."
 
-${METPLUS_PATH}/ush/run_metplus.py \
-  -c ${METPLUS_CONF}/common.conf \
-  -c ${metplus_config_fp} || \
-print_err_msg_exit "
+  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_cmn_APCPgt01h.conf"
+  else
+    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+  fi
+
+  ${METPLUS_PATH}/ush/run_metplus.py \
+    -c ${METPLUS_CONF}/common.conf \
+    -c ${metplus_config_fp} || \
+  print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+
+fi
+
+if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
+
+  print_info_msg "$VERBOSE" "
+Calling METplus to run MET's EnsembleStat tool..."
+
+  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_cmn_APCPgt01h.conf"
+  else
+    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+  fi
+
+  ${METPLUS_PATH}/ush/run_metplus.py \
+    -c ${METPLUS_CONF}/common.conf \
+    -c ${metplus_config_fp} || \
+  print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -305,7 +409,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus grid_stat tool completed successfully.
+METplus gen_ens_prod and ensemble_stat tools completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
