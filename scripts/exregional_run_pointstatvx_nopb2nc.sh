@@ -42,8 +42,9 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus tool pb2nc
-in preparation for deterministic verification.
+This is the ex-script for the task that runs the MET/METplus tool
+point_stat for deterministic point-based verification of surface and
+upper air fields.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -74,25 +75,38 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-echo "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+echo "ZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
 echo "  CDATE = |$CDATE|"
 
+FHR_LAST=${FCST_LEN_HRS}
+echo "FHR_LAST = |${FHR_LAST}|"
 fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
+
+TIME_LAG="0"
+mem_indx="${mem_indx:-}"
+if [ ! -z "mem_indx" ]; then
+  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[$mem_indx-1]}*${secs_per_hour} ))
+fi
+# Calculate the negative of the time lag.  This is needed because in the
+# METplus configuration file, simply placing a minus sign in front of
+# TIME_LAG causes an error.
+MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from pcp_combine.  Also, set the
+# Set paths for input to and output from point_stat.  Also, set the
 # suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE="${OBS_DIR}"
-OUTPUT_BASE="${MET_OUTPUT_DIR}"
-OUTPUT_SUBDIR="metprd/pb2nc_obs_nopointstat"
-LOG_SUFFIX="${CDATE}"
+OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_nopointstat"
+FCST_INPUT_BASE="${MET_INPUT_DIR}"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+OUTPUT_SUBDIR="metprd/point_stat_nopb2nc"
+LOG_SUFFIX="nopb2nc${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -140,11 +154,17 @@ export LOGDIR
 # defined below.
 #
 export CDATE
-export INPUT_BASE
+export OBS_INPUT_BASE
+export FCST_INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
 export LOG_SUFFIX
+export MODEL
+export NET
 export FHR_LIST
+export FHR_LAST
+export TIME_LAG
+export MNS_TIME_LAG
 #
 #-----------------------------------------------------------------------
 #
@@ -153,8 +173,19 @@ export FHR_LIST
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Calling METplus to run MET's Pb2nc tool for surface fields..."
-metplus_config_fp="${METPLUS_CONF}/Pb2nc_obs.conf"
+Calling METplus to run MET's PointStat tool for surface fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_conus_sfc_nopb2nc.conf"
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for upper air fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_upper_air_nopb2nc.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -171,7 +202,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus pb2nc tool completed successfully.
+METplus point_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

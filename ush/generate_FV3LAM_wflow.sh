@@ -230,6 +230,7 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
   'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
   'vx_gridstat_apcp24h_tn': ${VX_GRIDSTAT_APCP24h_TN}
+  'vx_pointstat_nopb2nc_tn': ${VX_POINTSTAT_NOPB2NC_TN}
   'vx_pointstat_tn': ${VX_POINTSTAT_TN}
   'vx_ensgrid_tn': ${VX_ENSGRID_TN}
   'vx_ensgrid_apcp01h_tn': ${VX_ENSGRID_APCP01h_TN}
@@ -417,6 +418,7 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'run_task_vx_pcpcombine_obs': ${RUN_TASK_VX_PCPCOMBINE_OBS}
   'run_task_vx_pcpcombine_fcst': ${RUN_TASK_VX_PCPCOMBINE_FCST}
   'run_task_vx_gridstat': ${RUN_TASK_VX_GRIDSTAT}
+  'run_task_vx_pointstat_nopb2nc': ${RUN_TASK_VX_POINTSTAT_NOPB2NC}
   'run_task_vx_pointstat': ${RUN_TASK_VX_POINTSTAT}
   'run_task_vx_ensgrid': ${RUN_TASK_VX_ENSGRID}
   'run_task_vx_enspoint': ${RUN_TASK_VX_ENSPOINT}
