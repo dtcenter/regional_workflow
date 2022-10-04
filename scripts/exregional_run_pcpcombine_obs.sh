@@ -123,19 +123,19 @@ echo "FHR_LIST = |${FHR_LIST}|"
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE=${OBS_DIR}
-OUTPUT_BASE=${MET_OUTPUT_DIR}
+INPUT_BASE="${OBS_DIR}"
+OUTPUT_BASE="${MET_OUTPUT_DIR}"
 OUTPUT_SUBDIR="metprd/pcp_combine_obs_nogridstat"
 LOG_SUFFIX="${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
 # Create the directory(ies) in which MET/METplus will place its output
-# from this script.  We do this here because (as of 20220811), when 
+# from this script.  We do this here because (as of 20220811), when
 # multiple workflow tasks are launched that all require METplus to create
-# the same directory, some of the METplus tasks can fail.  This is a 
+# the same directory, some of the METplus tasks can fail.  This is a
 # known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be 
+# If/when it is fixed, the following directory creation step can be
 # removed from this script.
 #
 #-----------------------------------------------------------------------
