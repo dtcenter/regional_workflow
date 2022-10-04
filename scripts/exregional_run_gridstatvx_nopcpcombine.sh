@@ -51,8 +51,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs METplus for grid-stat on
-the UPP output files by initialization time for all forecast hours.
+This is the ex-script for the task that runs the MET/METplus grid_stat
+tool for deterministic verfication on gridded data.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -151,7 +151,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run pcp_combine.
+# Set the array of forecast hours for which to run grid_stat.
 #
 # Note that for ensemble forecasts (which may contain time-lagged
 # members), the forecast hours set below are relative to the non-time-
@@ -161,8 +161,8 @@ esac
 #
 # The time-lagging is taken into account in the METplus configuration
 # file used by the call below to METplus (which in turn calls MET's
-# pcp_combine tool).  In that configuration file, the locations and
-# names of the input grib2 files to MET's pcp_combine tool are set using
+# grid_stat tool).  In that configuration file, the locations and
+# names of the input grib2 files to MET's grid_stat tool are set using
 # the time-lagging information.  This information is calculated and
 # stored below in the variable TIME_LAG (and MNS_TIME_LAG) and then
 # exported to the environment to make it available to the METplus
@@ -201,11 +201,9 @@ MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
-#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_nogridstat"
   FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
-#  FCST_INPUT_BASE="${MET_INPUT_DIR}/${CDATE_TIME_LAGGED}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd"
   FCST_INPUT_BASE="${MET_INPUT_DIR}"
 fi
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"

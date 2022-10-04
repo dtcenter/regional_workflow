@@ -151,47 +151,41 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Create a comma-separated list of forecast hours for METplus to step
-# through.
+# Set the array of forecast hours for which to run gen_ens_prod and
+# ensemble_stat.
 #
 #-----------------------------------------------------------------------
 #
 echo "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
-set -x
-
-export fhr_last=${FCST_LEN_HRS}
+echo "  CDATE = $CDATE"
 
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
-export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "fhr_list = |${fhr_list}|"
+echo "fhr_array = |${fhr_array[@]}|"
+FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "FHR_LIST = |${FHR_LIST}|"
 
 # Determine the number padding needed based on number of ensemble members.
-NUM_PAD=${NDIGITS_ENSMEM_NAMES}
+#NUM_PAD=${NDIGITS_ENSMEM_NAMES}
 #
 #-----------------------------------------------------------------------
 #
-# Set INPUT_BASE and OUTPUT_BASE for use in METplus configuration files.
+# Set paths for input to and output from gen_ens_prod and ensemble_stat.
+# Also, set the suffix for the names of the log files that METplus will
+# generate.
 #
 #-----------------------------------------------------------------------
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
-#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}/metprd/pcp_combine_fcst_nogridstat"
   FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
-#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
-#  FCST_INPUT_BASE="${MET_INPUT_DIR}/${CDATE_TIME_LAGGED}/postprd"
   FCST_INPUT_BASE="${MET_INPUT_DIR}"
 fi
-OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
-#OUTPUT_BASE=${MET_OUTPUT_DIR}
-#OUTPUT_SUBDIR="${CDATE}/metprd/gen_ens_prod_cmn"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 OUTPUT_SUBDIR_GEN_ENS_PROD="metprd/gen_ens_prod_cmn"
 OUTPUT_SUBDIR_ENSEMBLE_STAT="metprd/ensemble_stat_cmn"
-
 LOG_SUFFIX="cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
-
 #
 #-----------------------------------------------------------------------
 #
@@ -227,30 +221,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Set variables needed in forming the names of METplus configuration and
-# log files.
-#
-#-----------------------------------------------------------------------
-#
-# Leave the variable acc in this script for now since it's needed in 
-# setting fcst_pcp_combine_output_template.  May be able to remove it
-# once pcp_combine is placed in its own task.
-acc=""
-if [ "${VAR}" = "APCP" ]; then
-  acc="${ACCUM}h"
-fi
-#LOG_SUFFIX="${CDATE}_${VAR}${acc:+_${acc}}"
-#LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-
-echo
-echo "VAR = |$VAR|"
-echo "ACCUM = |${ACCUM:-}|"
-echo "FIELDNAME_IN_MET_OUTPUT = |${FIELDNAME_IN_MET_OUTPUT}|"
-echo "FIELDNAME_IN_MET_FILEDIR_NAMES = |${FIELDNAME_IN_MET_FILEDIR_NAMES}|"
-#exit 1
-#
-#-----------------------------------------------------------------------
-#
 # Construct the variable fcst_pcp_combine_output_template that contains
 # a template (that METplus can read) of the paths to the files that the
 # pcp_combine tool has generated (in previous workflow tasks).  This
@@ -259,9 +229,7 @@ echo "FIELDNAME_IN_MET_FILEDIR_NAMES = |${FIELDNAME_IN_MET_FILEDIR_NAMES}|"
 #
 #-----------------------------------------------------------------------
 #
-fcst_postprd_output_template=""
-fcst_pcp_combine_output_template_gep=""
-fcst_pcp_combine_output_template_es=""
+INPUT_TEMPLATE=""
 
 for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
 
@@ -270,44 +238,25 @@ for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
   time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
   mns_time_lag=$(( -${time_lag} ))
 
-  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
-  if [ -z "${fcst_postprd_output_template}" ]; then
-    fcst_postprd_output_template="  ${template}"
+  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+    template='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$ACCUM'h.nc'
   else
-    fcst_postprd_output_template="\
-${fcst_postprd_output_template},
-  ${template}"
+    template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
   fi
 
-#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
-#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
-#  template='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
-  template_gep='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$acc'.nc'
-  template_es='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$acc'.nc'
-  if [ -z "${fcst_pcp_combine_output_template_gep}" ]; then
-    fcst_pcp_combine_output_template_gep="  ${template_gep}"
-    fcst_pcp_combine_output_template_es="  ${template_es}"
+  if [ -z "${INPUT_TEMPLATE}" ]; then
+    INPUT_TEMPLATE="  ${template}"
   else
-    fcst_pcp_combine_output_template_gep="\
-${fcst_pcp_combine_output_template_gep},
-  ${template_gep}"
-    fcst_pcp_combine_output_template_es="\
-${fcst_pcp_combine_output_template_es},
-  ${template_es}"
+    INPUT_TEMPLATE="\
+${INPUT_TEMPLATE},
+  ${template}"
   fi
 
 done
 
 echo
-echo "fcst_postprd_output_template = 
-${fcst_postprd_output_template}"
-echo
-echo "fcst_pcp_combine_output_template_gep = 
-${fcst_pcp_combine_output_template_gep}"
-echo
-echo "fcst_pcp_combine_output_template_es = 
-${fcst_pcp_combine_output_template_es}"
-
+echo "INPUT_TEMPLATE = 
+${INPUT_TEMPLATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -337,21 +286,15 @@ export OUTPUT_SUBDIR_ENSEMBLE_STAT
 export LOG_SUFFIX
 export MODEL
 export NET
+export FHR_LIST
 export NUM_ENS_MEMBERS
 #export NUM_PAD
-export acc
-#export time_lag
-#export mns_time_lag
-
 export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 export FIELD_THRESHOLDS
-
-export fcst_postprd_output_template
-export fcst_pcp_combine_output_template_gep
-export fcst_pcp_combine_output_template_es
+export INPUT_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
