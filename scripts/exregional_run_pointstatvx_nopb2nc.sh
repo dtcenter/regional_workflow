@@ -71,7 +71,7 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run pb2nc.
+# Set the array of forecast hours for which to run point_stat.
 #
 #-----------------------------------------------------------------------
 #
