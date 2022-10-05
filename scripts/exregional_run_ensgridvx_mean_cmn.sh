@@ -51,8 +51,9 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus grid_stat
-tool for deterministic verfication on gridded data.
+This is the ex-script for the task that runs METplus for grid-stat on
+the UPP output files by initialization time for all forecast hours for 
+gridded data.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -118,19 +119,19 @@ FIELD_THRESHOLDS=""
 case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
 
   "APCP01h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54"
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge2.54"
     ;;
 
   "APCP03h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350"
+    FIELD_THRESHOLDS="gt0.0, ge0.508, ge2.54, ge6.350"
     ;;
 
   "APCP06h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700"
+    FIELD_THRESHOLDS="gt0.0, ge2.54, ge6.350, ge12.700"
     ;;
 
   "APCP24h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700, ge25.400"
+    FIELD_THRESHOLDS="gt0.0, ge6.350, ge12.700, ge25.400"
     ;;
 
   "REFC")
@@ -153,44 +154,15 @@ esac
 #
 # Set the array of forecast hours for which to run grid_stat.
 #
-# Note that for ensemble forecasts (which may contain time-lagged
-# members), the forecast hours set below are relative to the non-time-
-# lagged initialization time of the cycle regardless of whether or not
-# the current ensemble member is time-lagged, i.e. the forecast hours
-# are not shifted to take the time-lagging into account.
-#
-# The time-lagging is taken into account in the METplus configuration
-# file used by the call below to METplus (which in turn calls MET's
-# grid_stat tool).  In that configuration file, the locations and
-# names of the input grib2 files to MET's grid_stat tool are set using
-# the time-lagging information.  This information is calculated and
-# stored below in the variable TIME_LAG (and MNS_TIME_LAG) and then
-# exported to the environment to make it available to the METplus
-# configuration file.
-#
-# Note:
-# Need to add a step here to to remove those forecast hours for which
-# obs are not available (i.e. for which obs files do not exist).
-#
 #-----------------------------------------------------------------------
 #
-echo "KKKKKKKKKKKKKKKKKKKKKKKKKKK"
+echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
 echo "  CDATE = |$CDATE|"
 
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
-
-TIME_LAG="0"
-mem_indx="${mem_indx:-}"
-if [ ! -z "mem_indx" ]; then
-  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[$mem_indx-1]}*${secs_per_hour} ))
-fi
-# Calculate the negative of the time lag.  This is needed because in the
-# METplus configuration file, simply placing a minus sign in front of
-# TIME_LAG causes an error.
-MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 #-----------------------------------------------------------------------
 #
@@ -209,6 +181,9 @@ fi
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 OUTPUT_SUBDIR="metprd/grid_stat_nopcpcombine"
 LOG_SUFFIX="nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+
+OUTPUT_BASE=${MET_OUTPUT_DIR}
+LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
 #
@@ -222,7 +197,7 @@ LOG_SUFFIX="nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_O
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
+mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/grid_stat_mean"  # Output directory for GridStat tool.
 #
 #-----------------------------------------------------------------------
 #
@@ -234,6 +209,19 @@ if [ ! -d "${OBS_DIR}" ]; then
   print_err_msg_exit "\
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Set variables needed in forming the names of METplus configuration and
+# log files.
+#
+#-----------------------------------------------------------------------
+#
+# Once acc is no longer used in all the conf files, remove it from here.
+acc=""
+if [ "${VAR}" = "APCP" ]; then
+  acc="${ACCUM}h"
 fi
 #
 #-----------------------------------------------------------------------
@@ -256,21 +244,16 @@ export LOGDIR
 # defined below.
 #
 export CDATE
-export OBS_INPUT_BASE
-export FCST_INPUT_BASE
 export OUTPUT_BASE
-export OUTPUT_SUBDIR
 export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
-export TIME_LAG
-export MNS_TIME_LAG
-export FIELDNAME_IN_OBS_INPUT
-export FIELDNAME_IN_FCST_INPUT
+export acc
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 export FIELD_THRESHOLDS
+export EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
@@ -282,9 +265,9 @@ print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
 
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  metplus_config_fp="${METPLUS_CONF}/GridStat_nopcpcombine_APCPgt01h.conf"
+  metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h_mean_cmn.conf"
 else
-  metplus_config_fp="${METPLUS_CONF}/GridStat_nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+  metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean.conf"
 fi
 
 ${METPLUS_PATH}/ush/run_metplus.py \
