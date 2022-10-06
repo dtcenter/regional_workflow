@@ -239,6 +239,7 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'vx_ensgrid_apcp03h_tn': ${VX_ENSGRID_APCP03h_TN}
   'vx_ensgrid_apcp06h_tn': ${VX_ENSGRID_APCP06h_TN}
   'vx_ensgrid_apcp24h_tn': ${VX_ENSGRID_APCP24h_TN}
+  'vx_ensgrid_mean_tn': ${VX_ENSGRID_MEAN_TN}
   'vx_ensgrid_apcp01h_mean_tn': ${VX_ENSGRID_APCP01h_MEAN_TN}
   'vx_ensgrid_apcp01h_prob_tn': ${VX_ENSGRID_APCP01h_PROB_TN}
   'vx_ensgrid_apcp03h_mean_tn': ${VX_ENSGRID_APCP03h_MEAN_TN}

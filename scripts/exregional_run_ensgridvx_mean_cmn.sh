@@ -173,17 +173,13 @@ echo "FHR_LIST = |${FHR_LIST}|"
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
-  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
-  FCST_INPUT_BASE="${MET_INPUT_DIR}"
 fi
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-OUTPUT_SUBDIR="metprd/grid_stat_nopcpcombine"
-LOG_SUFFIX="nopcpcombine_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
-
-OUTPUT_BASE=${MET_OUTPUT_DIR}
-LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+OUTPUT_SUBDIR="metprd/grid_stat_mean_cmn"
+LOG_SUFFIX="${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -197,7 +193,7 @@ LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/grid_stat_mean"  # Output directory for GridStat tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -219,10 +215,13 @@ fi
 #-----------------------------------------------------------------------
 #
 # Once acc is no longer used in all the conf files, remove it from here.
-acc=""
-if [ "${VAR}" = "APCP" ]; then
-  acc="${ACCUM}h"
-fi
+#acc=""
+#if [ "${VAR}" = "APCP" ]; then
+#  acc="${ACCUM}h"
+#fi
+
+ACCUM_NO_PAD=$( printf "%0d" "$ACCUM" )
+echo "ACCUM_NO_PAD = |${ACCUM_NO_PAD}|"
 #
 #-----------------------------------------------------------------------
 #
@@ -244,16 +243,19 @@ export LOGDIR
 # defined below.
 #
 export CDATE
+export OBS_INPUT_BASE
+export FCST_INPUT_BASE
 export OUTPUT_BASE
+export OUTPUT_SUBDIR
 export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
-export acc
+export ACCUM_NO_PAD
+export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 export FIELD_THRESHOLDS
-export EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
@@ -267,7 +269,7 @@ Calling METplus to run MET's GridStat tool..."
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h_mean_cmn.conf"
 else
-  metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean.conf"
+  metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn.conf"
 fi
 
 ${METPLUS_PATH}/ush/run_metplus.py \

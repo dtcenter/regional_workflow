@@ -56,6 +56,7 @@ Workflow task names.
 <!ENTITY VX_ENSGRID_APCP03h_TN                 "{{ vx_ensgrid_apcp03h_tn }}">
 <!ENTITY VX_ENSGRID_APCP06h_TN                 "{{ vx_ensgrid_apcp06h_tn }}">
 <!ENTITY VX_ENSGRID_APCP24h_TN                 "{{ vx_ensgrid_apcp24h_tn }}">
+<!ENTITY VX_ENSGRID_MEAN_TN                    "{{ vx_ensgrid_mean_tn }}">
 <!ENTITY VX_ENSGRID_APCP01h_MEAN_TN            "{{ vx_ensgrid_apcp01h_mean_tn }}">
 <!ENTITY VX_ENSGRID_APCP01h_PROB_TN            "{{ vx_ensgrid_apcp01h_prob_tn }}">
 <!ENTITY VX_ENSGRID_APCP03h_MEAN_TN            "{{ vx_ensgrid_apcp03h_mean_tn }}">
@@ -930,7 +931,7 @@ the <task> tag to be identical to the ones above for other output times.
 
 
 {# Comment out old deterministic grid_stat tasks. #}
-{#
+
 {%- if run_task_vx_gridstat %}
 <!--
 ************************************************************************
@@ -1085,7 +1086,7 @@ the <task> tag to be identical to the ones above for other output times.
 
   </task>
 {%- endif %}
-#}
+
 
 
 
@@ -1299,7 +1300,7 @@ is correct.
 
 
 {# Comment out old deterministic grid_stat tasks. #}
-{#
+
 {%- if run_task_vx_gridstat and fcst_len_hrs >= 3 %}
 <!--
 ************************************************************************
@@ -1436,7 +1437,6 @@ be removed once that bug is fixed.
 
   </task>
 {%- endif %}
-#}
 
 
 
@@ -1621,12 +1621,15 @@ the APCP01, REFC, and RETOP.  Need to clean up dependencies accordingly.
 
 
 
+
+
+
 {%- if run_task_vx_ensgrid %}
 {#-
 Comment out old version of run_ensgridvx_... tasks.  Will remove at some
 point.
 #}
-{#
+
 <!--
 ************************************************************************
 ************************************************************************
@@ -1956,7 +1959,80 @@ before this task can be launched.
   </task>
 {%- endif %}
 
+
+
+
+
+
+
+  {%- for field in vx_fields -%}
+    {%- for accum in vx_accums -%}
+{#- #}
+      {%- set fmtstr = "%02d" %}
+      {%- set accum2d = fmtstr%accum %}
+      {%- set accum2dh = accum2d ~ "h" %}
+{#-
+Apparently need to intialize fieldname and create_gridstat_task.
 #}
+      {%- set fieldname = "" %}
+      {%- set obtype = "" %}
+      {%- set create_gridstat_task = "" %}
+{#- #}
+      {%- if field == "APCP" %}
+        {%- set obtype = "CCPA" %}
+        {%- if fcst_len_hrs >= accum %}
+          {%- set fieldname = field ~ accum2dh %}
+          {%- set create_gridstat_task = true %}
+        {%- else %}
+          {%- set create_gridstat_task = false %}
+        {%- endif %}
+      {%- else %}
+        {%- set create_gridstat_task = false %}
+      {%- endif %}
+{#-
+Should combine these two "if" statements into a single "if" using the
+"and" operator.  Need to test carefully with jinja to make sure syntax
+is correct.
+#}
+      {%- if create_gridstat_task == true %}
+{#- #}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&VX_ENSGRID_MEAN_TN;_cmn_{{fieldname}}" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_MEAN_CMN"</command>
+    <nodes>{{ nnodes_vx_ensgrid_mean }}:ppn={{ ppn_vx_ensgrid_mean }}</nodes>
+    <walltime>{{ wtime_vx_ensgrid_mean }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&VX_ENSGRID_MEAN_TN;_cmn_{{fieldname}}</jobname>
+    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_MEAN_TN;_cmn_{{fieldname}}_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
+    <envar><name>ACCUM</name><value>{{accum2d}}</value></envar>
+
+    <dependency>
+      <taskdep task="&VX_ENSGRID_TN;_cmn_{{fieldname}}"/>
+    </dependency>
+
+  </task>
+      {%- endif %}
+    {%- endfor %}
+  {%- endfor %}
+
+
+
 
 
 
