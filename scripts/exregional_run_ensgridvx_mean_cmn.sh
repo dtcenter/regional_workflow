@@ -51,9 +51,10 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs METplus for grid-stat on
-the UPP output files by initialization time for all forecast hours for 
-gridded data.
+This is the ex-script for the task that runs the MET/METplus grid_stat
+tool to perform gridded deterministic verification of accumulated 
+precipitation (APCP), composite reflectivity (REFC), and echo top 
+(RETOP) to generate mean ensemble statistics.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -214,12 +215,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Once acc is no longer used in all the conf files, remove it from here.
-#acc=""
-#if [ "${VAR}" = "APCP" ]; then
-#  acc="${ACCUM}h"
-#fi
-
 ACCUM_NO_PAD=$( printf "%0d" "$ACCUM" )
 echo "ACCUM_NO_PAD = |${ACCUM_NO_PAD}|"
 #

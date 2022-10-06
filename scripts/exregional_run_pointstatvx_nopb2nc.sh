@@ -42,9 +42,10 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus tool
-point_stat for deterministic point-based verification of surface and
-upper air fields.
+This is the ex-script for the task that runs the MET/METplus point_stat
+tool to perform point-based deterministic verification of surface and
+upper air fields to generate statistics for an individual ensemble 
+member.
 ========================================================================"
 #
 #-----------------------------------------------------------------------

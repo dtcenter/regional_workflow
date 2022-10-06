@@ -52,7 +52,9 @@ Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs the MET/METplus grid_stat
-tool for deterministic verfication on gridded data.
+tool to perform gridded deterministic verification of accumulated 
+precipitation (APCP), composite reflectivity (REFC), and echo top 
+(RETOP) to generate statistics for an individual ensemble member.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
