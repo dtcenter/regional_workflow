@@ -42,8 +42,9 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs METplus for point-stat on
-the UPP output files by initialization time for all forecast hours.
+This is the ex-script for the task that runs the MET/METplus point_stat
+tool to perform point-based ensemble verification of surface and upper
+air fields to generate ensemble mean statistics.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -76,8 +77,14 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-echo "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+echo "VVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
 set -x
+
+#yyyymmdd=${CDATE:0:8}
+#hh=${CDATE:8:2}
+#cyc=$hh
+#export CDATE
+#export hh
 #
 #-----------------------------------------------------------------------
 #
@@ -94,13 +101,12 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set INPUT_BASE and OUTPUT_BASE for use in METplus configuration files.
+# Set OUTPUT_BASE and LOG_SUFFIX for use in METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE=${MET_INPUT_DIR}
-#OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
 OUTPUT_BASE=${MET_OUTPUT_DIR}
+LOG_SUFFIX=enspoint_mean_${CDATE}
 #
 #-----------------------------------------------------------------------
 #
@@ -114,22 +120,8 @@ OUTPUT_BASE=${MET_OUTPUT_DIR}
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/gen_ens_prod"   # Output directory for GenEnsProd tool
-fi
-
-if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-  mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"                       # Output directory for PB2NC tool
-  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/ensemble_stat"  # Output directory for EnsembleStat tool
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Create LOG_SUFFIX to read into METplus conf files.
-#
-#-----------------------------------------------------------------------
-#
-LOG_SUFFIX=${CDATE}
+mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"                         # Output directory for pb2nc tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/point_stat_mean"  # Output directory for point_stat tool.
 #
 #-----------------------------------------------------------------------
 #
@@ -145,57 +137,6 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Construct the variable fcst_pcp_combine_output_template that contains
-# a template (that METplus can read) of the paths to the files that the
-# pcp_combine tool has generated (in previous workflow tasks).  This
-# will be exported to the environment and read into various variables in
-# the METplus configuration files.
-#
-#-----------------------------------------------------------------------
-#
-fcst_postprd_output_template=""
-#fcst_pcp_combine_output_template=""
-for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
-#for (( i=1; i<${NUM_ENS_MEMBERS}+1; i++ )); do  # This needs to be removed after the 2021050712 test runs are done.
-
-  mem_indx=$(($i+1))
-  mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
-  time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
-  mns_time_lag=$(( -${time_lag} ))
-
-  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
-#  if [ $i -eq "0" ]; then
-  if [ -z "${fcst_postprd_output_template}" ]; then
-    fcst_postprd_output_template="  ${template}"
-  else
-    fcst_postprd_output_template="\
-${fcst_postprd_output_template},
-  ${template}"
-  fi
-
-#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}
-#z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc
-##  if [ $i -eq "0" ]; then
-#  if [ -z "${fcst_pcp_combine_output_template}" ]; then
-#    fcst_pcp_combine_output_template="  ${template}"
-#  else
-#    fcst_pcp_combine_output_template="\
-#${fcst_pcp_combine_output_template},
-#  ${template}"
-#  fi
-
-done
-
-echo
-echo "fcst_postprd_output_template = 
-${fcst_postprd_output_template}"
-#echo
-#echo "fcst_pcp_combine_output_template = 
-#${fcst_pcp_combine_output_template}"
-
-#
-#-----------------------------------------------------------------------
-#
 # Export variables to environment to make them accessible in METplus
 # configuration files.
 #
@@ -204,7 +145,6 @@ ${fcst_postprd_output_template}"
 export EXPTDIR
 export LOGDIR
 export CDATE
-export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
 export MET_INSTALL_DIR
@@ -215,9 +155,6 @@ export MET_CONFIG
 export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
-export NUM_ENS_MEMBERS
-
-export fcst_postprd_output_template
 #
 #-----------------------------------------------------------------------
 #
@@ -225,69 +162,30 @@ export fcst_postprd_output_template
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GenEnsProd tool for surface fields..."
-  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_conus_sfc.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for surface fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_conus_sfc_mean.conf"
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-#  print_info_msg "
-#METplus/GenEnsProd for surface fields returned with the following
-#non-zero return code: $?"
 
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GenEnsProd tool for upper air fields..."
-  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_upper_air.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for upper air fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_upper_air_mean.conf"
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-#  print_info_msg "
-#METplus/GenEnsProd for upper air fields returned with the following
+#print_info_msg "
+#METplus/PointStat for upper air fields returned with the following
 #non-zero return code: $?"
-
-fi
-
-if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's EnsembleStat tool for surface fields..."
-  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_conus_sfc.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-#  print_info_msg "
-#METplus/EnsembleStat for surface fields returned with the following
-#non-zero return code: $?"
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's EnsembleStat tool for upper air fields..."
-  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_upper_air.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-#  print_info_msg "
-#METplus/EnsembleStat for upper air fields returned with the following
-#non-zero return code: $?"
-
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -297,7 +195,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-METplus ensemble-stat completed successfully.
+METplus point-stat completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

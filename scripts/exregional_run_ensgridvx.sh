@@ -80,14 +80,6 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Begin grid-to-grid ensemble vx.
-#
-#-----------------------------------------------------------------------
-#
-print_info_msg "$VERBOSE" "Starting ensemble-stat verification"
-#
-#-----------------------------------------------------------------------
-#
 # Set various field name parameters associated with the field to be
 # verified.
 #

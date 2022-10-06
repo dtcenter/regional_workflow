@@ -70,14 +70,6 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Begin grid-to-point vx on ensemble output.
-#
-#-----------------------------------------------------------------------
-#
-print_info_msg "$VERBOSE" "Starting point-stat verification"
-#
-#-----------------------------------------------------------------------
-#
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
 # ively) from CDATE. Also read in FHR and create a comma-separated list
 # for METplus to run over.
