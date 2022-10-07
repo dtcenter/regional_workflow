@@ -142,7 +142,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Variables needed in the common METplus configuration file (at 
+# Variables needed in the common METplus configuration file (at
 # ${METPLUS_CONF}/common.conf).
 #
 export MET_INSTALL_DIR

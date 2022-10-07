@@ -210,13 +210,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Set variables needed in forming the names of METplus configuration and
-# log files.
+# Set variable containing accumulation period without leading zero 
+# padding.  This may be needed in the METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
 ACCUM_NO_PAD=$( printf "%0d" "$ACCUM" )
-echo "ACCUM_NO_PAD = |${ACCUM_NO_PAD}|"
 #
 #-----------------------------------------------------------------------
 #
