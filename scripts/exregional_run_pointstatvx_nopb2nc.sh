@@ -107,7 +107,7 @@ OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_nopointstat"
 FCST_INPUT_BASE="${MET_INPUT_DIR}"
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 OUTPUT_SUBDIR="metprd/point_stat_nopb2nc"
-LOG_SUFFIX="nopb2nc${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+LOG_SUFFIX="${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -175,7 +175,7 @@ export MNS_TIME_LAG
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's PointStat tool for surface fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_conus_sfc_nopb2nc.conf"
+metplus_config_fp="${METPLUS_CONF}/PointStat_sfc_nopb2nc.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -186,7 +186,7 @@ METplus configuration file used is:
 
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's PointStat tool for upper air fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_upper_air_nopb2nc.conf"
+metplus_config_fp="${METPLUS_CONF}/PointStat_upa_nopb2nc.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
