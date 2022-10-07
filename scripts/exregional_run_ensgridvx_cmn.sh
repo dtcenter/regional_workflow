@@ -200,11 +200,11 @@ LOG_SUFFIX="cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #-----------------------------------------------------------------------
 #
 if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/gen_ens_prod"  # Output directory for GenEnsProd tool
+  mkdir_vrfy -p "${OUTPUT_BASE}/metprd/${OUTPUT_SUBDIR_GEN_ENS_PROD}"
 fi
 
 if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/ensemble_stat" # Output directory for EnsembleStat tool
+  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_ENSEMBLE_STAT}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -308,9 +308,9 @@ if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
 Calling METplus to run MET's GenEnsProd tool..."
 
   if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_cmn_APCPgt01h.conf"
+    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_APCPgt01h_cmn.conf"
   else
-    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
   fi
 
   ${METPLUS_PATH}/ush/run_metplus.py \
@@ -329,9 +329,9 @@ if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
 Calling METplus to run MET's EnsembleStat tool..."
 
   if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_cmn_APCPgt01h.conf"
+    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_APCPgt01h_cmn.conf"
   else
-    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
   fi
 
   ${METPLUS_PATH}/ush/run_metplus.py \
