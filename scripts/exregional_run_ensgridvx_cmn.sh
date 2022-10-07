@@ -200,7 +200,7 @@ LOG_SUFFIX="cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #-----------------------------------------------------------------------
 #
 if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/metprd/${OUTPUT_SUBDIR_GEN_ENS_PROD}"
+  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_GEN_ENS_PROD}"
 fi
 
 if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
