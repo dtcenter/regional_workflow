@@ -2648,7 +2648,7 @@ this purpose.
 
     <dependency>
       <and>
-        <taskdep task="&VX_ENSPOINT_TN;"/>
+        <taskdep task="&VX_ENSPOINT_TN;_cmn"/>
       </and>
     </dependency>
 
@@ -2679,7 +2679,7 @@ this purpose.
 
     <dependency>
       <and>
-        <taskdep task="&VX_ENSPOINT_TN;"/>
+        <taskdep task="&VX_ENSPOINT_TN;_cmn"/>
       </and>
     </dependency>
 
