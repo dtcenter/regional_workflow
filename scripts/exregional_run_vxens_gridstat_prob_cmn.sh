@@ -99,41 +99,47 @@ set_vx_fieldname_params \
 #
 #-----------------------------------------------------------------------
 #
-# Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE.
+# Check whether the field to verify is APCP with an accumulation interval
+# greater than 1 hour and set the flag field_is_APCPgt01h accordingly.
+#
+#-----------------------------------------------------------------------
+#
+if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
+  field_is_APCPgt01h="TRUE"
+else
+  field_is_APCPgt01h="FALSE"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Set the array of forecast hours for which to run grid_stat.
 #
 #-----------------------------------------------------------------------
 #
 echo "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
-set -x
-
-#yyyymmdd=${CDATE:0:8}
-#hh=${CDATE:8:2}
-#cyc=$hh
-#export CDATE
-#export hh
-
-#
-#-----------------------------------------------------------------------
-#
-# Create a comma-separated list of forecast hours for METplus to step
-# through.
-#
-#-----------------------------------------------------------------------
-#
-export fhr_last=${FCST_LEN_HRS}
+echo "  CDATE = |$CDATE|"
 
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
-export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "fhr_list = |${fhr_list}|"
+echo "fhr_array = |${fhr_array[@]}|"
+FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "FHR_LIST = |${FHR_LIST}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set OUTPUT_BASE for use in METplus configuration files.
+# Set paths for input to and output from grid_stat.  Also, set the
+# suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
-OUTPUT_BASE=${MET_OUTPUT_DIR}
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
+else
+  OBS_INPUT_BASE="${OBS_DIR}"
+fi
+FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+OUTPUT_SUBDIR="metprd/grid_stat_prob_cmn"
+LOG_SUFFIX="_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -147,7 +153,7 @@ OUTPUT_BASE=${MET_OUTPUT_DIR}
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/grid_stat_prob"  # Output directory for GridStat tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -163,20 +169,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Set variables needed in forming the names of METplus configuration and
-# log files.
+# Set variable containing accumulation period without leading zero 
+# padding.  This may be needed in the METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
-# Once acc is no longer used in all the conf files, remove it from here.
-acc=""
-if [ "${VAR}" = "APCP" ]; then
-  acc="${ACCUM}h"
-fi
-#config_fn_str="${VAR}${acc}_prob"
-#LOG_SUFFIX="ensgrid_prob_${CDATE}_${VAR}${acc:+_${acc}}"
-
-LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+ACCUM_NO_PAD=$( printf "%0d" "$ACCUM" )
 #
 #-----------------------------------------------------------------------
 #
@@ -185,20 +183,28 @@ LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
 #
-export EXPTDIR
-export LOGDIR
-export CDATE
-export OUTPUT_BASE
-export LOG_SUFFIX
+# Variables needed in the common METplus configuration file (at
+# ${METPLUS_CONF}/common.conf).
+#
 export MET_INSTALL_DIR
-export MET_BIN_EXEC
 export METPLUS_PATH
+export MET_BIN_EXEC
 export METPLUS_CONF
-export MET_CONFIG
+export LOGDIR
+#
+# Variables needed in the METplus configuration file metplus_config_fp
+# defined below.
+#
+export CDATE
+export OBS_INPUT_BASE
+export FCST_INPUT_BASE
+export OUTPUT_BASE
+export OUTPUT_SUBDIR
+export LOG_SUFFIX
 export MODEL
 export NET
-export POST_OUTPUT_DOMAIN_NAME
-export acc
+export FHR_LIST
+export ACCUM_NO_PAD
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
@@ -210,7 +216,7 @@ export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
-metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob.conf"
+metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -227,7 +233,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus grid-stat completed successfully.
+METplus grid_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

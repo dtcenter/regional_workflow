@@ -495,7 +495,8 @@ MODULES_RUN_TASK_FP script.
     {%- set fmtstr = "%02d" %}
     {%- set accum2d = fmtstr%accum -%}
     {%- set accum2dh = accum2d ~ "h" -%}
-    {%- set fieldname = "APCP" ~ accum2dh -%}
+    {%- set field = "APCP" -%}
+    {%- set fieldname = field ~ accum2dh -%}
 {#
 Should combine these two "if" statements into a single "if" using the
 "and" operator.  Need to test carefully with jinja to make sure syntax
@@ -526,7 +527,7 @@ is correct.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>VAR</name><value>APCP</value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
     <envar><name>ACCUM</name><value>{{accum2d}}</value></envar>
 
 <!--
@@ -1492,7 +1493,7 @@ is correct.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>VAR</name><value>{{fieldname}}</value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
     {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
@@ -2528,11 +2529,20 @@ Apparently need to intialize fieldname and create_gridstat_task.
           {%- set create_gridstat_task = false %}
         {%- endif %}
       {%- else %}
-        {%- set create_gridstat_task = false %}
+        {%- set obtype = "MRMS" %}
+        {%- if accum2d == "01" %}
+          {%- set fieldname = field %}
+          {%- set create_gridstat_task = true %}
+        {%- else %}
+          {%- set create_gridstat_task = false %}
+        {%- endif %}
       {%- endif %}
 {#- #}
       {%- if create_gridstat_task == true %}
-{#- #}
+{#-
+For REFC and RETOP, don't calculate ensemble mean statistics.
+#}
+        {%- if field != "REFC" and field != "RETOP" %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2551,6 +2561,7 @@ Apparently need to intialize fieldname and create_gridstat_task.
     <join><cyclestr>&LOGDIR;/&RUN_VXENS_GRIDSTAT_TN;_{{fieldname}}_mean_cmn_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
     <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2561,6 +2572,41 @@ Apparently need to intialize fieldname and create_gridstat_task.
 
     <dependency>
       <taskdep task="&RUN_VXENS_GEPES_GRID_TN;_{{fieldname}}_cmn"/>
+    </dependency>
+
+  </task>
+        {%- endif %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&RUN_VXENS_GRIDSTAT_TN;_{{fieldname}}_prob_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_prob }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXENS_GRIDSTAT_PROB_CMN"</command>
+    <nodes>{{ nnodes_vx_ensgrid_prob }}:ppn={{ ppn_vx_ensgrid_prob }}</nodes>
+    <walltime>{{ wtime_vx_ensgrid_prob }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&RUN_VXENS_GRIDSTAT_TN;_{{fieldname}}_prob_cmn</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXENS_GRIDSTAT_TN;_{{fieldname}}_prob_cmn_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
+    <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
+    <envar><name>ACCUM</name><value>{{accum2d}}</value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="&RUN_VXENS_GEPES_GRID_TN;_{{fieldname}}_cmn"/>
+      </and>
     </dependency>
 
   </task>
@@ -2605,7 +2651,7 @@ ensemble.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>VAR</name><value>{{fieldname}}</value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
 
   {%- if run_task_get_obs_ndas or run_task_run_post or (do_ensemble and false) %}
     <dependency>
@@ -2641,7 +2687,7 @@ this purpose.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_cmn_mean" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint_mean }}">
+  <task name="&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_mean_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint_mean }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXENS_POINTSTAT_MEAN_CMN"</command>
@@ -2651,8 +2697,8 @@ this purpose.
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_cmn_mean</jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_cmn_mean_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_mean_cmn</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_mean_cmn_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
@@ -2661,7 +2707,40 @@ this purpose.
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>VAR</name><value>{{fieldname}}</value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
+
+    <dependency>
+      <and>
+        <taskdep task="&RUN_VXENS_GEPES_POINT_TN;_{{fieldname}}_cmn"/>
+      </and>
+    </dependency>
+
+  </task>
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_prob_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint_prob }}">
+
+    &RSRV_DEFAULT;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXENS_POINTSTAT_PROB_CMN"</command>
+    <nodes>{{ nnodes_vx_enspoint_prob }}:ppn={{ ppn_vx_enspoint_prob }}</nodes>
+    <walltime>{{ wtime_vx_enspoint_prob }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_prob_cmn</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_prob_cmn_@Y@m@d@H.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
+    <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
+    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
 
     <dependency>
       <and>
@@ -2671,38 +2750,6 @@ this purpose.
 
   </task>
   {%- endfor %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&VX_ENSPOINT_PROB_TN;_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint_prob }}">
-
-    &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSPOINT_PROB_CMN"</command>
-    <nodes>{{ nnodes_vx_enspoint_prob }}:ppn={{ ppn_vx_enspoint_prob }}</nodes>
-    <walltime>{{ wtime_vx_enspoint_prob }}</walltime>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
-  {%- endif %}
-    <jobname>&VX_ENSPOINT_PROB_TN;_cmn</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSPOINT_PROB_TN;_cmn_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-
-    <dependency>
-      <and>
-        <taskdep task="&RUN_VXENS_GEPES_POINT_TN;_cmn"/>
-      </and>
-    </dependency>
-
-  </task>
-
 {%- endif %}
 
 

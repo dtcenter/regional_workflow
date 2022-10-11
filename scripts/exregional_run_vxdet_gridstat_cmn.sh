@@ -202,7 +202,7 @@ MNS_TIME_LAG=$((-${TIME_LAG}))
 #-----------------------------------------------------------------------
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
+  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
   FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"

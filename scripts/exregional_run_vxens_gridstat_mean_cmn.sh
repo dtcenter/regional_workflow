@@ -173,14 +173,14 @@ echo "FHR_LIST = |${FHR_LIST}|"
 #-----------------------------------------------------------------------
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
+  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
 fi
 FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 OUTPUT_SUBDIR="metprd/grid_stat_mean_cmn"
-LOG_SUFFIX="_cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
+LOG_SUFFIX="_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #

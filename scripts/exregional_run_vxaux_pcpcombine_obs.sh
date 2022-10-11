@@ -125,7 +125,7 @@ echo "FHR_LIST = |${FHR_LIST}|"
 #
 INPUT_BASE="${OBS_DIR}"
 OUTPUT_BASE="${MET_OUTPUT_DIR}"
-OUTPUT_SUBDIR="metprd/pcp_combine_obs_nogridstat"
+OUTPUT_SUBDIR="metprd/pcp_combine_obs_cmn"
 LOG_SUFFIX="${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #
 #-----------------------------------------------------------------------

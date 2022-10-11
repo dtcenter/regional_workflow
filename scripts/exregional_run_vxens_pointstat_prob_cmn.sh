@@ -12,6 +12,15 @@
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that sets various field-
+# dependent naming parameters needed by MET/METplus verification tasks.
+#
+#-----------------------------------------------------------------------
+#
+. $USHDIR/set_vx_fieldname_params.sh
+#
+#-----------------------------------------------------------------------
+#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -71,42 +80,63 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE. Also read in FHR and create a comma-separated list
-# for METplus to run over.
+# Set various field name parameters associated with the field to be
+# verified.
+#
+#-----------------------------------------------------------------------
+#
+FIELDNAME_IN_OBS_INPUT=""
+FIELDNAME_IN_FCST_INPUT=""
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_vx_fieldname_params \
+  field="$VAR" accum="${ACCUM:-}" \
+  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
+  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
+  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+#
+#-----------------------------------------------------------------------
+#
+# Set variable that contains a description of what type of field (really
+# a group of fields) is to be verified.
+#
+#-----------------------------------------------------------------------
+#
+field_desc=""
+if [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "sfc" ]; then
+  field_desc="surface"
+elif [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "upa" ]; then
+  field_desc="upper air"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Set the array of forecast hours for which to run point_stat.
 #
 #-----------------------------------------------------------------------
 #
 echo "WWWWWWWWWWWWWWWWWWWWWWWWW"
-set -x
-
-#yyyymmdd=${CDATE:0:8}
-#hh=${CDATE:8:2}
-#cyc=$hh
-#export CDATE
-#export hh
-#
-#-----------------------------------------------------------------------
-#
-# Create a comma-separated list of forecast hours for METplus to step
-# through.
-#
-#-----------------------------------------------------------------------
-#
-export fhr_last=${FCST_LEN_HRS}
+echo "  CDATE = |$CDATE|"
 
 fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
-export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "fhr_list = |${fhr_list}|"
+FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "FHR_LIST = |${FHR_LIST}|"
+FHR_LAST=${FCST_LEN_HRS}
+echo "FHR_LAST = |${FHR_LAST}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set OUTPUT_BASE and LOG_SUFFIX for use in METplus configuration files.
+# Set paths for input to and output from point_stat.  Also, set the
+# suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
-OUTPUT_BASE=${MET_OUTPUT_DIR}
-LOG_SUFFIX=enspoint_prob_${CDATE}
+OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_cmn"
+FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}/metprd/gen_ens_prod_cmn"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+OUTPUT_SUBDIR="metprd/point_stat_prob_cmn"
+LOG_SUFFIX="_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -120,8 +150,7 @@ LOG_SUFFIX=enspoint_prob_${CDATE}
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"                         # Output directory for pb2nc tool.
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/point_stat_prob"  # Output directory for point_stat tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -142,19 +171,29 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-export EXPTDIR
-export LOGDIR
-export CDATE
-export OUTPUT_BASE
-export LOG_SUFFIX
+# Variables needed in the common METplus configuration file (at
+# ${METPLUS_CONF}/common.conf).
+#
 export MET_INSTALL_DIR
-export MET_BIN_EXEC
 export METPLUS_PATH
+export MET_BIN_EXEC
 export METPLUS_CONF
-export MET_CONFIG
+export LOGDIR
+#
+# Variables needed in the METplus configuration file metplus_config_fp
+# defined below.
+#
+export CDATE
+export OBS_INPUT_BASE
+export FCST_INPUT_BASE
+export OUTPUT_BASE
+export OUTPUT_SUBDIR
+export LOG_SUFFIX
 export MODEL
 export NET
-export POST_OUTPUT_DOMAIN_NAME
+export FHR_LIST
+export FHR_LAST
+export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 #-----------------------------------------------------------------------
 #
@@ -163,8 +202,8 @@ export POST_OUTPUT_DOMAIN_NAME
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Calling METplus to run MET's PointStat tool for surface fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_conus_sfc_prob.conf"
+Calling METplus to run MET's PointStat tool for ${field_desc} fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -172,23 +211,6 @@ print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-#print_info_msg "
-#METplus/PointStat for surface fields returned with the following
-#non-zero return code: $?"
-
-print_info_msg "$VERBOSE" "
-Calling METplus to run MET's PointStat tool for upper air fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_upper_air_prob.conf"
-${METPLUS_PATH}/ush/run_metplus.py \
-  -c ${METPLUS_CONF}/common.conf \
-  -c ${metplus_config_fp} || \
-print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-#print_info_msg "
-#METplus/PointStat for upper air fields returned with the following
-#non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #
@@ -198,7 +220,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus point-stat completed successfully.
+METplus point_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
