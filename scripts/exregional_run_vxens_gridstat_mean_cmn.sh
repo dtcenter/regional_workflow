@@ -51,8 +51,10 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus gen_ens_prod
-and ensemble_stat tools.
+This is the ex-script for the task that runs the MET/METplus grid_stat
+tool to perform gridded deterministic verification of accumulated 
+precipitation (APCP), composite reflectivity (REFC), and echo top 
+(RETOP) to generate mean ensemble statistics.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -151,41 +153,34 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run gen_ens_prod and
-# ensemble_stat.
+# Set the array of forecast hours for which to run grid_stat.
 #
 #-----------------------------------------------------------------------
 #
-echo "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
-echo "  CDATE = $CDATE"
+echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+echo "  CDATE = |$CDATE|"
 
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
-
-# Determine the number padding needed based on number of ensemble members.
-#NUM_PAD=${NDIGITS_ENSMEM_NAMES}
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from gen_ens_prod and ensemble_stat.
-# Also, set the suffix for the names of the log files that METplus will
-# generate.
+# Set paths for input to and output from grid_stat.  Also, set the
+# suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_nogridstat"
-  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
-  FCST_INPUT_BASE="${MET_INPUT_DIR}"
 fi
+FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
-OUTPUT_SUBDIR_GEN_ENS_PROD="metprd/gen_ens_prod_cmn"
-OUTPUT_SUBDIR_ENSEMBLE_STAT="metprd/ensemble_stat_cmn"
-LOG_SUFFIX="cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
+OUTPUT_SUBDIR="metprd/grid_stat_mean_cmn"
+LOG_SUFFIX="_cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -194,18 +189,12 @@ LOG_SUFFIX="cmn_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 # multiple workflow tasks are launched that all require METplus to create
 # the same directory, some of the METplus tasks can fail.  This is a
 # known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation steps can be
+# If/when it is fixed, the following directory creation step can be
 # removed from this script.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_GEN_ENS_PROD}"
-fi
-
-if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_ENSEMBLE_STAT}"
-fi
+mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -221,42 +210,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Construct the variable fcst_pcp_combine_output_template that contains
-# a template (that METplus can read) of the paths to the files that the
-# pcp_combine tool has generated (in previous workflow tasks).  This
-# will be exported to the environment and read into various variables in
-# the METplus configuration files.
+# Set variable containing accumulation period without leading zero 
+# padding.  This may be needed in the METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
-INPUT_TEMPLATE=""
-
-for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
-
-  mem_indx=$(($i+1))
-  mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
-  time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
-  mns_time_lag=$(( -${time_lag} ))
-
-  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    template='mem'${mem_indx}'/metprd/pcp_combine_fcst_nogridstat/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$ACCUM'h.nc'
-  else
-    template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
-  fi
-
-  if [ -z "${INPUT_TEMPLATE}" ]; then
-    INPUT_TEMPLATE="  ${template}"
-  else
-    INPUT_TEMPLATE="\
-${INPUT_TEMPLATE},
-  ${template}"
-  fi
-
-done
-
-echo
-echo "INPUT_TEMPLATE = 
-${INPUT_TEMPLATE}"
+ACCUM_NO_PAD=$( printf "%0d" "$ACCUM" )
 #
 #-----------------------------------------------------------------------
 #
@@ -265,7 +224,7 @@ ${INPUT_TEMPLATE}"
 #
 #-----------------------------------------------------------------------
 #
-# Variables needed in the common METplus configuration file (at 
+# Variables needed in the common METplus configuration file (at
 # ${METPLUS_CONF}/common.conf).
 #
 export MET_INSTALL_DIR
@@ -281,20 +240,16 @@ export CDATE
 export OBS_INPUT_BASE
 export FCST_INPUT_BASE
 export OUTPUT_BASE
-export OUTPUT_SUBDIR_GEN_ENS_PROD
-export OUTPUT_SUBDIR_ENSEMBLE_STAT
+export OUTPUT_SUBDIR
 export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
-export NUM_ENS_MEMBERS
-#export NUM_PAD
+export ACCUM_NO_PAD
 export FIELDNAME_IN_OBS_INPUT
-export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 export FIELD_THRESHOLDS
-export INPUT_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
@@ -302,47 +257,22 @@ export INPUT_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GridStat tool..."
 
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GenEnsProd tool..."
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+  metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h_mean_cmn.conf"
+else
+  metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn.conf"
+fi
 
-  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_APCPgt01h_cmn.conf"
-  else
-    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
-  fi
-
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-
-fi
-
-if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's EnsembleStat tool..."
-
-  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_APCPgt01h_cmn.conf"
-  else
-    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
-  fi
-
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -352,7 +282,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-METplus gen_ens_prod and ensemble_stat tools completed successfully.
+METplus grid_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

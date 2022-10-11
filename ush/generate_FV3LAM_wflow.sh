@@ -219,18 +219,28 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'get_obs_ndas_tn': ${GET_OBS_NDAS_TN}
   'get_obs_mrms_tn': ${GET_OBS_MRMS_TN}
   'vx_tn': ${VX_TN}
+  'run_vxaux_pcpcombine_obs_tn': ${RUN_VXAUX_PCPCOMBINE_OBS_TN}
+  'run_vxaux_pcpcombine_fcst_tn': ${RUN_VXAUX_PCPCOMBINE_FCST_TN}
+  'run_vxaux_pb2nc_obs_tn': ${RUN_VXAUX_PB2NC_OBS_TN}
+  'run_vxdet_gridstat_tn': ${RUN_VXDET_GRIDSTAT_TN}
+  'run_vxdet_pointstat_tn': ${RUN_VXDET_POINTSTAT_TN}
+  'run_vxens_gridstat_tn': ${RUN_VXENS_GRIDSTAT_TN}
+  'run_vxens_pointstat_tn': ${RUN_VXENS_POINTSTAT_TN}
+  'run_vxens_gepes_grid_tn': ${RUN_VXENS_GEPES_GRID_TN}
+  'run_vxens_gepes_point_tn': ${RUN_VXENS_GEPES_POINT_TN}
   'vx_pb2nc_obs_tn': ${VX_PB2NC_OBS_TN}
   'vx_pcpcombine_obs_tn': ${VX_PCPCOMBINE_OBS_TN}
   'vx_pcpcombine_fcst_tn': ${VX_PCPCOMBINE_FCST_TN}
+  'vx_gridstat_tn': ${VX_GRIDSTAT_TN}
   'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
   'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
   'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
-  'vx_gridstat_nopcpcombine_tn': ${VX_GRIDSTAT_NOPCPCOMBINE_TN}
-  'vx_gridstat_nopcpcombine_apcp_tn': ${VX_GRIDSTAT_NOPCPCOMBINE_APCP_TN}
+  'vx_gridstat_cmn_tn': ${VX_GRIDSTAT_CMN_TN}
+  'vx_gridstat_cmn_apcp_tn': ${VX_GRIDSTAT_CMN_APCP_TN}
   'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
   'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
   'vx_gridstat_apcp24h_tn': ${VX_GRIDSTAT_APCP24h_TN}
-  'vx_pointstat_nopb2nc_tn': ${VX_POINTSTAT_NOPB2NC_TN}
+  'vx_pointstat_cmn_tn': ${VX_POINTSTAT_CMN_TN}
   'vx_pointstat_tn': ${VX_POINTSTAT_TN}
   'vx_ensgrid_tn': ${VX_ENSGRID_TN}
   'vx_ensgrid_apcp01h_tn': ${VX_ENSGRID_APCP01h_TN}
@@ -260,17 +270,18 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
 #
 # Verification related parameters.  Definitions:
 #
-# vx_fields:
+# gridvx_fields:
 # Specifies the names of the fields to verify using MET's grid_stat tool.
 # (There are others that are verified using other MET tools, e.g. point_stat,
 # but those are specified in the METplus configuration files).
 #
-# vx_accums:
+# apcp_accums:
 # For accumulated precipitaton (APCP), the accumulation periods to 
 # verify in units of hours.
 #
-  'vx_fields': [ 'APCP', 'REFC', 'RETOP' ]
-  'vx_accums': [ 01, 03, 06, 24 ]
+  'gridvx_fields': [ 'APCP', 'REFC', 'RETOP' ]
+  'apcp_accums': [ 01, 03, 06, 24 ]
+  'pointvx_fields': [ 'SFC', 'UPA' ]
 #
 # Number of nodes to use for each task.
 #
@@ -419,7 +430,6 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'run_task_vx_pcpcombine_obs': ${RUN_TASK_VX_PCPCOMBINE_OBS}
   'run_task_vx_pcpcombine_fcst': ${RUN_TASK_VX_PCPCOMBINE_FCST}
   'run_task_vx_gridstat': ${RUN_TASK_VX_GRIDSTAT}
-  'run_task_vx_pointstat_nopb2nc': ${RUN_TASK_VX_POINTSTAT_NOPB2NC}
   'run_task_vx_pointstat': ${RUN_TASK_VX_POINTSTAT}
   'run_task_vx_ensgrid': ${RUN_TASK_VX_ENSGRID}
   'run_task_vx_enspoint': ${RUN_TASK_VX_ENSPOINT}

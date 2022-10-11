@@ -62,7 +62,7 @@ on observation.
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_pcpcombine_obs.sh \
+$SCRIPTSDIR/exregional_run_vxaux_pcpcombine_obs.sh \
   cycle_dir="${CYCLE_DIR}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."

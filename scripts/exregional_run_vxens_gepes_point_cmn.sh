@@ -12,6 +12,15 @@
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that sets various field-
+# dependent naming parameters needed by MET/METplus verification tasks.
+#
+#-----------------------------------------------------------------------
+#
+. $USHDIR/set_vx_fieldname_params.sh
+#
+#-----------------------------------------------------------------------
+#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -42,8 +51,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus tool pb2nc
-in preparation for deterministic verification.
+This is the ex-script for the task that runs METplus for point-stat on
+the UPP output files by initialization time for all forecast hours.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -70,29 +79,66 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run pb2nc.
+# Set various field name parameters associated with the field to be
+# verified.
 #
 #-----------------------------------------------------------------------
 #
-echo "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-echo "  CDATE = |$CDATE|"
+FIELDNAME_IN_OBS_INPUT=""
+FIELDNAME_IN_FCST_INPUT=""
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_vx_fieldname_params \
+  field="$VAR" accum="${ACCUM:-}" \
+  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
+  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
+  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+#
+#-----------------------------------------------------------------------
+#
+# Set variable that contains a description of what type of field (really
+# a group of fields) is to be verified.
+#
+#-----------------------------------------------------------------------
+#
+field_desc=""
+if [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "sfc" ]; then
+  field_desc="surface"
+elif [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "upa" ]; then
+  field_desc="upper air"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Create a comma-separated list of forecast hours for METplus to step
+# through.
+#
+#-----------------------------------------------------------------------
+#
+echo "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
+echo "  CDATE = |${CDATE}|"
 
 fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
-echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
+FHR_LAST=${FCST_LEN_HRS}
+echo "FHR_LAST = |${FHR_LAST}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from pcp_combine.  Also, set the
-# suffix for the name of the log file that METplus will generate.
+# Set paths for input to and output from gen_ens_prod and ensemble_stat.
+# Also, set the suffix for the names of the log files that METplus will
+# generate.
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE="${OBS_DIR}"
-OUTPUT_BASE="${MET_OUTPUT_DIR}"
-OUTPUT_SUBDIR="metprd/pb2nc_obs_nopointstat"
-LOG_SUFFIX="${CDATE}"
+FCST_INPUT_BASE="${MET_INPUT_DIR}"
+OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_cmn"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+OUTPUT_SUBDIR_GEN_ENS_PROD="metprd/gen_ens_prod_cmn"
+OUTPUT_SUBDIR_ENSEMBLE_STAT="metprd/ensemble_stat_cmn"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -101,12 +147,18 @@ LOG_SUFFIX="${CDATE}"
 # multiple workflow tasks are launched that all require METplus to create
 # the same directory, some of the METplus tasks can fail.  This is a
 # known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be
+# If/when it is fixed, the following directory creation steps can be
 # removed from this script.
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
+if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
+  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_GEN_ENS_PROD}"
+fi
+
+if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
+  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_ENSEMBLE_STAT}"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -119,6 +171,40 @@ if [ ! -d "${OBS_DIR}" ]; then
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Construct the variable fcst_pcp_combine_output_template that contains
+# a template (that METplus can read) of the paths to the files that the
+# pcp_combine tool has generated (in previous workflow tasks).  This
+# will be exported to the environment and read into various variables in
+# the METplus configuration files.
+#
+#-----------------------------------------------------------------------
+#
+INPUT_TEMPLATE=""
+
+for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
+
+  mem_indx=$(($i+1))
+  mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
+  time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
+  mns_time_lag=$(( -${time_lag} ))
+
+  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
+  if [ -z "${INPUT_TEMPLATE}" ]; then
+    INPUT_TEMPLATE="  ${template}"
+  else
+    INPUT_TEMPLATE="\
+${INPUT_TEMPLATE},
+  ${template}"
+  fi
+
+done
+
+echo
+echo "INPUT_TEMPLATE = 
+${INPUT_TEMPLATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -140,11 +226,19 @@ export LOGDIR
 # defined below.
 #
 export CDATE
-export INPUT_BASE
+export OBS_INPUT_BASE
+export FCST_INPUT_BASE
 export OUTPUT_BASE
-export OUTPUT_SUBDIR
+export OUTPUT_SUBDIR_GEN_ENS_PROD
+export OUTPUT_SUBDIR_ENSEMBLE_STAT
 export LOG_SUFFIX
+export MODEL
+export NET
 export FHR_LIST
+export FHR_LAST
+export NUM_ENS_MEMBERS
+export FIELDNAME_IN_MET_FILEDIR_NAMES
+export INPUT_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
@@ -152,16 +246,31 @@ export FHR_LIST
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Calling METplus to run MET's Pb2nc tool for surface fields..."
-metplus_config_fp="${METPLUS_CONF}/Pb2nc_obs.conf"
-${METPLUS_PATH}/ush/run_metplus.py \
-  -c ${METPLUS_CONF}/common.conf \
-  -c ${metplus_config_fp} || \
-print_err_msg_exit "
+if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
+  print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GenEnsProd tool for ${field_desc} fields..."
+  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
+  ${METPLUS_PATH}/ush/run_metplus.py \
+    -c ${METPLUS_CONF}/common.conf \
+    -c ${metplus_config_fp} || \
+  print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+fi
+
+if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
+  print_info_msg "$VERBOSE" "
+Calling METplus to run MET's EnsembleStat tool for ${field_desc} fields..."
+  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
+  ${METPLUS_PATH}/ush/run_metplus.py \
+    -c ${METPLUS_CONF}/common.conf \
+    -c ${metplus_config_fp} || \
+  print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -171,7 +280,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus pb2nc tool completed successfully.
+METplus gen_ens_prod and ensemble_stat tools completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

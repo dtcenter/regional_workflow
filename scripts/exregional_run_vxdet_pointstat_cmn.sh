@@ -12,6 +12,15 @@
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that sets various field-
+# dependent naming parameters needed by MET/METplus verification tasks.
+#
+#-----------------------------------------------------------------------
+#
+. $USHDIR/set_vx_fieldname_params.sh
+#
+#-----------------------------------------------------------------------
+#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -42,8 +51,10 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs METplus for point-stat on
-the UPP output files by initialization time for all forecast hours.
+This is the ex-script for the task that runs the MET/METplus point_stat
+tool to perform point-based deterministic verification of surface and
+upper air fields to generate statistics for an individual ensemble 
+member.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -70,34 +81,74 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Create a comma-separated list of forecast hours for METplus to step
-# through.
+# Set various field name parameters associated with the field to be
+# verified.
 #
 #-----------------------------------------------------------------------
 #
-echo "SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS"
-echo "  CDATE = |${CDATE}|"
+FIELDNAME_IN_OBS_INPUT=""
+FIELDNAME_IN_FCST_INPUT=""
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_vx_fieldname_params \
+  field="$VAR" accum="${ACCUM:-}" \
+  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
+  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
+  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+#
+#-----------------------------------------------------------------------
+#
+# Set variable that contains a description of what type of field (really
+# a group of fields) is to be verified.
+#
+#-----------------------------------------------------------------------
+#
+field_desc=""
+if [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "sfc" ]; then
+  field_desc="surface"
+elif [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "upa" ]; then
+  field_desc="upper air"
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Set the array of forecast hours for which to run point_stat.
+#
+#-----------------------------------------------------------------------
+#
+echo "ZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+echo "  CDATE = |$CDATE|"
 
-fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
-FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "FHR_LIST = |${FHR_LIST}|"
 FHR_LAST=${FCST_LEN_HRS}
 echo "FHR_LAST = |${FHR_LAST}|"
+fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
+echo "fhr_array = |${fhr_array[@]}|"
+FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "FHR_LIST = |${FHR_LIST}|"
+
+TIME_LAG="0"
+mem_indx="${mem_indx:-}"
+if [ ! -z "mem_indx" ]; then
+  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[$mem_indx-1]}*${secs_per_hour} ))
+fi
+# Calculate the negative of the time lag.  This is needed because in the
+# METplus configuration file, simply placing a minus sign in front of
+# TIME_LAG causes an error.
+MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from gen_ens_prod and ensemble_stat.
-# Also, set the suffix for the names of the log files that METplus will
-# generate.
+# Set paths for input to and output from point_stat.  Also, set the
+# suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
+OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_cmn"
 FCST_INPUT_BASE="${MET_INPUT_DIR}"
-OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_nopointstat"
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
-OUTPUT_SUBDIR_GEN_ENS_PROD="metprd/gen_ens_prod_cmn"
-OUTPUT_SUBDIR_ENSEMBLE_STAT="metprd/ensemble_stat_cmn"
-LOG_SUFFIX="_${CDATE}"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+OUTPUT_SUBDIR="metprd/point_stat_cmn"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -106,18 +157,12 @@ LOG_SUFFIX="_${CDATE}"
 # multiple workflow tasks are launched that all require METplus to create
 # the same directory, some of the METplus tasks can fail.  This is a
 # known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation steps can be
+# If/when it is fixed, the following directory creation step can be
 # removed from this script.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_GEN_ENS_PROD}"
-fi
-
-if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR_ENSEMBLE_STAT}"
-fi
+mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -133,46 +178,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Construct the variable fcst_pcp_combine_output_template that contains
-# a template (that METplus can read) of the paths to the files that the
-# pcp_combine tool has generated (in previous workflow tasks).  This
-# will be exported to the environment and read into various variables in
-# the METplus configuration files.
-#
-#-----------------------------------------------------------------------
-#
-INPUT_TEMPLATE=""
-
-for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
-
-  mem_indx=$(($i+1))
-  mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
-  time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
-  mns_time_lag=$(( -${time_lag} ))
-
-  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
-  if [ -z "${INPUT_TEMPLATE}" ]; then
-    INPUT_TEMPLATE="  ${template}"
-  else
-    INPUT_TEMPLATE="\
-${INPUT_TEMPLATE},
-  ${template}"
-  fi
-
-done
-
-echo
-echo "INPUT_TEMPLATE = 
-${INPUT_TEMPLATE}"
-#
-#-----------------------------------------------------------------------
-#
 # Export variables to environment to make them accessible in METplus
 # configuration files.
 #
 #-----------------------------------------------------------------------
 #
-# Variables needed in the common METplus configuration file (at 
+# Variables needed in the common METplus configuration file (at
 # ${METPLUS_CONF}/common.conf).
 #
 export MET_INSTALL_DIR
@@ -188,15 +199,15 @@ export CDATE
 export OBS_INPUT_BASE
 export FCST_INPUT_BASE
 export OUTPUT_BASE
-export OUTPUT_SUBDIR_GEN_ENS_PROD
-export OUTPUT_SUBDIR_ENSEMBLE_STAT
+export OUTPUT_SUBDIR
 export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
 export FHR_LAST
-export NUM_ENS_MEMBERS
-export INPUT_TEMPLATE
+export TIME_LAG
+export MNS_TIME_LAG
+export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 #-----------------------------------------------------------------------
 #
@@ -204,57 +215,16 @@ export INPUT_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GenEnsProd tool for surface fields..."
-  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_sfc_cmn.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for ${field_desc} fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GenEnsProd tool for upper air fields..."
-  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_upa_cmn.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-
-fi
-
-if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's EnsembleStat tool for surface fields..."
-  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_sfc_cmn.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's EnsembleStat tool for upper air fields..."
-  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_upa_cmn.conf"
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-
-fi
 #
 #-----------------------------------------------------------------------
 #
@@ -264,7 +234,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-METplus gen_ens_prod and ensemble_stat tools completed successfully.
+METplus point_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

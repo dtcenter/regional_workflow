@@ -35,21 +35,32 @@ Workflow task names.
 <!ENTITY GET_OBS_CCPA_TN                       "{{ get_obs_ccpa_tn }}">
 <!ENTITY GET_OBS_NDAS_TN                       "{{ get_obs_ndas_tn }}">
 <!ENTITY GET_OBS_MRMS_TN                       "{{ get_obs_mrms_tn }}">
-<!ENTITY VX_RUN_OLD_VXDET_TASKS             "FALSE">
-<!ENTITY VX_RUN_OLD_VXENS_TASKS             "FALSE">
-<!ENTITY VX_PCPCOMBINE_OBS_TN                  "{{ vx_pcpcombine_obs_tn }}">
-<!ENTITY VX_PB2NC_OBS_TN                       "{{ vx_pb2nc_obs_tn }}">
+<!ENTITY VX_RUN_OLD_VXDET_TASKS          "FALSE">
+<!ENTITY VX_RUN_OLD_VXENS_TASKS          "FALSE">
+<!-- <!ENTITY VX_PCPCOMBINE_OBS_TN                  "{{ vx_pcpcombine_obs_tn }}"> -->
+<!-- <!ENTITY VX_PB2NC_OBS_TN                       "{{ vx_pb2nc_obs_tn }}"> -->
 <!ENTITY VX_TN                                 "{{ vx_tn }}">
 <!ENTITY VX_GRIDSTAT_APCP01h_TN                "{{ vx_gridstat_apcp01h_tn }}">
 <!ENTITY VX_GRIDSTAT_REFC_TN                   "{{ vx_gridstat_refc_tn }}">
 <!ENTITY VX_GRIDSTAT_RETOP_TN                  "{{ vx_gridstat_retop_tn }}">
 <!ENTITY VX_PCPCOMBINE_FCST_TN                 "{{ vx_pcpcombine_fcst_tn }}">
-<!ENTITY VX_GRIDSTAT_NOPCPCOMBINE_TN           "{{ vx_gridstat_nopcpcombine_tn }}">
-<!ENTITY VX_GRIDSTAT_NOPCPCOMBINE_APCP_TN      "{{ vx_gridstat_nopcpcombine_apcp_tn }}">
+<!-- <!ENTITY VX_GRIDSTAT_CMN_TN                    "{{ vx_gridstat_cmn_tn }}"> -->
+<!-- <!ENTITY VX_GRIDSTAT_CMN_APCP_TN               "{{ vx_gridstat_cmn_apcp_tn }}"> -->
+<!-- <!ENTITY VX_GRIDSTAT_TN                        "{{ vx_gridstat_tn }}"> -->
+<!ENTITY RUN_VXAUX_PB2NC_OBS_TN                "{{ run_vxaux_pb2nc_obs_tn }}">
+<!ENTITY RUN_VXAUX_PCPCOMBINE_OBS_TN           "{{ run_vxaux_pcpcombine_obs_tn }}">
+<!ENTITY RUN_VXAUX_PCPCOMBINE_FCST_TN          "{{ run_vxaux_pcpcombine_fcst_tn }}">
+<!ENTITY RUN_VXDET_GRIDSTAT_TN                 "{{ run_vxdet_gridstat_tn }}">
+<!ENTITY RUN_VXDET_POINTSTAT_TN                "{{ run_vxdet_pointstat_tn }}">
+<!ENTITY RUN_VXENS_GEPES_GRID_TN               "{{ run_vxens_gepes_grid_tn }}">
+<!ENTITY RUN_VXENS_GEPES_POINT_TN              "{{ run_vxens_gepes_point_tn }}">
+<!ENTITY RUN_VXENS_GRIDSTAT_TN                 "{{ run_vxens_gridstat_tn }}">
+<!ENTITY RUN_VXENS_POINTSTAT_TN                "{{ run_vxens_pointstat_tn }}">
+
 <!ENTITY VX_GRIDSTAT_APCP03h_TN                "{{ vx_gridstat_apcp03h_tn }}">
 <!ENTITY VX_GRIDSTAT_APCP06h_TN                "{{ vx_gridstat_apcp06h_tn }}">
 <!ENTITY VX_GRIDSTAT_APCP24h_TN                "{{ vx_gridstat_apcp24h_tn }}">
-<!ENTITY VX_POINTSTAT_NOPB2NC_TN               "{{ vx_pointstat_nopb2nc_tn }}">
+<!-- <!ENTITY VX_POINTSTAT_CMN_TN                   "{{ vx_pointstat_cmn_tn }}"> -->
 <!ENTITY VX_POINTSTAT_TN                       "{{ vx_pointstat_tn }}">
 <!ENTITY VX_ENSGRID_TN                         "{{ vx_ensgrid_tn }}">
 <!ENTITY VX_ENSGRID_APCP01h_TN                 "{{ vx_ensgrid_apcp01h_tn }}">
@@ -441,18 +452,18 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_PB2NC_OBS_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_pb2nc_obs }}">
+  <task name="&RUN_VXAUX_PB2NC_OBS_TN;" cycledefs="forecast" maxtries="{{ maxtries_vx_pb2nc_obs }}">
     &RSRV_DEFAULT;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_PB2NC_OBS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXAUX_PB2NC_OBS"</command>
     <nodes>{{ nnodes_vx_pb2nc_obs }}:ppn={{ ppn_vx_pb2nc_obs }}</nodes>
     <walltime>{{ wtime_vx_pb2nc_obs }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_PB2NC_OBS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_PB2NC_OBS_TN;_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXAUX_PB2NC_OBS_TN;</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXAUX_PB2NC_OBS_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
@@ -480,7 +491,7 @@ MODULES_RUN_TASK_FP script.
 
 
 {%- if run_task_vx_pcpcombine_obs %}
-  {%- for accum in vx_accums -%}
+  {%- for accum in apcp_accums -%}
     {%- set fmtstr = "%02d" %}
     {%- set accum2d = fmtstr%accum -%}
     {%- set accum2dh = accum2d ~ "h" -%}
@@ -496,18 +507,18 @@ is correct.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_PCPCOMBINE_OBS_TN;_{{fieldname}}" cycledefs="forecast" maxtries="{{ maxtries_vx_pcpcombine_obs }}">
+  <task name="&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}" cycledefs="forecast" maxtries="{{ maxtries_vx_pcpcombine_obs }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_PCPCOMBINE_OBS"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXAUX_PCPCOMBINE_OBS"</command>
     <nodes>{{ nnodes_vx_pcpcombine_obs }}:ppn={{ ppn_vx_pcpcombine_obs }}</nodes>
     <walltime>{{ wtime_vx_pcpcombine_obs }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_PCPCOMBINE_OBS_TN;_{{fieldname}}</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_PCPCOMBINE_OBS_TN;_{{fieldname}}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
@@ -1309,8 +1320,8 @@ be removed once that bug is fixed.
 
 {%- if run_task_vx_gridstat %}
 {#- #}
-  {%- for field in vx_fields -%}
-    {%- for accum in vx_accums -%}
+  {%- for field in gridvx_fields -%}
+    {%- for accum in apcp_accums -%}
 {#- #}
       {%- set fmtstr = "%02d" %}
       {%- set accum2d = fmtstr%accum %}
@@ -1351,18 +1362,18 @@ is correct.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_pcpcombine_fcst }}">
+  <task name="&RUN_VXAUX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_pcpcombine_fcst }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_PCPCOMBINE_FCST"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXAUX_PCPCOMBINE_FCST"</command>
     <nodes>{{ nnodes_vx_pcpcombine_fcst }}:ppn={{ ppn_vx_pcpcombine_fcst }}</nodes>
     <walltime>{{ wtime_vx_pcpcombine_fcst }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
           {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
           {%- endif %}
-    <jobname>&VX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXAUX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXAUX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
@@ -1394,18 +1405,18 @@ is correct.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_GRIDSTAT_NOPCPCOMBINE_TN;_{{fieldname}}{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat }}">
+  <task name="&RUN_VXDET_GRIDSTAT_TN;_{{fieldname}}_cmn{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_GRIDSTAT_NOPCPCOMBINE"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXDET_GRIDSTAT_CMN"</command>
     <nodes>{{ nnodes_vx_gridstat }}:ppn={{ ppn_vx_gridstat }}</nodes>
     <walltime>{{ wtime_vx_gridstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
     {%- endif %}
-    <jobname>&VX_GRIDSTAT_NOPCPCOMBINE_TN;_{{fieldname}}{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_GRIDSTAT_NOPCPCOMBINE_TN;_{{fieldname}}{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXDET_GRIDSTAT_TN;_{{fieldname}}_cmn{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXDET_GRIDSTAT_TN;_{{fieldname}}_cmn{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
@@ -1427,8 +1438,8 @@ is correct.
     <dependency>
       <and>
       {%- if accum > 01 %}
-        <taskdep task="&VX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
-        <taskdep task="&VX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}"/>
+        <taskdep task="&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
+        <taskdep task="&RUN_VXAUX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}"/>
       {%- endif %}
       {%- if run_task_get_obs_mrms %}
         <taskdep task="&GET_OBS_MRMS_TN;"/>
@@ -1452,30 +1463,36 @@ is correct.
 
 
 {# NEW deterministic point-based vx tasks. #}
-  {%- if run_task_vx_pointstat_nopb2nc %}
+  {%- if run_task_vx_pointstat %}
+{#- #}
+    {%- for field in pointvx_fields -%}
+      {%- set fieldname = field %}
+      {%- set obtype = "NDAS" %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_POINTSTAT_NOPB2NC_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_pointstat }}">
+  <task name="&RUN_VXDET_POINTSTAT_TN;_{{fieldname}}_cmn{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_pointstat }}">
     &RSRV_DEFAULT;
 
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_POINTSTAT_NOPB2NC"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXDET_POINTSTAT_CMN"</command>
     <nodes>{{ nnodes_vx_pointstat }}:ppn={{ ppn_vx_pointstat }}</nodes>
     <walltime>{{ wtime_vx_pointstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
     {%- endif %}
-    <jobname>&VX_POINTSTAT_NOPB2NC_TN;{{ uscore_ensmem_name }}</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_POINTSTAT_NOPB2NC_TN;{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXDET_POINTSTAT_TN;_{{fieldname}}_cmn{{ uscore_ensmem_name }}</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXDET_POINTSTAT_TN;_{{fieldname}}_cmn{{ uscore_ensmem_name }}_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
+    <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
+    <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>VAR</name><value>{{fieldname}}</value></envar>
     {%- if do_ensemble %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
@@ -1486,7 +1503,7 @@ is correct.
 
     <dependency>
       <and>
-        <taskdep task="&VX_PB2NC_OBS_TN;"/>
+        <taskdep task="&RUN_VXAUX_PB2NC_OBS_TN;"/>
       {%- if run_task_get_obs_ndas %}
         <taskdep task="&GET_OBS_NDAS_TN;"/>
       {%- endif %}
@@ -1502,6 +1519,7 @@ is correct.
 {#    {%- endif %} #}
 
   </task>
+    {%- endfor %}
   {%- endif %}
 
 {%- if do_ensemble %}
@@ -2362,8 +2380,8 @@ this purpose.
 
 {%- if run_task_vx_ensgrid %}
 {#- #}
-  {%- for field in vx_fields -%}
-    {%- for accum in vx_accums -%}
+  {%- for field in gridvx_fields -%}
+    {%- for accum in apcp_accums -%}
 {#- #}
       {%- set fmtstr = "%02d" %}
       {%- set accum2d = fmtstr%accum %}
@@ -2393,28 +2411,23 @@ Apparently need to intialize fieldname and create_gepes_task.
         {%- endif %}
       {%- endif %}
 {#- #}
-{#-
-Should combine these two "if" statements into a single "if" using the
-"and" operator.  Need to test carefully with jinja to make sure syntax
-is correct.
-#}
       {%- if create_gepes_task == true %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_TN;_cmn_{{fieldname}}" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid }}">
+  <task name="&RUN_VXENS_GEPES_GRID_TN;_{{fieldname}}_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_CMN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXENS_GEPES_GRID_CMN"</command>
     <nodes>{{ nnodes_vx_ensgrid }}:ppn={{ ppn_vx_ensgrid }}</nodes>
     <walltime>{{ wtime_vx_ensgrid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
         {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
         {%- endif %}
-    <jobname>&VX_ENSGRID_TN;_cmn_{{fieldname}}</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_TN;_cmn_{{fieldname}}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXENS_GEPES_GRID_TN;_{{fieldname}}_cmn</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXENS_GEPES_GRID_TN;_{{fieldname}}_cmn_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
@@ -2439,7 +2452,7 @@ is correct.
 
 
         {%- if accum > 01 %}
-        <taskdep task="&VX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
+        <taskdep task="&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
 {#-
 List as dependencies the pcp_combine forecast task corresponding to each
 ensemble member.
@@ -2447,7 +2460,7 @@ ensemble member.
           {%-for m in range(1, num_ens_members+1) %}
             {%- set fmtstr="%0"~ndigits_ensmem_names~"d" %}
             {%- set ensmem_name = ensmem_indx_name ~ fmtstr%m %}
-        <taskdep task="&VX_PCPCOMBINE_FCST_TN;_{{fieldname}}_{{ensmem_name}}"/>
+        <taskdep task="&RUN_VXAUX_PCPCOMBINE_FCST_TN;_{{fieldname}}_{{ensmem_name}}"/>
           {%- endfor %}
         {%- endif %}
 
@@ -2493,8 +2506,8 @@ the APCP01, REFC, and RETOP.  Need to clean up dependencies accordingly.
 
 {%- if run_task_vx_ensgrid %}
 {#- #}
-  {%- for field in vx_fields -%}
-    {%- for accum in vx_accums -%}
+  {%- for field in gridvx_fields -%}
+    {%- for accum in apcp_accums -%}
 {#- #}
       {%- set fmtstr = "%02d" %}
       {%- set accum2d = fmtstr%accum %}
@@ -2517,29 +2530,25 @@ Apparently need to intialize fieldname and create_gridstat_task.
       {%- else %}
         {%- set create_gridstat_task = false %}
       {%- endif %}
-{#-
-Should combine these two "if" statements into a single "if" using the
-"and" operator.  Need to test carefully with jinja to make sure syntax
-is correct.
-#}
+{#- #}
       {%- if create_gridstat_task == true %}
 {#- #}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSGRID_MEAN_TN;_cmn_{{fieldname}}" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean }}">
+  <task name="&RUN_VXENS_GRIDSTAT_TN;_{{fieldname}}_mean_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_ensgrid_mean }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSGRID_MEAN_CMN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXENS_GRIDSTAT_MEAN_CMN"</command>
     <nodes>{{ nnodes_vx_ensgrid_mean }}:ppn={{ ppn_vx_ensgrid_mean }}</nodes>
     <walltime>{{ wtime_vx_ensgrid_mean }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
         {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
         {%- endif %}
-    <jobname>&VX_ENSGRID_MEAN_TN;_cmn_{{fieldname}}</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSGRID_MEAN_TN;_cmn_{{fieldname}}_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXENS_GRIDSTAT_TN;_{{fieldname}}_mean_cmn</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXENS_GRIDSTAT_TN;_{{fieldname}}_mean_cmn_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
@@ -2551,7 +2560,7 @@ is correct.
     <envar><name>ACCUM</name><value>{{accum2d}}</value></envar>
 
     <dependency>
-      <taskdep task="&VX_ENSGRID_TN;_cmn_{{fieldname}}"/>
+      <taskdep task="&RUN_VXENS_GEPES_GRID_TN;_{{fieldname}}_cmn"/>
     </dependency>
 
   </task>
@@ -2568,29 +2577,35 @@ and then call point_stat to get the mean and probabilistic stats of the
 ensemble.
 #}
 {%- if run_task_vx_enspoint %}
+{#- #}
+  {%- for field in pointvx_fields -%}
+    {%- set fieldname = field %}
+    {%- set obtype = "NDAS" %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSPOINT_TN;_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint }}">
+  <task name="&RUN_VXENS_GEPES_POINT_TN;_{{fieldname}}_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSPOINT_CMN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXENS_GEPES_POINT_CMN"</command>
     <nodes>{{ nnodes_vx_enspoint }}:ppn={{ ppn_vx_enspoint }}</nodes>
     <walltime>{{ wtime_vx_enspoint }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSPOINT_TN;_cmn</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSPOINT_TN;_cmn_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXENS_GEPES_POINT_TN;_{{fieldname}}_cmn</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXENS_GEPES_POINT_TN;_{{fieldname}}_cmn_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
+    <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
+    <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>VAR</name><value>{{fieldname}}</value></envar>
 
   {%- if run_task_get_obs_ndas or run_task_run_post or (do_ensemble and false) %}
     <dependency>
@@ -2626,33 +2641,36 @@ this purpose.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&VX_ENSPOINT_MEAN_TN;_cmn" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint_mean }}">
+  <task name="&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_cmn_mean" cycledefs="forecast" maxtries="{{ maxtries_vx_enspoint_mean }}">
 
     &RSRV_DEFAULT;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VX_ENSPOINT_MEAN_CMN"</command>
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXENS_POINTSTAT_MEAN_CMN"</command>
     <nodes>{{ nnodes_vx_enspoint_mean }}:ppn={{ ppn_vx_enspoint_mean }}</nodes>
     <walltime>{{ wtime_vx_enspoint_mean }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
     <native>&SLURM_NATIVE_CMD;</native>
   {%- endif %}
-    <jobname>&VX_ENSPOINT_MEAN_TN;_cmn</jobname>
-    <join><cyclestr>&LOGDIR;/&VX_ENSPOINT_MEAN_TN;_cmn_@Y@m@d@H.log</cyclestr></join>
+    <jobname>&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_cmn_mean</jobname>
+    <join><cyclestr>&LOGDIR;/&RUN_VXENS_POINTSTAT_TN;_{{fieldname}}_cmn_mean_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
+    <envar><name>OBTYPE</name><value>{{obtype}}</value></envar>
+    <envar><name>OBS_DIR</name><value>&{{obtype}}_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+    <envar><name>VAR</name><value>{{fieldname}}</value></envar>
 
     <dependency>
       <and>
-        <taskdep task="&VX_ENSPOINT_TN;_cmn"/>
+        <taskdep task="&RUN_VXENS_GEPES_POINT_TN;_{{fieldname}}_cmn"/>
       </and>
     </dependency>
 
   </task>
+  {%- endfor %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2679,7 +2697,7 @@ this purpose.
 
     <dependency>
       <and>
-        <taskdep task="&VX_ENSPOINT_TN;_cmn"/>
+        <taskdep task="&RUN_VXENS_GEPES_POINT_TN;_cmn"/>
       </and>
     </dependency>
 

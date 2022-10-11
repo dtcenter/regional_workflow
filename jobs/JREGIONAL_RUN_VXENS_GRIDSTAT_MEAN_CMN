@@ -1,10 +1,10 @@
-#/bin/bash
+#!/bin/bash
 
 #
 #-----------------------------------------------------------------------
 #
 # This script runs METplus for grid-stat on the UPP output files by 
-# initialization time for all forecast hours.
+# initialization time for all forecast hours for gridded analysis.
 #
 #-----------------------------------------------------------------------
 #
@@ -51,8 +51,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs MET's pcp_combine tool
-on a forecast.
+This is the J-job script for the task that runs METplus for grid-stat
+on gridded fields by initialization time for all forecast hours.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -62,7 +62,7 @@ on a forecast.
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_run_pcpcombine_fcst.sh \
+$SCRIPTSDIR/exregional_run_vxens_gridstat_mean_cmn.sh \
   cycle_dir="${CYCLE_DIR}" || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."

@@ -12,6 +12,15 @@
 #
 #-----------------------------------------------------------------------
 #
+# Source the file containing the function that sets various field-
+# dependent naming parameters needed by MET/METplus verification tasks.
+#
+#-----------------------------------------------------------------------
+#
+. $USHDIR/set_vx_fieldname_params.sh
+#
+#-----------------------------------------------------------------------
+#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -43,9 +52,8 @@ Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs the MET/METplus point_stat
-tool to perform point-based deterministic verification of surface and
-upper air fields to generate statistics for an individual ensemble 
-member.
+tool to perform point-based ensemble verification of surface and upper
+air fields to generate ensemble mean statistics.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -72,29 +80,50 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
+# Set various field name parameters associated with the field to be
+# verified.
+#
+#-----------------------------------------------------------------------
+#
+FIELDNAME_IN_OBS_INPUT=""
+FIELDNAME_IN_FCST_INPUT=""
+FIELDNAME_IN_MET_OUTPUT=""
+FIELDNAME_IN_MET_FILEDIR_NAMES=""
+set_vx_fieldname_params \
+  field="$VAR" accum="${ACCUM:-}" \
+  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
+  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
+  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
+#
+#-----------------------------------------------------------------------
+#
+# Set variable that contains a description of what type of field (really
+# a group of fields) is to be verified.
+#
+#-----------------------------------------------------------------------
+#
+field_desc=""
+if [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "sfc" ]; then
+  field_desc="surface"
+elif [ "${FIELDNAME_IN_MET_FILEDIR_NAMES}" = "upa" ]; then
+  field_desc="upper air"
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Set the array of forecast hours for which to run point_stat.
 #
 #-----------------------------------------------------------------------
 #
-echo "ZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+echo "VVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
 echo "  CDATE = |$CDATE|"
 
-FHR_LAST=${FCST_LEN_HRS}
-echo "FHR_LAST = |${FHR_LAST}|"
 fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
-echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
-
-TIME_LAG="0"
-mem_indx="${mem_indx:-}"
-if [ ! -z "mem_indx" ]; then
-  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[$mem_indx-1]}*${secs_per_hour} ))
-fi
-# Calculate the negative of the time lag.  This is needed because in the
-# METplus configuration file, simply placing a minus sign in front of
-# TIME_LAG causes an error.
-MNS_TIME_LAG=$((-${TIME_LAG}))
+FHR_LAST=${FCST_LEN_HRS}
+echo "FHR_LAST = |${FHR_LAST}|"
 #
 #-----------------------------------------------------------------------
 #
@@ -103,11 +132,11 @@ MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_nopointstat"
-FCST_INPUT_BASE="${MET_INPUT_DIR}"
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-OUTPUT_SUBDIR="metprd/point_stat_nopb2nc"
-LOG_SUFFIX="${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_cmn"
+FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+OUTPUT_SUBDIR="metprd/point_stat_mean_cmn"
+LOG_SUFFIX="_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -164,8 +193,7 @@ export MODEL
 export NET
 export FHR_LIST
 export FHR_LAST
-export TIME_LAG
-export MNS_TIME_LAG
+export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 #-----------------------------------------------------------------------
 #
@@ -174,19 +202,8 @@ export MNS_TIME_LAG
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Calling METplus to run MET's PointStat tool for surface fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_sfc_nopb2nc.conf"
-${METPLUS_PATH}/ush/run_metplus.py \
-  -c ${METPLUS_CONF}/common.conf \
-  -c ${metplus_config_fp} || \
-print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-
-print_info_msg "$VERBOSE" "
-Calling METplus to run MET's PointStat tool for upper air fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_upa_nopb2nc.conf"
+Calling METplus to run MET's PointStat tool for ${field_desc} fields..."
+metplus_config_fp="${METPLUS_CONF}/PointStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \

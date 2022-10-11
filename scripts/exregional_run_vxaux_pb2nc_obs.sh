@@ -42,9 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus point_stat
-tool to perform point-based ensemble verification of surface and upper
-air fields to generate ensemble mean statistics.
+This is the ex-script for the task that runs the MET/METplus tool pb2nc
+in preparation for deterministic verification.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -71,31 +70,29 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run point_stat.
+# Set the array of forecast hours for which to run pb2nc.
 #
 #-----------------------------------------------------------------------
 #
-echo "VVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
+echo "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
 echo "  CDATE = |$CDATE|"
 
 fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
-export FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "fhr_array = |${fhr_array[@]}|"
+FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
-export FHR_LAST=${FCST_LEN_HRS}
-echo "FHR_LAST = |${FHR_LAST}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from point_stat.  Also, set the
+# Set paths for input to and output from pcp_combine.  Also, set the
 # suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_nopointstat"
-FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
-OUTPUT_SUBDIR="metprd/point_stat_mean_cmn"
-LOG_SUFFIX="_${CDATE}"
+INPUT_BASE="${OBS_DIR}"
+OUTPUT_BASE="${MET_OUTPUT_DIR}"
+OUTPUT_SUBDIR="metprd/pb2nc_obs_cmn"
+LOG_SUFFIX="${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -130,7 +127,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Variables needed in the common METplus configuration file (at
+# Variables needed in the common METplus configuration file (at 
 # ${METPLUS_CONF}/common.conf).
 #
 export MET_INSTALL_DIR
@@ -143,13 +140,10 @@ export LOGDIR
 # defined below.
 #
 export CDATE
-export OBS_INPUT_BASE
-export FCST_INPUT_BASE
+export INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
 export LOG_SUFFIX
-export MODEL
-export NET
 export FHR_LIST
 #
 #-----------------------------------------------------------------------
@@ -159,19 +153,8 @@ export FHR_LIST
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Calling METplus to run MET's PointStat tool for surface fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_sfc_mean_cmn.conf"
-${METPLUS_PATH}/ush/run_metplus.py \
-  -c ${METPLUS_CONF}/common.conf \
-  -c ${metplus_config_fp} || \
-print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-
-print_info_msg "$VERBOSE" "
-Calling METplus to run MET's PointStat tool for upper air fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_upa_mean_cmn.conf"
+Calling METplus to run MET's Pb2nc tool for surface fields..."
+metplus_config_fp="${METPLUS_CONF}/Pb2nc_obs.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -188,7 +171,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus point_stat tool completed successfully.
+METplus pb2nc tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

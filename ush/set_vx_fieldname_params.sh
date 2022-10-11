@@ -132,6 +132,20 @@ function set_vx_fieldname_params() {
       fieldname_in_MET_filedir_names="${field}"
       ;;
 
+    "SFC")
+      fieldname_in_obs_input=""
+      fieldname_in_fcst_input=""
+      fieldname_in_MET_output="${field}"
+      fieldname_in_MET_filedir_names="${field}"
+      ;;
+
+    "UPA")
+      fieldname_in_obs_input=""
+      fieldname_in_fcst_input=""
+      fieldname_in_MET_output="${field}"
+      fieldname_in_MET_filedir_names="${field}"
+      ;;
+
     *)
       print_err_msg_exit "\
 A method for setting verification parameters has not been specified for
