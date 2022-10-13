@@ -92,7 +92,8 @@ echo "FHR_LIST = |${FHR_LIST}|"
 INPUT_BASE="${OBS_DIR}"
 OUTPUT_BASE="${MET_OUTPUT_DIR}"
 OUTPUT_SUBDIR="metprd/pb2nc_obs_cmn"
-LOG_SUFFIX="${CDATE}"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/pb2nc_obs"
+LOG_SUFFIX="_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -143,6 +144,7 @@ export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
+export STAGING_DIR
 export LOG_SUFFIX
 export FHR_LIST
 #

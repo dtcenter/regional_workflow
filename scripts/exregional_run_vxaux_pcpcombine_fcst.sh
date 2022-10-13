@@ -148,6 +148,7 @@ MNS_TIME_LAG=$((-${TIME_LAG}))
 INPUT_BASE=${MET_INPUT_DIR}
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 OUTPUT_SUBDIR="metprd/pcp_combine_fcst_cmn"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
@@ -199,6 +200,7 @@ export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
+export STAGING_DIR 
 export LOG_SUFFIX
 export MODEL
 export NET

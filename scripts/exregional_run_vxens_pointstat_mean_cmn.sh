@@ -136,6 +136,7 @@ OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_cmn"
 FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}/metprd/gen_ens_prod_cmn"
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 OUTPUT_SUBDIR="metprd/point_stat_mean_cmn"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean"
 LOG_SUFFIX="_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
@@ -188,6 +189,7 @@ export OBS_INPUT_BASE
 export FCST_INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
+export STAGING_DIR
 export LOG_SUFFIX
 export MODEL
 export NET

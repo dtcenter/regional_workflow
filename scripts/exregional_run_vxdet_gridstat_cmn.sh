@@ -210,6 +210,7 @@ else
 fi
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 OUTPUT_SUBDIR="metprd/grid_stat_cmn"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
@@ -262,6 +263,7 @@ export OBS_INPUT_BASE
 export FCST_INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
+export STAGING_DIR
 export LOG_SUFFIX
 export MODEL
 export NET

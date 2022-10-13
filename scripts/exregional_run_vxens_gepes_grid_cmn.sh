@@ -185,6 +185,7 @@ fi
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 OUTPUT_SUBDIR_GEN_ENS_PROD="metprd/gen_ens_prod_cmn"
 OUTPUT_SUBDIR_ENSEMBLE_STAT="metprd/ensemble_stat_cmn"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
@@ -283,6 +284,7 @@ export FCST_INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR_GEN_ENS_PROD
 export OUTPUT_SUBDIR_ENSEMBLE_STAT
+export STAGING_DIR
 export LOG_SUFFIX
 export MODEL
 export NET

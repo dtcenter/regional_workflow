@@ -139,6 +139,7 @@ fi
 FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 OUTPUT_SUBDIR="metprd/grid_stat_prob_cmn"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob"
 LOG_SUFFIX="_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
@@ -200,11 +201,13 @@ export OBS_INPUT_BASE
 export FCST_INPUT_BASE
 export OUTPUT_BASE
 export OUTPUT_SUBDIR
+export STAGING_DIR
 export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
 export ACCUM_NO_PAD
+export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
