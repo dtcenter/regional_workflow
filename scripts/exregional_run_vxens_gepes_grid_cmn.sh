@@ -230,7 +230,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-INPUT_TEMPLATE=""
+FCST_INPUT_TEMPLATE=""
 
 for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
 
@@ -245,19 +245,19 @@ for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
     template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
   fi
 
-  if [ -z "${INPUT_TEMPLATE}" ]; then
-    INPUT_TEMPLATE="  ${template}"
+  if [ -z "${FCST_INPUT_TEMPLATE}" ]; then
+    FCST_INPUT_TEMPLATE="  ${template}"
   else
-    INPUT_TEMPLATE="\
-${INPUT_TEMPLATE},
+    FCST_INPUT_TEMPLATE="\
+${FCST_INPUT_TEMPLATE},
   ${template}"
   fi
 
 done
 
 echo
-echo "INPUT_TEMPLATE = 
-${INPUT_TEMPLATE}"
+echo "FCST_INPUT_TEMPLATE = 
+${FCST_INPUT_TEMPLATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -296,7 +296,7 @@ export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 export FIELD_THRESHOLDS
-export INPUT_TEMPLATE
+export FCST_INPUT_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
