@@ -97,10 +97,6 @@ OBS_FILENAME_METPROC_PREFIX=""
 OBS_FILENAME_METPROC_SUFFIX=""
 fhr_int=""
 
-echo
-echo "VVVVVVVVVVVVVVVVVVVVVVVVVVV"
-echo "  OBTYPE = ${OBTYPE}"
-
 set_vx_params \
   obtype="${OBTYPE}" \
   field="$VAR" \
@@ -179,9 +175,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-echo "KKKKKKKKKKKKKKKKKKKKKKKKKKK"
-echo "  CDATE = |$CDATE|"
-
 set_vx_fhr_list \
   obtype="${OBTYPE}" \
   field="${VAR}" \
@@ -289,8 +282,6 @@ export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
-export TIME_LAG
-export MNS_TIME_LAG
 
 export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
@@ -302,6 +293,8 @@ export OBS_FILENAME_METPROC_PREFIX
 export OBS_FILENAME_METPROC_SUFFIX
 
 export FIELD_THRESHOLDS
+export TIME_LAG
+export MNS_TIME_LAG
 #
 #-----------------------------------------------------------------------
 #

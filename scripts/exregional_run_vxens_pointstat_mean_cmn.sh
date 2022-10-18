@@ -117,9 +117,6 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-echo "VVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
-echo "  CDATE = |$CDATE|"
-
 set_vx_fhr_list \
   obtype="${OBTYPE}" \
   field="${VAR}" \

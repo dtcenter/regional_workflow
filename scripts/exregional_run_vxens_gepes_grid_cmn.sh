@@ -159,9 +159,6 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-echo "RRRRRRRRRRRRRRRRRRRRRRRRRRR"
-echo "  CDATE = |$CDATE|"
-
 set_vx_fhr_list \
   obtype="${OBTYPE}" \
   field="${VAR}" \
@@ -301,7 +298,6 @@ export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
-export NUM_ENS_MEMBERS
 
 export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
@@ -313,6 +309,7 @@ export OBS_FILENAME_METPROC_PREFIX
 export OBS_FILENAME_METPROC_SUFFIX
 
 export FIELD_THRESHOLDS
+export NUM_ENS_MEMBERS
 export FCST_INPUT_TEMPLATE
 #
 #-----------------------------------------------------------------------

@@ -117,9 +117,6 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-echo "WWWWWWWWWWWWWWWWWWWWWWWWW"
-echo "  CDATE = |$CDATE|"
-
 set_vx_fhr_list \
   obtype="${OBTYPE}" \
   field="${VAR}" \
@@ -218,7 +215,7 @@ export OBS_FILENAME_METPROC_SUFFIX
 #
 #-----------------------------------------------------------------------
 #
-# Run METplus.
+# Run METplus if there is at least one valid forecast hour.
 #
 #-----------------------------------------------------------------------
 #
