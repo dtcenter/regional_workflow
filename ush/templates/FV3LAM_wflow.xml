@@ -1505,8 +1505,6 @@ is correct.
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
     {%- endif %}
 
-{#    {%- if run_task_run_fcst or run_task_get_obs_ndas %} #}
-
     <dependency>
       <and>
         <taskdep task="&RUN_VXAUX_PB2NC_OBS_TN;"/>
@@ -1522,7 +1520,6 @@ is correct.
       {%- endif %}
       </and>
     </dependency>
-{#    {%- endif %} #}
 
   </task>
     {%- endfor %}

@@ -144,52 +144,50 @@ echo "  j = $j"
 
 echo "    fhr = $fhr"
 
-  hrs_since_init=$(( ${hh_init} + ${fhr} ))
+    hrs_since_init=$(( ${hh_init} + ${fhr} ))
 echo "    hrs_since_init = ${hrs_since_init}"
 
-  hh_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%H" )
+    hh_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%H" )
 echo "    hh_valid = ${hh_valid}"
-  hhmmss_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%H%M%S" )
+    hhmmss_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%H%M%S" )
 echo "    hhmmss_valid = ${hhmmss_valid}"
-  yyyymmdd_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%Y%m%d" )
+    yyyymmdd_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%Y%m%d" )
 echo "    yyyymmdd_valid = ${yyyymmdd_valid}"
-  yyyymmddhh_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%Y%m%d%H" )
+    yyyymmddhh_valid=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%Y%m%d%H" )
 echo "    yyyymmddhh_valid = ${yyyymmddhh_valid}"
 
-  case "${obtype}" in
-    "CCPA")
-      obs_subdir="${yyyymmdd_valid}"
-      obs_fn_time_str="${hh_valid}"
-      ;;
-    "MRMS")
-      obs_subdir="${yyyymmdd_valid}"
-      obs_fn_time_str="${yyyymmdd_valid}-${hhmmss_valid}"
-      ;;
-    "NDAS")
-      obs_subdir=""
-      obs_fn_time_str="${yyyymmddhh_valid}"
-      ;;
-    *)
-      print_err_msg_exit "\
+    case "${obtype}" in
+      "CCPA")
+        obs_subdir="${yyyymmdd_valid}"
+        obs_fn_time_str="${hh_valid}"
+        ;;
+      "MRMS")
+        obs_subdir="${yyyymmdd_valid}"
+        obs_fn_time_str="${yyyymmdd_valid}-${hhmmss_valid}"
+        ;;
+      "NDAS")
+        obs_subdir=""
+        obs_fn_time_str="${yyyymmddhh_valid}"
+        ;;
+      *)
+        print_err_msg_exit "\
 A method for setting the observations subdirectory (obs_subdir) and file
 name time string (obs_fn_time_str) has not been specified for this 
 observation type (obtype):
   obtype = \"${obtype}\""
-      ;;
-  esac
+        ;;
+    esac
 
-#  obs_fn="${obs_filename_prefix}${yyyymmdd_valid}-${hhmmss_valid}${obs_filename_suffix}"
-  obs_fn="${obs_filename_prefix}${obs_fn_time_str}${obs_filename_suffix}"
-
+    obs_fn="${obs_filename_prefix}${obs_fn_time_str}${obs_filename_suffix}"
 
 echo "    obs_fn = ${obs_fn}"
-  obs_fp="${obs_dir}/${obs_subdir}/${obs_fn}"
+    obs_fp="${obs_dir}/${obs_subdir}/${obs_fn}"
 echo "    obs_fp = ${obs_fp}"
 
-  if [ ! -f "${obs_fp}" ]; then
-    skip_this_fhr="TRUE"
-    num_missing_obs_files=$(( ${num_missing_obs_files} + 1 ))
-    print_info_msg "\
+    if [ ! -f "${obs_fp}" ]; then
+      skip_this_fhr="TRUE"
+      num_missing_obs_files=$(( ${num_missing_obs_files} + 1 ))
+      print_info_msg "\
 The observation file (obs_fp) for the current forecast hour (fhr;
 relative to the cycle date cdate) is missing:
   fhr_orig = "${fhr_orig}"
@@ -200,8 +198,8 @@ Not including the current forecast hour from the list of hours passed
 to the METplus configuration file."
 echo "    fhr_list = |${fhr_list}|"
 echo "    num_missing_obs_files = ${num_missing_obs_files}"
-    break
-  fi
+      break
+    fi
 
     fhr=$(( $fhr + 1 ))
 

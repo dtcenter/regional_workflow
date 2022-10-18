@@ -132,18 +132,6 @@ set_vx_fhr_list \
   obs_filename_prefix="${OBS_FILENAME_PREFIX}" \
   obs_filename_suffix="${OBS_FILENAME_SUFFIX}" \
   outvarname_fhr_list="FHR_LIST"
-
-echo "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-echo "FHR_LIST = |${FHR_LIST}|"
-
-if [ 0 = 1 ]; then
-
-fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
-echo "fhr_array = |${fhr_array[@]}|"
-FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "FHR_LIST = |${FHR_LIST}|"
-
-fi
 #
 #-----------------------------------------------------------------------
 #
