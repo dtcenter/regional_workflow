@@ -12,12 +12,12 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that sets various field-
-# dependent naming parameters needed by MET/METplus verification tasks.
+# Source files defining auxiliary functions for verification.
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/set_vx_fieldname_params.sh
+. $USHDIR/set_vx_params.sh
+. $USHDIR/set_vx_fhr_list.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -81,8 +81,9 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Set various field name parameters associated with the field to be
-# verified.
+# Set various verification parameters associated with the field to be
+# verified.  Not all of these are necessarily used later below but are
+# set here for consistency with other verification ex-scripts.
 #
 #-----------------------------------------------------------------------
 #
@@ -90,25 +91,26 @@ FIELDNAME_IN_OBS_INPUT=""
 FIELDNAME_IN_FCST_INPUT=""
 FIELDNAME_IN_MET_OUTPUT=""
 FIELDNAME_IN_MET_FILEDIR_NAMES=""
-set_vx_fieldname_params \
-  field="$VAR" accum="${ACCUM:-}" \
+OBS_FILENAME_PREFIX=""
+OBS_FILENAME_SUFFIX=""
+OBS_FILENAME_METPROC_PREFIX=""
+OBS_FILENAME_METPROC_SUFFIX=""
+fhr_int=""
+
+set_vx_params \
+  obtype="${OBTYPE}" \
+  field="$VAR" \
+  accum2d="${ACCUM}" \
+  outvarname_field_is_APCPgt01h="field_is_APCPgt01h" \
   outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
   outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
   outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
-  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
-#
-#-----------------------------------------------------------------------
-#
-# Check whether the field to verify is APCP with an accumulation interval
-# greater than 1 hour and set the flag field_is_APCPgt01h accordingly.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
-  field_is_APCPgt01h="TRUE"
-else
-  field_is_APCPgt01h="FALSE"
-fi
+  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES" \
+  outvarname_obs_filename_prefix="OBS_FILENAME_PREFIX" \
+  outvarname_obs_filename_suffix="OBS_FILENAME_SUFFIX" \
+  outvarname_obs_filename_METproc_prefix="OBS_FILENAME_METPROC_PREFIX" \
+  outvarname_obs_filename_METproc_suffix="OBS_FILENAME_METPROC_SUFFIX" \
+  outvarname_fhr_intvl_hrs="fhr_int"
 #
 #-----------------------------------------------------------------------
 #
@@ -119,10 +121,28 @@ fi
 echo "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
 echo "  CDATE = |$CDATE|"
 
+set_vx_fhr_list \
+  obtype="${OBTYPE}" \
+  field="${VAR}" \
+  field_is_APCPgt01h="${field_is_APCPgt01h}" \
+  accum="${ACCUM}" \
+  fhr_min="${ACCUM}" \
+  fhr_int="${fhr_int}" \
+  fhr_max="${FCST_LEN_HRS}" \
+  cdate="${CDATE}" \
+  obs_dir="${OBS_DIR}" \
+  obs_filename_prefix="${OBS_FILENAME_PREFIX}" \
+  obs_filename_suffix="${OBS_FILENAME_SUFFIX}" \
+  outvarname_fhr_list="FHR_LIST"
+
+if [ 0 = 1 ]; then
+
 fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
 echo "fhr_array = |${fhr_array[@]}|"
 FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "FHR_LIST = |${FHR_LIST}|"
+
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -179,13 +199,10 @@ ACCUM_NO_PAD=$( printf "%0d" "$ACCUM" )
 #
 #-----------------------------------------------------------------------
 #
-# Export variables to environment to make them accessible in METplus
-# configuration files.
+# Export variables needed in the common METplus configuration file (at
+# ${METPLUS_CONF}/common.conf).
 #
 #-----------------------------------------------------------------------
-#
-# Variables needed in the common METplus configuration file (at
-# ${METPLUS_CONF}/common.conf).
 #
 export MET_INSTALL_DIR
 export METPLUS_PATH
@@ -193,8 +210,14 @@ export MET_BIN_EXEC
 export METPLUS_CONF
 export LOGDIR
 #
-# Variables needed in the METplus configuration file metplus_config_fp
-# defined below.
+#-----------------------------------------------------------------------
+#
+# Export variables needed in the METplus configuration file metplus_config_fp
+# later defined below.  Not all of these are necessarily used in the 
+# configuration file but are exported here for consistency with other
+# verification ex-scripts.
+#
+#-----------------------------------------------------------------------
 #
 export CDATE
 export OBS_INPUT_BASE
@@ -207,26 +230,38 @@ export MODEL
 export NET
 export FHR_LIST
 export ACCUM_NO_PAD
+
 export FIELDNAME_IN_OBS_INPUT
+export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
+export OBS_FILENAME_PREFIX
+export OBS_FILENAME_SUFFIX
+export OBS_FILENAME_METPROC_PREFIX
+export OBS_FILENAME_METPROC_SUFFIX
 #
 #-----------------------------------------------------------------------
 #
-# Run METplus.
+# Run METplus if there is at least one valid forecast hour.
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GridStat tool..."
-metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn.conf"
-${METPLUS_PATH}/ush/run_metplus.py \
-  -c ${METPLUS_CONF}/common.conf \
-  -c ${metplus_config_fp} || \
-print_err_msg_exit "
+if [ -z "${FHR_LIST}" ]; then
+  print_err_msg_exit "\
+The list of forecast hours for which to run METplus is empty:
+  FHR_LIST = [${FHR_LIST}]"
+else
+  print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+  metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn.conf"
+  ${METPLUS_PATH}/ush/run_metplus.py \
+    -c ${METPLUS_CONF}/common.conf \
+    -c ${metplus_config_fp} || \
+  print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+fi
 #
 #-----------------------------------------------------------------------
 #

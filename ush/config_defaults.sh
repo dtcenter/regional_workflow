@@ -1773,6 +1773,8 @@ MAXTRIES_VX_ENSPOINT_PROB="1"
 # Allows an extra parameter to be passed to slurm via XML Native
 # command
 #
+#-----------------------------------------------------------------------
+#
 SLURM_NATIVE_CMD=""
 #
 #-----------------------------------------------------------------------
@@ -1836,6 +1838,23 @@ DT_SUBHOURLY_POST_MNTS="00"
 USE_CUSTOM_POST_CONFIG_FILE="FALSE"
 CUSTOM_POST_CONFIG_FP=""
 POST_OUTPUT_DOMAIN_NAME=""
+#
+#-----------------------------------------------------------------------
+#
+# For verification tasks that need observational data, this specifies
+# the maximum number of observation files that may be missing.  If more
+# than this number are missing, the verification task will error out.
+#
+# Note that this is a crude way of checking that there are enough obs to
+# conduct verification since this number should probably depend on the
+# field being verified, the time interval between observations, the 
+# length of the forecast, etc.  An alternative may be to specify the 
+# maximum allowed fraction of obs files that can be missing (i.e. the 
+# number missing divided by the number that are expected to exist).
+#
+#-----------------------------------------------------------------------
+#
+NUM_MISSING_OBS_FILES_MAX="2"
 #
 #-----------------------------------------------------------------------
 #
@@ -2087,6 +2106,3 @@ OMP_STACKSIZE_RUN_FCST="1024m"
 KMP_AFFINITY_RUN_POST="scatter"
 OMP_NUM_THREADS_RUN_POST="1"
 OMP_STACKSIZE_RUN_POST="1024m"
-#
-#-----------------------------------------------------------------------
-#
