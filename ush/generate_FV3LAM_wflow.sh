@@ -219,69 +219,26 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'get_obs_ndas_tn': ${GET_OBS_NDAS_TN}
   'get_obs_mrms_tn': ${GET_OBS_MRMS_TN}
   'vx_tn': ${VX_TN}
+  'run_vxaux_pb2nc_obs_tn': ${RUN_VXAUX_PB2NC_OBS_TN}
   'run_vxaux_pcpcombine_obs_tn': ${RUN_VXAUX_PCPCOMBINE_OBS_TN}
   'run_vxaux_pcpcombine_fcst_tn': ${RUN_VXAUX_PCPCOMBINE_FCST_TN}
-  'run_vxaux_pb2nc_obs_tn': ${RUN_VXAUX_PB2NC_OBS_TN}
   'run_vxdet_gridstat_tn': ${RUN_VXDET_GRIDSTAT_TN}
   'run_vxdet_pointstat_tn': ${RUN_VXDET_POINTSTAT_TN}
+  'run_vxens_gepes_gridded_tn': ${RUN_VXENS_GEPES_GRIDDED_TN}
+  'run_vxens_gepes_point_tn': ${RUN_VXENS_GEPES_POINT_TN}
   'run_vxens_gridstat_tn': ${RUN_VXENS_GRIDSTAT_TN}
   'run_vxens_pointstat_tn': ${RUN_VXENS_POINTSTAT_TN}
-  'run_vxens_gepes_grid_tn': ${RUN_VXENS_GEPES_GRID_TN}
-  'run_vxens_gepes_point_tn': ${RUN_VXENS_GEPES_POINT_TN}
-  'vx_pb2nc_obs_tn': ${VX_PB2NC_OBS_TN}
-  'vx_pcpcombine_obs_tn': ${VX_PCPCOMBINE_OBS_TN}
-  'vx_pcpcombine_fcst_tn': ${VX_PCPCOMBINE_FCST_TN}
-  'vx_gridstat_tn': ${VX_GRIDSTAT_TN}
-  'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
-  'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
-  'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
-  'vx_gridstat_cmn_tn': ${VX_GRIDSTAT_CMN_TN}
-  'vx_gridstat_cmn_apcp_tn': ${VX_GRIDSTAT_CMN_APCP_TN}
-  'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
-  'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
-  'vx_gridstat_apcp24h_tn': ${VX_GRIDSTAT_APCP24h_TN}
-  'vx_pointstat_cmn_tn': ${VX_POINTSTAT_CMN_TN}
-  'vx_pointstat_tn': ${VX_POINTSTAT_TN}
-  'vx_ensgrid_tn': ${VX_ENSGRID_TN}
-  'vx_ensgrid_apcp01h_tn': ${VX_ENSGRID_APCP01h_TN}
-  'vx_ensgrid_refc_tn': ${VX_ENSGRID_REFC_TN}
-  'vx_ensgrid_retop_tn': ${VX_ENSGRID_RETOP_TN}
-  'vx_ensgrid_apcp03h_tn': ${VX_ENSGRID_APCP03h_TN}
-  'vx_ensgrid_apcp06h_tn': ${VX_ENSGRID_APCP06h_TN}
-  'vx_ensgrid_apcp24h_tn': ${VX_ENSGRID_APCP24h_TN}
-  'vx_ensgrid_mean_tn': ${VX_ENSGRID_MEAN_TN}
-  'vx_ensgrid_apcp01h_mean_tn': ${VX_ENSGRID_APCP01h_MEAN_TN}
-  'vx_ensgrid_apcp01h_prob_tn': ${VX_ENSGRID_APCP01h_PROB_TN}
-  'vx_ensgrid_apcp03h_mean_tn': ${VX_ENSGRID_APCP03h_MEAN_TN}
-  'vx_ensgrid_apcp03h_prob_tn': ${VX_ENSGRID_APCP03h_PROB_TN}
-  'vx_ensgrid_apcp06h_mean_tn': ${VX_ENSGRID_APCP06h_MEAN_TN}
-  'vx_ensgrid_apcp06h_prob_tn': ${VX_ENSGRID_APCP06h_PROB_TN}
-  'vx_ensgrid_apcp24h_mean_tn': ${VX_ENSGRID_APCP24h_MEAN_TN}
-  'vx_ensgrid_apcp24h_prob_tn': ${VX_ENSGRID_APCP24h_PROB_TN}
-  'vx_ensgrid_refc_prob_tn': ${VX_ENSGRID_REFC_PROB_TN}
-  'vx_ensgrid_retop_prob_tn': ${VX_ENSGRID_RETOP_PROB_TN}
-  'vx_enspoint_tn': ${VX_ENSPOINT_TN}
-  'vx_enspoint_mean_tn': ${VX_ENSPOINT_MEAN_TN}
-  'vx_enspoint_prob_tn': ${VX_ENSPOINT_PROB_TN}
 #
 # Entity used to load the module file for each GET_OBS_* task.
 #
   'get_obs': ${GET_OBS}
 #
-# Verification related parameters.  Definitions:
+# Verification parameters.
 #
-# gridvx_fields:
-# Specifies the names of the fields to verify using MET's grid_stat tool.
-# (There are others that are verified using other MET tools, e.g. point_stat,
-# but those are specified in the METplus configuration files).
-#
-# apcp_accums:
-# For accumulated precipitaton (APCP), the accumulation periods to 
-# verify in units of hours.
-#
-  'gridvx_fields': [ 'APCP', 'REFC', 'RETOP' ]
-  'apcp_accums': [ 01, 03, 06, 24 ]
-  'pointvx_fields': [ 'SFC', 'UPA' ]
+  'vx_fields_gridded': [ $( printf "\'%s\', " "${VX_FIELDS_GRIDDED[@]}" ) ]
+  'vx_fields_point': [ $( printf "\'%s\', " "${VX_FIELDS_POINT[@]}" ) ]
+  'vx_fields': [ $( printf "\'%s\', " "${VX_FIELDS_GRIDDED[@]}" ; printf "\'%s\', " "${VX_FIELDS_POINT[@]}" ) ]
+  'vx_apcp_accums_hrs': [ $( printf "%s, " "${VX_APCP_ACCUMS_HRS[@]}" ) ]
 #
 # Number of nodes to use for each task.
 #
@@ -297,17 +254,17 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'nnodes_get_obs_ccpa': ${NNODES_GET_OBS_CCPA}
   'nnodes_get_obs_mrms': ${NNODES_GET_OBS_MRMS}
   'nnodes_get_obs_ndas': ${NNODES_GET_OBS_NDAS}
-  'nnodes_vx_pb2nc_obs': ${NNODES_VX_PB2NC_OBS}
-  'nnodes_vx_pcpcombine_obs': ${NNODES_VX_PCPCOMBINE_OBS}
-  'nnodes_vx_pcpcombine_fcst': ${NNODES_VX_PCPCOMBINE_FCST}
-  'nnodes_vx_gridstat': ${NNODES_VX_GRIDSTAT}
-  'nnodes_vx_pointstat': ${NNODES_VX_POINTSTAT}
-  'nnodes_vx_ensgrid': ${NNODES_VX_ENSGRID}
-  'nnodes_vx_ensgrid_mean': ${NNODES_VX_ENSGRID_MEAN}
-  'nnodes_vx_ensgrid_prob': ${NNODES_VX_ENSGRID_PROB}
-  'nnodes_vx_enspoint': ${NNODES_VX_ENSPOINT}
-  'nnodes_vx_enspoint_mean': ${NNODES_VX_ENSPOINT_MEAN}
-  'nnodes_vx_enspoint_prob': ${NNODES_VX_ENSPOINT_PROB}
+  'nnodes_run_vxaux_pb2nc_obs': ${NNODES_RUN_VXAUX_PB2NC_OBS}
+  'nnodes_run_vxaux_pcpcombine_obs': ${NNODES_RUN_VXAUX_PCPCOMBINE_OBS}
+  'nnodes_run_vxaux_pcpcombine_fcst': ${NNODES_RUN_VXAUX_PCPCOMBINE_FCST}
+  'nnodes_run_vxdet_gridstat': ${NNODES_RUN_VXDET_GRIDSTAT}
+  'nnodes_run_vxdet_pointstat': ${NNODES_RUN_VXDET_POINTSTAT}
+  'nnodes_run_vxens_gepes_gridded': ${NNODES_RUN_VXENS_GEPES_GRIDDED}
+  'nnodes_run_vxens_gepes_point': ${NNODES_RUN_VXENS_GEPES_POINT}
+  'nnodes_run_vxens_gridstat_mean': ${NNODES_RUN_VXENS_GRIDSTAT_MEAN}
+  'nnodes_run_vxens_pointstat_mean': ${NNODES_RUN_VXENS_POINTSTAT_MEAN}
+  'nnodes_run_vxens_gridstat_prob': ${NNODES_RUN_VXENS_GRIDSTAT_PROB}
+  'nnodes_run_vxens_pointstat_prob': ${NNODES_RUN_VXENS_POINTSTAT_PROB}
 #
 # Number of cores used for a task.
 #
@@ -329,17 +286,17 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'ppn_get_obs_ccpa': ${PPN_GET_OBS_CCPA}
   'ppn_get_obs_mrms': ${PPN_GET_OBS_MRMS}
   'ppn_get_obs_ndas': ${PPN_GET_OBS_NDAS}
-  'ppn_vx_pb2nc_obs': ${PPN_VX_PB2NC_OBS}
-  'ppn_vx_pcpcombine_obs': ${PPN_VX_PCPCOMBINE_OBS}
-  'ppn_vx_pcpcombine_fcst': ${PPN_VX_PCPCOMBINE_FCST}
-  'ppn_vx_gridstat': ${PPN_VX_GRIDSTAT}
-  'ppn_vx_pointstat': ${PPN_VX_POINTSTAT}
-  'ppn_vx_ensgrid': ${PPN_VX_ENSGRID}
-  'ppn_vx_ensgrid_mean': ${PPN_VX_ENSGRID_MEAN}
-  'ppn_vx_ensgrid_prob': ${PPN_VX_ENSGRID_PROB}
-  'ppn_vx_enspoint': ${PPN_VX_ENSPOINT}
-  'ppn_vx_enspoint_mean': ${PPN_VX_ENSPOINT_MEAN}
-  'ppn_vx_enspoint_prob': ${PPN_VX_ENSPOINT_PROB}
+  'ppn_run_vxaux_pb2nc_obs': ${PPN_RUN_VXAUX_PB2NC_OBS}
+  'ppn_run_vxaux_pcpcombine_obs': ${PPN_RUN_VXAUX_PCPCOMBINE_OBS}
+  'ppn_run_vxaux_pcpcombine_fcst': ${PPN_RUN_VXAUX_PCPCOMBINE_FCST}
+  'ppn_run_vxdet_gridstat': ${PPN_RUN_VXDET_GRIDSTAT}
+  'ppn_run_vxdet_pointstat': ${PPN_RUN_VXDET_POINTSTAT}
+  'ppn_run_vxens_gepes_gridded': ${PPN_RUN_VXENS_GEPES_GRIDDED}
+  'ppn_run_vxens_gepes_point': ${PPN_RUN_VXENS_GEPES_POINT}
+  'ppn_run_vxens_gridstat_mean': ${PPN_RUN_VXENS_GRIDSTAT_MEAN}
+  'ppn_run_vxens_pointstat_mean': ${PPN_RUN_VXENS_POINTSTAT_MEAN}
+  'ppn_run_vxens_gridstat_prob': ${PPN_RUN_VXENS_GRIDSTAT_PROB}
+  'ppn_run_vxens_pointstat_prob': ${PPN_RUN_VXENS_POINTSTAT_PROB}
 #
 # Maximum wallclock time for each task.
 #
@@ -355,17 +312,17 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'wtime_get_obs_ccpa': '${WTIME_GET_OBS_CCPA}'
   'wtime_get_obs_mrms': '${WTIME_GET_OBS_MRMS}'
   'wtime_get_obs_ndas': '${WTIME_GET_OBS_NDAS}'
-  'wtime_vx_pb2nc_obs': ${WTIME_VX_PB2NC_OBS}
-  'wtime_vx_pcpcombine_obs': '${WTIME_VX_PCPCOMBINE_OBS}'
-  'wtime_vx_pcpcombine_fcst': '${WTIME_VX_PCPCOMBINE_FCST}'
-  'wtime_vx_gridstat': '${WTIME_VX_GRIDSTAT}'
-  'wtime_vx_pointstat': '${WTIME_VX_POINTSTAT}'
-  'wtime_vx_ensgrid': '${WTIME_VX_ENSGRID}'
-  'wtime_vx_ensgrid_mean': '${WTIME_VX_ENSGRID_MEAN}'
-  'wtime_vx_ensgrid_prob': '${WTIME_VX_ENSGRID_PROB}'
-  'wtime_vx_enspoint': '${WTIME_VX_ENSPOINT}'
-  'wtime_vx_enspoint_mean': '${WTIME_VX_ENSPOINT_MEAN}'
-  'wtime_vx_enspoint_prob': '${WTIME_VX_ENSPOINT_PROB}'
+  'wtime_run_vxaux_pb2nc_obs': '${WTIME_RUN_VXAUX_PB2NC_OBS}'
+  'wtime_run_vxaux_pcpcombine_obs': '${WTIME_RUN_VXAUX_PCPCOMBINE_OBS}'
+  'wtime_run_vxaux_pcpcombine_fcst': '${WTIME_RUN_VXAUX_PCPCOMBINE_FCST}'
+  'wtime_run_vxdet_gridstat': ${WTIME_RUN_VXDET_GRIDSTAT}
+  'wtime_run_vxdet_pointstat': ${WTIME_RUN_VXDET_POINTSTAT}
+  'wtime_run_vxens_gepes_gridded': ${WTIME_RUN_VXENS_GEPES_GRIDDED}
+  'wtime_run_vxens_gepes_point': ${WTIME_RUN_VXENS_GEPES_POINT}
+  'wtime_run_vxens_gridstat_mean': ${WTIME_RUN_VXENS_GRIDSTAT_MEAN}
+  'wtime_run_vxens_pointstat_mean': ${WTIME_RUN_VXENS_POINTSTAT_MEAN}
+  'wtime_run_vxens_gridstat_prob': ${WTIME_RUN_VXENS_GRIDSTAT_PROB}
+  'wtime_run_vxens_pointstat_prob': ${WTIME_RUN_VXENS_POINTSTAT_PROB}
 #
 # Maximum number of tries for each task.
 #
@@ -381,38 +338,20 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'maxtries_get_obs_ccpa': ${MAXTRIES_GET_OBS_CCPA}
   'maxtries_get_obs_mrms': ${MAXTRIES_GET_OBS_MRMS}
   'maxtries_get_obs_ndas': ${MAXTRIES_GET_OBS_NDAS}
-  'maxtries_vx_pb2nc_obs': ${MAXTRIES_VX_PB2NC_OBS}
-  'maxtries_vx_pcpcombine_obs': ${MAXTRIES_VX_PCPCOMBINE_OBS}
-  'maxtries_vx_pcpcombine_fcst': ${MAXTRIES_VX_PCPCOMBINE_FCST}
-  'maxtries_vx_gridstat': ${MAXTRIES_VX_GRIDSTAT}
-  'maxtries_vx_gridstat_refc': ${MAXTRIES_VX_GRIDSTAT_REFC}
-  'maxtries_vx_gridstat_retop': ${MAXTRIES_VX_GRIDSTAT_RETOP}
-  'maxtries_vx_gridstat_03h': ${MAXTRIES_VX_GRIDSTAT_03h}
-  'maxtries_vx_gridstat_06h': ${MAXTRIES_VX_GRIDSTAT_06h}
-  'maxtries_vx_gridstat_24h': ${MAXTRIES_VX_GRIDSTAT_24h}
-  'maxtries_vx_pointstat': ${MAXTRIES_VX_POINTSTAT}
-  'maxtries_vx_ensgrid': ${MAXTRIES_VX_ENSGRID}
-  'maxtries_vx_ensgrid_refc': ${MAXTRIES_VX_ENSGRID_REFC}
-  'maxtries_vx_ensgrid_retop': ${MAXTRIES_VX_ENSGRID_RETOP}
-  'maxtries_vx_ensgrid_03h': ${MAXTRIES_VX_ENSGRID_03h}
-  'maxtries_vx_ensgrid_06h': ${MAXTRIES_VX_ENSGRID_06h}
-  'maxtries_vx_ensgrid_24h': ${MAXTRIES_VX_ENSGRID_24h}
-  'maxtries_vx_ensgrid_mean': ${MAXTRIES_VX_ENSGRID_MEAN}
-  'maxtries_vx_ensgrid_prob': ${MAXTRIES_VX_ENSGRID_PROB}
-  'maxtries_vx_ensgrid_mean_03h': ${MAXTRIES_VX_ENSGRID_MEAN_03h}
-  'maxtries_vx_ensgrid_prob_03h': ${MAXTRIES_VX_ENSGRID_PROB_03h}
-  'maxtries_vx_ensgrid_mean_06h': ${MAXTRIES_VX_ENSGRID_MEAN_06h}
-  'maxtries_vx_ensgrid_prob_06h': ${MAXTRIES_VX_ENSGRID_PROB_06h}
-  'maxtries_vx_ensgrid_mean_24h': ${MAXTRIES_VX_ENSGRID_MEAN_24h}
-  'maxtries_vx_ensgrid_prob_24h': ${MAXTRIES_VX_ENSGRID_PROB_24h}
-  'maxtries_vx_ensgrid_prob_refc': ${MAXTRIES_VX_ENSGRID_PROB_REFC}
-  'maxtries_vx_ensgrid_prob_retop': ${MAXTRIES_VX_ENSGRID_PROB_RETOP}
-  'maxtries_vx_enspoint': ${MAXTRIES_VX_ENSPOINT}
-  'maxtries_vx_enspoint_mean': ${MAXTRIES_VX_ENSPOINT_MEAN}
-  'maxtries_vx_enspoint_prob': ${MAXTRIES_VX_ENSPOINT_PROB}
+  'maxtries_run_vxaux_pb2nc_obs': ${MAXTRIES_RUN_VXAUX_PB2NC_OBS}
+  'maxtries_run_vxaux_pcpcombine_obs': ${MAXTRIES_RUN_VXAUX_PCPCOMBINE_OBS}
+  'maxtries_run_vxaux_pcpcombine_fcst': ${MAXTRIES_RUN_VXAUX_PCPCOMBINE_FCST}
+  'maxtries_run_vxdet_gridstat': ${MAXTRIES_RUN_VXDET_GRIDSTAT}
+  'maxtries_run_vxdet_pointstat': ${MAXTRIES_RUN_VXDET_POINTSTAT}
+  'maxtries_run_vxens_gepes_gridded': ${MAXTRIES_RUN_VXENS_GEPES_GRIDDED}
+  'maxtries_run_vxens_gepes_point': ${MAXTRIES_RUN_VXENS_GEPES_POINT}
+  'maxtries_run_vxens_gridstat_mean': ${MAXTRIES_RUN_VXENS_GRIDSTAT_MEAN}
+  'maxtries_run_vxens_pointstat_mean': ${MAXTRIES_RUN_VXENS_POINTSTAT_MEAN}
+  'maxtries_run_vxens_gridstat_prob': ${MAXTRIES_RUN_VXENS_GRIDSTAT_PROB}
+  'maxtries_run_vxens_pointstat_prob': ${MAXTRIES_RUN_VXENS_POINTSTAT_PROB}
 #
-# Flags that specify whether to run the preprocessing or
-# verification-related tasks.
+# Flags that specify whether to run various workflow tasks or groups of
+# tasks.
 #
   'run_task_make_grid': ${RUN_TASK_MAKE_GRID}
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
@@ -426,13 +365,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'run_task_get_obs_ccpa': ${RUN_TASK_GET_OBS_CCPA}
   'run_task_get_obs_mrms': ${RUN_TASK_GET_OBS_MRMS}
   'run_task_get_obs_ndas': ${RUN_TASK_GET_OBS_NDAS}
-  'run_task_vx_pb2nc_obs': ${RUN_TASK_VX_PB2NC_OBS}
-  'run_task_vx_pcpcombine_obs': ${RUN_TASK_VX_PCPCOMBINE_OBS}
-  'run_task_vx_pcpcombine_fcst': ${RUN_TASK_VX_PCPCOMBINE_FCST}
-  'run_task_vx_gridstat': ${RUN_TASK_VX_GRIDSTAT}
-  'run_task_vx_pointstat': ${RUN_TASK_VX_POINTSTAT}
-  'run_task_vx_ensgrid': ${RUN_TASK_VX_ENSGRID}
-  'run_task_vx_enspoint': ${RUN_TASK_VX_ENSPOINT}
+  'run_tasks_vxdet': ${RUN_TASKS_VXDET}
+  'run_tasks_vxens': ${RUN_TASKS_VXENS}
   'run_gen_ens_prod': ${RUN_GEN_ENS_PROD}
   'run_ensemble_stat': ${RUN_ENSEMBLE_STAT}
 #
@@ -503,6 +437,126 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'delta_min': ${DT_SUBHOURLY_POST_MNTS}
   'first_fv3_file_tstr': "000:"`$DATE_UTIL -d "${DATE_FIRST_CYCL} +${DT_ATMOS} seconds" +%M:%S`
 " # End of "settings" variable.
+
+
+#if [ "${INCLUDE_OLD_VX_TASKS_IN_XML}" = "TRUE" ]; then
+if [ "TRUE" = "TRUE" ]; then
+#
+############# Parameters for old versions of vx tasks.  To be removed.
+#
+  settings="$settings
+#
+#  'run_task_run_vxaux_pb2nc_obs': \${RUN_TASK_RUN_VXAUX_PB2NC_OBS}
+#  'run_task_run_vxaux_pcpcombine_obs': \${RUN_TASK_RUN_VXAUX_PCPCOMBINE_OBS}
+#  'run_task_run_vxaux_pcpcombine_fcst': \${RUN_TASK_RUN_VXAUX_PCPCOMBINE_FCST}
+#
+# Whether to include old versions of vx tasks in the xml.
+#
+  'include_old_vx_tasks_in_xml': ${INCLUDE_OLD_VX_TASKS_IN_XML}
+#
+# Workflow task names.
+#
+  'vx_gridstat_apcp01h_tn': ${VX_GRIDSTAT_APCP01h_TN}
+  'vx_gridstat_refc_tn': ${VX_GRIDSTAT_REFC_TN}
+  'vx_gridstat_retop_tn': ${VX_GRIDSTAT_RETOP_TN}
+  'vx_gridstat_apcp03h_tn': ${VX_GRIDSTAT_APCP03h_TN}
+  'vx_gridstat_apcp06h_tn': ${VX_GRIDSTAT_APCP06h_TN}
+  'vx_gridstat_apcp24h_tn': ${VX_GRIDSTAT_APCP24h_TN}
+  'vx_pointstat_tn': ${VX_POINTSTAT_TN}
+  'vx_ensgrid_tn': ${VX_ENSGRID_TN}
+  'vx_ensgrid_apcp01h_tn': ${VX_ENSGRID_APCP01h_TN}
+  'vx_ensgrid_refc_tn': ${VX_ENSGRID_REFC_TN}
+  'vx_ensgrid_retop_tn': ${VX_ENSGRID_RETOP_TN}
+  'vx_ensgrid_apcp03h_tn': ${VX_ENSGRID_APCP03h_TN}
+  'vx_ensgrid_apcp06h_tn': ${VX_ENSGRID_APCP06h_TN}
+  'vx_ensgrid_apcp24h_tn': ${VX_ENSGRID_APCP24h_TN}
+  'vx_ensgrid_mean_tn': ${VX_ENSGRID_MEAN_TN}
+  'vx_ensgrid_apcp01h_mean_tn': ${VX_ENSGRID_APCP01h_MEAN_TN}
+  'vx_ensgrid_apcp01h_prob_tn': ${VX_ENSGRID_APCP01h_PROB_TN}
+  'vx_ensgrid_apcp03h_mean_tn': ${VX_ENSGRID_APCP03h_MEAN_TN}
+  'vx_ensgrid_apcp03h_prob_tn': ${VX_ENSGRID_APCP03h_PROB_TN}
+  'vx_ensgrid_apcp06h_mean_tn': ${VX_ENSGRID_APCP06h_MEAN_TN}
+  'vx_ensgrid_apcp06h_prob_tn': ${VX_ENSGRID_APCP06h_PROB_TN}
+  'vx_ensgrid_apcp24h_mean_tn': ${VX_ENSGRID_APCP24h_MEAN_TN}
+  'vx_ensgrid_apcp24h_prob_tn': ${VX_ENSGRID_APCP24h_PROB_TN}
+  'vx_ensgrid_refc_prob_tn': ${VX_ENSGRID_REFC_PROB_TN}
+  'vx_ensgrid_retop_prob_tn': ${VX_ENSGRID_RETOP_PROB_TN}
+  'vx_enspoint_tn': ${VX_ENSPOINT_TN}
+  'vx_enspoint_mean_tn': ${VX_ENSPOINT_MEAN_TN}
+  'vx_enspoint_prob_tn': ${VX_ENSPOINT_PROB_TN}
+#
+# Number of logical processes per node for each task.  If running without
+# threading, this is equal to the number of MPI processes per node.
+#
+  'ppn_vx_gridstat': ${PPN_VX_GRIDSTAT}
+  'ppn_vx_pointstat': ${PPN_VX_POINTSTAT}
+  'ppn_vx_ensgrid': ${PPN_VX_ENSGRID}
+  'ppn_vx_ensgrid_mean': ${PPN_VX_ENSGRID_MEAN}
+  'ppn_vx_ensgrid_prob': ${PPN_VX_ENSGRID_PROB}
+  'ppn_vx_enspoint': ${PPN_VX_ENSPOINT}
+  'ppn_vx_enspoint_mean': ${PPN_VX_ENSPOINT_MEAN}
+  'ppn_vx_enspoint_prob': ${PPN_VX_ENSPOINT_PROB}
+#
+# Maximum wallclock time for each task.
+#
+  'wtime_vx_gridstat': '${WTIME_VX_GRIDSTAT}'
+  'wtime_vx_pointstat': '${WTIME_VX_POINTSTAT}'
+  'wtime_vx_ensgrid': '${WTIME_VX_ENSGRID}'
+  'wtime_vx_ensgrid_mean': '${WTIME_VX_ENSGRID_MEAN}'
+  'wtime_vx_ensgrid_prob': '${WTIME_VX_ENSGRID_PROB}'
+  'wtime_vx_enspoint': '${WTIME_VX_ENSPOINT}'
+  'wtime_vx_enspoint_mean': '${WTIME_VX_ENSPOINT_MEAN}'
+  'wtime_vx_enspoint_prob': '${WTIME_VX_ENSPOINT_PROB}'
+#
+# Number of nodes to use for each task.
+#
+  'nnodes_vx_gridstat': ${NNODES_VX_GRIDSTAT}
+  'nnodes_vx_pointstat': ${NNODES_VX_POINTSTAT}
+  'nnodes_vx_ensgrid': ${NNODES_VX_ENSGRID}
+  'nnodes_vx_ensgrid_mean': ${NNODES_VX_ENSGRID_MEAN}
+  'nnodes_vx_ensgrid_prob': ${NNODES_VX_ENSGRID_PROB}
+  'nnodes_vx_enspoint': ${NNODES_VX_ENSPOINT}
+  'nnodes_vx_enspoint_mean': ${NNODES_VX_ENSPOINT_MEAN}
+  'nnodes_vx_enspoint_prob': ${NNODES_VX_ENSPOINT_PROB}
+#
+# Flags that specify whether to run various workflow tasks or groups of
+# tasks.
+#
+  'run_task_vx_gridstat': ${RUN_TASK_VX_GRIDSTAT}
+  'run_task_vx_pointstat': ${RUN_TASK_VX_POINTSTAT}
+  'run_task_vx_ensgrid': ${RUN_TASK_VX_ENSGRID}
+  'run_task_vx_enspoint': ${RUN_TASK_VX_ENSPOINT}
+#
+# Maximum number of tries for each task.
+#
+  'maxtries_vx_gridstat': ${MAXTRIES_VX_GRIDSTAT}
+  'maxtries_vx_gridstat_refc': ${MAXTRIES_VX_GRIDSTAT_REFC}
+  'maxtries_vx_gridstat_retop': ${MAXTRIES_VX_GRIDSTAT_RETOP}
+  'maxtries_vx_gridstat_03h': ${MAXTRIES_VX_GRIDSTAT_03h}
+  'maxtries_vx_gridstat_06h': ${MAXTRIES_VX_GRIDSTAT_06h}
+  'maxtries_vx_gridstat_24h': ${MAXTRIES_VX_GRIDSTAT_24h}
+  'maxtries_vx_pointstat': ${MAXTRIES_VX_POINTSTAT}
+  'maxtries_vx_ensgrid': ${MAXTRIES_VX_ENSGRID}
+  'maxtries_vx_ensgrid_refc': ${MAXTRIES_VX_ENSGRID_REFC}
+  'maxtries_vx_ensgrid_retop': ${MAXTRIES_VX_ENSGRID_RETOP}
+  'maxtries_vx_ensgrid_03h': ${MAXTRIES_VX_ENSGRID_03h}
+  'maxtries_vx_ensgrid_06h': ${MAXTRIES_VX_ENSGRID_06h}
+  'maxtries_vx_ensgrid_24h': ${MAXTRIES_VX_ENSGRID_24h}
+  'maxtries_vx_ensgrid_mean': ${MAXTRIES_VX_ENSGRID_MEAN}
+  'maxtries_vx_ensgrid_prob': ${MAXTRIES_VX_ENSGRID_PROB}
+  'maxtries_vx_ensgrid_mean_03h': ${MAXTRIES_VX_ENSGRID_MEAN_03h}
+  'maxtries_vx_ensgrid_prob_03h': ${MAXTRIES_VX_ENSGRID_PROB_03h}
+  'maxtries_vx_ensgrid_mean_06h': ${MAXTRIES_VX_ENSGRID_MEAN_06h}
+  'maxtries_vx_ensgrid_prob_06h': ${MAXTRIES_VX_ENSGRID_PROB_06h}
+  'maxtries_vx_ensgrid_mean_24h': ${MAXTRIES_VX_ENSGRID_MEAN_24h}
+  'maxtries_vx_ensgrid_prob_24h': ${MAXTRIES_VX_ENSGRID_PROB_24h}
+  'maxtries_vx_ensgrid_prob_refc': ${MAXTRIES_VX_ENSGRID_PROB_REFC}
+  'maxtries_vx_ensgrid_prob_retop': ${MAXTRIES_VX_ENSGRID_PROB_RETOP}
+  'maxtries_vx_enspoint': ${MAXTRIES_VX_ENSPOINT}
+  'maxtries_vx_enspoint_mean': ${MAXTRIES_VX_ENSPOINT_MEAN}
+  'maxtries_vx_enspoint_prob': ${MAXTRIES_VX_ENSPOINT_PROB}
+"
+fi
 
   print_info_msg "$VERBOSE" "
 The variable \"settings\" specifying values of the rococo XML variables

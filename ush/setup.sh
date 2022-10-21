@@ -1385,6 +1385,66 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Checks on user-specified verification parameters.
+#
+#-----------------------------------------------------------------------
+#
+# Ensure that the fields to be verified have valid values.
+#
+num_elems="${#VX_FIELDS_GRIDDED[@]}"
+for (( i=0; i<${num_elems}; i++ )); do
+  field_name="${VX_FIELDS_GRIDDED[$i]}"
+  check_var_valid_value "field_name" "valid_vals_VX_FIELDS_GRIDDED"
+done
+
+num_elems="${#VX_FIELDS_POINT[@]}"
+for (( i=0; i<${num_elems}; i++ )); do
+  field_name="${VX_FIELDS_POINT[$i]}"
+  check_var_valid_value "field_name" "valid_vals_VX_FIELDS_POINT"
+done
+
+num_elems="${#VX_APCP_ACCUMS_HRS[@]}"
+for (( i=0; i<${num_elems}; i++ )); do
+  field_name="${VX_APCP_ACCUMS_HRS[$i]}"
+  check_var_valid_value "field_name" "valid_vals_VX_APCP_ACCUMS_HRS"
+done
+#
+# If APCP (accumulated precipitation) is one of the fields to be verified,
+# make sure that there is at least one accumulation period specified.
+# 
+is_element_of "VX_FIELDS_GRIDDED" "APCP" && {
+  num_elems="${#VX_APCP_ACCUMS_HRS[@]}"
+  if [ ${num_elems} -eq 0 ]; then
+    print_err_msg_exit "\
+When \"APCP\" is specified as one of the fields to verify (as an element
+of the array VX_FIELDS_GRIDDED), at least one valid accumulation period
+must be specified in the array VX_APCP_ACCUMS_HRS:
+  VX_FIELDS_GRIDDED = ( $( printf "\"%s\" " "${VX_FIELDS_GRIDDED[@]}" ))
+  VX_APCP_ACCUMS_HRS = ( $( printf "\"%s\" " "${VX_APCP_ACCUMS_HRS[@]}" ))
+Valid values for the elements of VX_APCP_ACCUMS_HRS are:
+  $( printf "\"%s\" " "${valid_vals_VX_APCP_ACCUMS_HRS[@]}" )"
+  fi
+}
+#
+# When generating the verification (vx) tasks in the rocoto workflow xml
+# from the jinja xml template by looping over all user-specified vx
+# fields and accumulations, an accumulation of 00 is used to trigger
+# actions (e.g. creation of tasks) for non-APCP (accumulated precipitation)
+# fields.  Thus, if the list of fields to verify contains any non-APCP
+# fields (e.g. REFC, RETOP, SFC, UPA), a "00" must be prepended to the
+# list of accumulations in order for the xml to be generated properly.
+#
+include_00_accum="FALSE"
+is_element_of "VX_FIELDS_GRIDDED" "REFC" && include_00_accum="TRUE"
+is_element_of "VX_FIELDS_GRIDDED" "RETOP" && include_00_accum="TRUE"
+is_element_of "VX_FIELDS_POINT" "SFC" && include_00_accum="TRUE"
+is_element_of "VX_FIELDS_POINT" "UPA" && include_00_accum="TRUE"
+if [ "${include_00_accum}" = "TRUE" ]; then
+  VX_APCP_ACCUMS_HRS=( "00" ${VX_APCP_ACCUMS_HRS[@]} )
+fi
+#
+#-----------------------------------------------------------------------
+#
 # If POST_OUTPUT_DOMAIN_NAME has not been specified by the user, set it
 # to PREDEF_GRID_NAME (which won't be empty if using a predefined grid).
 # Then change it to lowercase.  Finally, if running one or more of the 
