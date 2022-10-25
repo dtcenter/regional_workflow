@@ -143,7 +143,7 @@ FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}/metprd/gen_ens_prod_cmn"
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 OUTPUT_SUBDIR="metprd/point_stat_mean_cmn"
 STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean"
-LOG_SUFFIX="_cmn_${CDATE}"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
