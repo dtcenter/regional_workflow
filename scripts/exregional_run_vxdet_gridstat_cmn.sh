@@ -197,7 +197,7 @@ set_vx_fhr_list \
 #
 TIME_LAG="0"
 mem_indx="${mem_indx:-}"
-if [ ! -z "mem_indx" ]; then
+if [ ! -z "${mem_indx}" ]; then
   TIME_LAG=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
 fi
 # Calculate the negative of the time lag.  This is needed because in the
