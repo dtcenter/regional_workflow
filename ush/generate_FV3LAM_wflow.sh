@@ -176,7 +176,7 @@ file (template_xml_fp):
   slash_ensmem_subdir="\"\""
   ens_timelag_var_name="\"\""
   ens_time_lag_hhmmss="\"\""
-  cyclestr_offset="\"\""
+  cyclestr_offset=""
   if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     ensmem_indx_name="mem"
     uscore_ensmem_name="_mem#${ensmem_indx_name}#"
@@ -418,6 +418,9 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'ccpa_obs_dir': ${CCPA_OBS_DIR}
   'mrms_obs_dir': ${MRMS_OBS_DIR}
   'ndas_obs_dir': ${NDAS_OBS_DIR}
+  'met_input_dir': ${MET_INPUT_DIR}
+# Move the following to somewhere more appropriate.
+  'net': ${NET}
 #
 # Ensemble-related parameters.
 #
