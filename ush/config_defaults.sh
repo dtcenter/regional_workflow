@@ -1993,8 +1993,15 @@ CRTM_DIR=""
 #
 DO_ENSEMBLE="FALSE"
 NUM_ENS_MEMBERS="1"
+
+#
+# The following are verification-related parameters.  Need to define.
+#
 ENS_DELTA_FCST_LEN_HRS=("")
 ENS_TIME_LAG_HRS=("")
+
+FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=${TIME_LAG}}z.prslev.f{lead?fmt=%HHH?shift=${MNS_TIME_LAG}}.${POST_OUTPUT_DOMAIN_NAME}.grib2'
+FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a{level?fmt=%HH}h.nc'
 #
 #-----------------------------------------------------------------------
 #

@@ -2469,6 +2469,9 @@ fi
 #
 var_defns=""
 while read crnt_line; do
+#echo
+#echo "000000000000000"
+#echo "  crnt_line = |${crnt_line}|"
 #
 # Try to obtain the name of the variable being set on the current line.
 # This will be successful only if the line consists of one or more non-
@@ -2478,7 +2481,10 @@ while read crnt_line; do
 # the variable default_var_defns, leading spaces on each line were 
 # stripped out).
 #
-  var_name=$( printf "%s" "${crnt_line}" | $SED -n -r -e "s/^([^ ]*)=.*/\1/p" )
+#  var_name=$( printf "%s" "${crnt_line}" | $SED -n -r -e "s/^([^ ]*)=.*/\1/p" )
+#  var_name=$( printf "%s" "${crnt_line}" | $SED -n -r -e "s/^([\w]*)=.*/\1/p" )
+  var_name=$( printf "%s" "${crnt_line}" | $SED -n -r -e "s/^([A-Za-z0-9_]*)=.*/\1/p" )
+#echo "  var_name = |${var_name}|"
 #
 # If var_name is not empty, then a variable name was found on the current 
 # line in default_var_defns.
@@ -2586,6 +2592,11 @@ Continuing to next line in \"default_var_defns\"."
 
   fi
 
+#if [ ! -z "${var_defn:-}" ]; then
+#echo
+#echo "11111111111111111"
+#echo "  var_defn = |${var_defn}|"
+#fi
 done <<< "${default_var_defns}"
 #
 #-----------------------------------------------------------------------

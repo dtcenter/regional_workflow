@@ -231,7 +231,9 @@ export OBS_FILENAME_METPROC_PREFIX
 export OBS_FILENAME_METPROC_SUFFIX
 
 export TIME_LAG
-export MNS_TIME_LAG
+#export MNS_TIME_LAG
+export FCST_FN_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_TEMPLATE} )
+export FCST_FN_METPROC_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #

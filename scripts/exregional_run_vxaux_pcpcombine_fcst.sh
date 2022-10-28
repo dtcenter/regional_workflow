@@ -235,7 +235,7 @@ export MODEL
 export NET
 export FHR_LIST
 export TIME_LAG
-export MNS_TIME_LAG
+#export MNS_TIME_LAG
 
 export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
@@ -245,6 +245,9 @@ export OBS_FILENAME_PREFIX
 export OBS_FILENAME_SUFFIX
 export OBS_FILENAME_METPROC_PREFIX
 export OBS_FILENAME_METPROC_SUFFIX
+
+export FCST_FN_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_TEMPLATE} )
+export FCST_FN_METPROC_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #
