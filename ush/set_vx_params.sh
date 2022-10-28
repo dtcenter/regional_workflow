@@ -179,6 +179,8 @@ echo "=======>>>>  obtype = $obtype"
   fieldname_in_MET_filedir_names=""
   obs_filename_prefix=""
   obs_filename_suffix=""
+  obs_filename_METPROC_prefix=""
+  obs_filename_METPROC_suffix=""
   fhr_intvl_hrs=""
 
   case "${obtype}" in

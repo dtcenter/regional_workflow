@@ -56,7 +56,7 @@ read was not specified in the call to this function:
   #
   # Strip out any comment and empty lines from contents.
   #
-  contents=$( printf "${contents}" | \
+  contents=$( printf "%s" "${contents}" | \
               $SED -r -e "/^#.*/d"  `# Remove comment lines.` \
                       -e "/^$/d"    `# Remove empty lines.` \
             )
