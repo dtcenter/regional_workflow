@@ -199,9 +199,10 @@ for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
   mem_indx=$(($i+1))
   mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
   time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
-  mns_time_lag=$(( -${time_lag} ))
+#  mns_time_lag=$(( -${time_lag} ))
 
-  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
+#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00.grib2'
+  template='{init?fmt=%Y%m%d%H?shift=-'${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift=-'${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${time_lag}'}.tm00.grib2'
   if [ -z "${fcst_postprd_output_template}" ]; then
     fcst_postprd_output_template="  ${template}"
   else
@@ -210,7 +211,8 @@ ${fcst_postprd_output_template},
   ${template}"
   fi
 
-  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
+#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
+  template='{init?fmt=%Y%m%d%H?shift=-'${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift=-'${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${time_lag}'}.tm00_a'$acc'.nc'
   if [ -z "${fcst_pcp_combine_output_template}" ]; then
     fcst_pcp_combine_output_template="  ${template}"
   else

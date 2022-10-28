@@ -203,7 +203,7 @@ fi
 # Calculate the negative of the time lag.  This is needed because in the
 # METplus configuration file, simply placing a minus sign in front of
 # TIME_LAG causes an error.
-MNS_TIME_LAG=$((-${TIME_LAG}))
+#MNS_TIME_LAG=$((-${TIME_LAG}))
 #
 #-----------------------------------------------------------------------
 #
