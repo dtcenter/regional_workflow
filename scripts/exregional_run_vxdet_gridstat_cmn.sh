@@ -195,10 +195,10 @@ set_vx_fhr_list \
 #
 #-----------------------------------------------------------------------
 #
-TIME_LAG="0"
+time_lag="0"
 mem_indx="${mem_indx:-}"
 if [ ! -z "${mem_indx}" ]; then
-  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
+  time_lag=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
 fi
 # Calculate the negative of the time lag.  This is needed because in the
 # METplus configuration file, simply placing a minus sign in front of
@@ -214,7 +214,8 @@ fi
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
-  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
+#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
+  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
   FCST_INPUT_BASE="${MET_INPUT_DIR}"
@@ -293,10 +294,21 @@ export OBS_FILENAME_METPROC_PREFIX
 export OBS_FILENAME_METPROC_SUFFIX
 
 export FIELD_THRESHOLDS
-export TIME_LAG
+
+
+
+#export TIME_LAG
 #export MNS_TIME_LAG
-export FCST_FN_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_TEMPLATE} )
-export FCST_FN_METPROC_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+#export FCST_FN_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_TEMPLATE} )
+#fcst_subdir_template='{init?fmt=%Y%m%d%H?shift=-${TIME_LAG}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd/'
+#export FCST_FN_TEMPLATE_EXPAND=$( eval echo '{init?fmt=%Y%m%d%H?shift=-${TIME_LAG}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd/'${FCST_FN_TEMPLATE} )
+#export FCST_REL_PATH_TEMPLATE=$( eval echo '${fcst_subdir_template}${FCST_FN_TEMPLATE}' )
+#export FCST_FN_METPROC_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+
+slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+export FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
+#export FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_SUBDIR_METPROC_TEMPLATE}/${FCST_FN_METPROC_TEMPLATE} )
+export FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #

@@ -154,10 +154,10 @@ set_vx_fhr_list \
 #
 #-----------------------------------------------------------------------
 #
-TIME_LAG="0"
+time_lag="0"
 mem_indx="${mem_indx:-}"
 if [ ! -z "${mem_indx}" ]; then
-  TIME_LAG=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
+  time_lag=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
 fi
 # Calculate the negative of the time lag.  This is needed because in the
 # METplus configuration file, simply placing a minus sign in front of
@@ -234,7 +234,7 @@ export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
-export TIME_LAG
+#export TIME_LAG
 #export MNS_TIME_LAG
 
 export FIELDNAME_IN_OBS_INPUT
@@ -246,8 +246,35 @@ export OBS_FILENAME_SUFFIX
 export OBS_FILENAME_METPROC_PREFIX
 export OBS_FILENAME_METPROC_SUFFIX
 
-export FCST_FN_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_TEMPLATE} )
-export FCST_FN_METPROC_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+
+
+FCST_REL_PATH_TEMPLATE=""
+FCST_REL_PATH_METPROC_TEMPLATE=""
+echo
+echo "PPPPPPPPPPPPPP"
+echo "FCST_REL_PATH_TEMPLATE = |${FCST_REL_PATH_TEMPLATE}|"
+echo
+echo "QQQQQQQQQQQQQQ"
+echo "FCST_REL_PATH_METPROC_TEMPLATE = |${FCST_REL_PATH_METPROC_TEMPLATE=}|"
+
+#export FCST_FN_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_TEMPLATE} )
+#export FCST_FN_METPROC_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+#export time_lag
+#export slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+export FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
+#export FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_SUBDIR_METPROC_TEMPLATE}/${FCST_FN_METPROC_TEMPLATE} )
+export FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+
+echo
+echo "PPPPPPPPPPPPPP"
+echo "time_lag = |${time_lag}|"
+echo "slash_ensmem_subdir_or_null = |${slash_ensmem_subdir_or_null}|"
+echo "FCST_REL_PATH_TEMPLATE = |${FCST_REL_PATH_TEMPLATE}|"
+echo
+echo "QQQQQQQQQQQQQQ"
+echo "FCST_REL_PATH_METPROC_TEMPLATE = |${FCST_REL_PATH_METPROC_TEMPLATE=}|"
+
 #
 #-----------------------------------------------------------------------
 #

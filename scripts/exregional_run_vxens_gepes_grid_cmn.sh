@@ -183,7 +183,9 @@ set_vx_fhr_list \
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
-  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}/metprd/pcp_combine_fcst_cmn"
+#  FCST_INPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+  FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
   FCST_INPUT_BASE="${MET_INPUT_DIR}"
@@ -236,7 +238,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-FCST_INPUT_TEMPLATE=""
+echo
+echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+FCST_REL_PATH_TEMPLATE=""
 
 for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
 
@@ -245,25 +249,37 @@ for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
   time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
 #  mns_time_lag=$(( -${time_lag} ))
 
-  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    template='mem'${mem_indx}'/metprd/pcp_combine_fcst_cmn/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$ACCUM'h.nc'
-  else
-    template='{init?fmt=%Y%m%d%H?shift=-'${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift=-'${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${time_lag}'}.tm00.grib2'
-  fi
+  slash_ensmem_subdir_or_null="/mem${mem_indx}"
+#  fcst_subdir_template='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${slash_ensmem_subdir_or_null}/postprd/'
 
-  if [ -z "${FCST_INPUT_TEMPLATE}" ]; then
-    FCST_INPUT_TEMPLATE="  ${template}"
+  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+#    template='mem'${mem_indx}'/metprd/pcp_combine_fcst_cmn/'$NET'.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a'$ACCUM'h.nc'
+echo "UUUUUUUUUUUUUUUUUUUUU"
+    template="${FCST_SUBDIR_METPROC_TEMPLATE}/${FCST_FN_METPROC_TEMPLATE}"
   else
-    FCST_INPUT_TEMPLATE="\
-${FCST_INPUT_TEMPLATE},
-  ${template}"
+#    template='{init?fmt=%Y%m%d%H?shift=-'${time_lag}'}/mem'${mem_indx}'/postprd/'$NET'.t{init?fmt=%H?shift=-'${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${time_lag}'}.tm00.grib2'
+    template="${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE}"
+  fi
+echo
+echo "FCST_SUBDIR_METPROC_TEMPLATE = |${FCST_SUBDIR_METPROC_TEMPLATE}|"
+echo "FCST_FN_METPROC_TEMPLATE = |${FCST_FN_METPROC_TEMPLATE}|"
+echo "template = |${template}|"
+gg=$(eval echo ${template})
+echo "gg = |${gg}|"
+
+  if [ -z "${FCST_REL_PATH_TEMPLATE}" ]; then
+    FCST_REL_PATH_TEMPLATE="  $(eval echo ${template})"
+  else
+    FCST_REL_PATH_TEMPLATE="\
+${FCST_REL_PATH_TEMPLATE},
+  $(eval echo ${template})"
   fi
 
 done
 
 echo
-echo "FCST_INPUT_TEMPLATE = 
-${FCST_INPUT_TEMPLATE}"
+echo "FCST_REL_PATH_TEMPLATE = 
+${FCST_REL_PATH_TEMPLATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -310,7 +326,7 @@ export OBS_FILENAME_METPROC_SUFFIX
 
 export FIELD_THRESHOLDS
 export NUM_ENS_MEMBERS
-export FCST_INPUT_TEMPLATE
+export FCST_REL_PATH_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #

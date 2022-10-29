@@ -1999,8 +1999,13 @@ NUM_ENS_MEMBERS="1"
 #
 ENS_TIME_LAG_HRS=("")
 
-FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${TIME_LAG}}z.prslev.f{lead?fmt=%HHH?shift=${TIME_LAG}}.${POST_OUTPUT_DOMAIN_NAME}.grib2'
-FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a{level?fmt=%HH}h.nc'
+FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${slash_ensmem_subdir_or_null}/postprd'
+FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${time_lag}}z.prslev.f{lead?fmt=%HHH?shift=${time_lag}}.${POST_OUTPUT_DOMAIN_NAME}.grib2'
+
+#FCST_SUBDIR_METPROC_TEMPLATE='${slash_ensmem_subdir_or_null}/metprd/pcp_combine_fcst_cmn'
+FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${slash_ensmem_subdir_or_null}/metprd/pcp_combine_fcst_cmn'
+#FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a{level?fmt=%HH}h.nc'
+FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a${ACCUM}h.nc'
 #
 #-----------------------------------------------------------------------
 #
