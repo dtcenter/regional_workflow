@@ -407,16 +407,9 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
 # METPlus-specific information
 #
   'model': ${MODEL}
-  'met_install_dir': ${MET_INSTALL_DIR}
-  'met_bin_exec': ${MET_BIN_EXEC}
-  'metplus_path': ${METPLUS_PATH}
-  'metplus_conf': ${METPLUS_CONF}
-  'met_input_dir': ${MET_INPUT_DIR}
-  'met_output_dir': ${MET_OUTPUT_DIR}
   'ccpa_obs_dir': ${CCPA_OBS_DIR}
   'mrms_obs_dir': ${MRMS_OBS_DIR}
   'ndas_obs_dir': ${NDAS_OBS_DIR}
-  'met_input_dir': ${MET_INPUT_DIR}
 # Move the following to somewhere more appropriate.
   'net': ${NET}
 #
