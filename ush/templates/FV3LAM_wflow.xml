@@ -112,11 +112,6 @@ Directories and files.
 <!ENTITY CYCLE_BASEDIR            "{{ cycle_basedir }}">
 <!ENTITY GLOBAL_VAR_DEFNS_FP      "{{ global_var_defns_fp }}">
 <!ENTITY LOAD_MODULES_RUN_TASK_FP "{{ load_modules_run_task_fp }}">
-
-<!ENTITY MET_INSTALL_DIR          "{{ met_install_dir }}">
-<!ENTITY METPLUS_PATH             "{{ metplus_path }}">
-<!ENTITY METPLUS_CONF             "{{ metplus_conf }}">
-<!ENTITY MET_CONFIG               "{{ met_config }}">
 <!ENTITY CCPA_OBS_DIR             "{{ ccpa_obs_dir }}">
 <!ENTITY MRMS_OBS_DIR             "{{ mrms_obs_dir }}">
 <!ENTITY NDAS_OBS_DIR             "{{ ndas_obs_dir }}">
