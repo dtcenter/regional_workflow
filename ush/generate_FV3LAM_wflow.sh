@@ -411,7 +411,6 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'met_bin_exec': ${MET_BIN_EXEC}
   'metplus_path': ${METPLUS_PATH}
   'metplus_conf': ${METPLUS_CONF}
-  'met_config': ${MET_CONFIG}
   'met_input_dir': ${MET_INPUT_DIR}
   'met_output_dir': ${MET_OUTPUT_DIR}
   'ccpa_obs_dir': ${CCPA_OBS_DIR}

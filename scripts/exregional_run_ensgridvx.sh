@@ -254,7 +254,6 @@ export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
-export MET_CONFIG
 export MODEL
 export NET
 export POST_OUTPUT_DOMAIN_NAME
