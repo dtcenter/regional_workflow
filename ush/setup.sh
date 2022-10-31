@@ -498,7 +498,6 @@ PARMDIR="$HOMErrfs/parm"
 MODULES_DIR="$HOMErrfs/modulefiles"
 EXECDIR="${SR_WX_APP_TOP_DIR}/${EXEC_SUBDIR}"
 TEMPLATE_DIR="$USHDIR/templates"
-METPLUS_CONF="$TEMPLATE_DIR/parm/metplus"
 #
 #-----------------------------------------------------------------------
 #
@@ -1238,9 +1237,6 @@ FIXam="${EXPTDIR}/fix_am"
 FIXclim="${EXPTDIR}/fix_clim"
 FIXLAM="${EXPTDIR}/fix_lam"
 
-MET_INPUT_DIR="${MET_INPUT_DIR:-$EXPTDIR}"
-MET_OUTPUT_DIR="${MET_OUTPUT_DIR:-$EXPTDIR}"
-
 if [ "${RUN_ENVIR}" = "nco" ]; then
   CYCLE_BASEDIR="${STMP}/tmpnwprd/${RUN}"
   check_for_preexist_dir_file "${CYCLE_BASEDIR}" "${PREEXISTING_DIR_METHOD}"
@@ -1252,6 +1248,17 @@ else
   COMROOT=""
   COMOUT_BASEDIR=""
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Specify default values for directories needed for verification using
+# MET/METplus.
+#
+#-----------------------------------------------------------------------
+#
+METPLUS_CONF=${METPLUS_CONF:-"${TEMPLATE_DIR}/parm/metplus"}
+MET_INPUT_DIR="${MET_INPUT_DIR:-$EXPTDIR}"
+MET_OUTPUT_DIR="${MET_OUTPUT_DIR:-$EXPTDIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2698,7 +2705,6 @@ FIXlut='$FIXlut'
 COMROOT='$COMROOT'
 COMOUT_BASEDIR='${COMOUT_BASEDIR}'
 TEMPLATE_DIR='${TEMPLATE_DIR}'
-METPLUS_CONF='${METPLUS_CONF}'
 UFS_WTHR_MDL_DIR='${UFS_WTHR_MDL_DIR}'
 UFS_UTILS_DIR='${UFS_UTILS_DIR}'
 SFC_CLIMO_INPUT_DIR='${SFC_CLIMO_INPUT_DIR}'

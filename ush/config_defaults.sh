@@ -497,6 +497,9 @@ WRITE_DOPOST="FALSE"
 # METPLUS_PATH:
 # Location to top-level directory of METplus installation.
 #
+# METPLUS_CONF:
+# Directory containing METplus configuration files.
+#
 # MET_INPUT_DIR:
 # Location to top-level directory of METplus input. This can be user
 # specified, and if not specified, it is set to EXPTDIR.
@@ -587,6 +590,7 @@ MODEL=""
 MET_INSTALL_DIR=""
 MET_BIN_EXEC="bin"
 METPLUS_PATH=""
+METPLUS_CONF=""
 MET_INPUT_DIR=""
 MET_OUTPUT_DIR=""
 CCPA_OBS_DIR=""
