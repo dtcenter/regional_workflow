@@ -410,7 +410,6 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
   'met_install_dir': ${MET_INSTALL_DIR}
   'met_bin_exec': ${MET_BIN_EXEC}
   'metplus_path': ${METPLUS_PATH}
-  'vx_config_dir': ${VX_CONFIG_DIR}
   'metplus_conf': ${METPLUS_CONF}
   'met_config': ${MET_CONFIG}
   'met_input_dir': ${MET_INPUT_DIR}
