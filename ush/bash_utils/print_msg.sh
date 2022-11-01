@@ -237,7 +237,7 @@ function print_err_msg_exit() {
   if [ "${caller_name}" = "main" ] || \
      [ "${caller_name}" = "script" ]; then
 
-    msg_header=$( printf "\n\
+    msg_header=$( printf "%s" "\
 ERROR:
   From script:  \"${caller_fn}\"
   Full path to script:  \"${caller_fp}\"
@@ -246,7 +246,7 @@ ERROR:
 
   else
 
-    msg_header=$( printf "\n\
+    msg_header=$( printf "%s" "\
 ERROR:
   From function:  \"${caller_name}\"
   In file:  \"${caller_fn}\"
@@ -256,7 +256,7 @@ ERROR:
 
   fi
 
-  msg_footer=$( printf "\nExiting with nonzero status." )
+  msg_footer=$( printf "%s" "Exiting with nonzero status." )
 #
 #-----------------------------------------------------------------------
 #
@@ -296,10 +296,14 @@ the header and footer.
     if [ "$#" -eq 0 ]; then
       err_msg=""
     elif [ "$#" -eq 1 ]; then
-      err_msg="\n$1"
+      err_msg="$1"
     fi
 
-    printf "${msg_header}${err_msg}${msg_footer}\n" 1>&2
+    printf "%s" "
+${msg_header}
+${err_msg}
+${msg_footer}
+" 1>&2
     exit 1
 
   fi
