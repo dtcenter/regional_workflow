@@ -91,10 +91,6 @@ FIELDNAME_IN_OBS_INPUT=""
 FIELDNAME_IN_FCST_INPUT=""
 FIELDNAME_IN_MET_OUTPUT=""
 FIELDNAME_IN_MET_FILEDIR_NAMES=""
-OBS_FILENAME_PREFIX=""
-OBS_FILENAME_SUFFIX=""
-OBS_FILENAME_METPROC_PREFIX=""
-OBS_FILENAME_METPROC_SUFFIX=""
 fhr_int=""
 
 set_vx_params \
@@ -106,10 +102,6 @@ set_vx_params \
   outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
   outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
   outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES" \
-  outvarname_obs_filename_prefix="OBS_FILENAME_PREFIX" \
-  outvarname_obs_filename_suffix="OBS_FILENAME_SUFFIX" \
-  outvarname_obs_filename_METproc_prefix="OBS_FILENAME_METPROC_PREFIX" \
-  outvarname_obs_filename_METproc_suffix="OBS_FILENAME_METPROC_SUFFIX" \
   outvarname_fhr_intvl_hrs="fhr_int"
 #
 #-----------------------------------------------------------------------
@@ -119,40 +111,69 @@ set_vx_params \
 #-----------------------------------------------------------------------
 #
 FIELD_THRESHOLDS=""
+OBS_FN_TEMPLATE=""
 
 case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
 
   "APCP01h")
+    OBS_FN_TEMPLATE="${OBS_CCPA_APCP01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge2.54"
     ;;
 
   "APCP03h")
+    OBS_FN_TEMPLATE="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge0.508, ge2.54, ge6.350"
     ;;
 
   "APCP06h")
+    OBS_FN_TEMPLATE="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge2.54, ge6.350, ge12.700"
     ;;
 
   "APCP24h")
+    OBS_FN_TEMPLATE="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge6.350, ge12.700, ge25.400"
     ;;
 
   "REFC")
+    OBS_FN_TEMPLATE="${OBS_MRMS_REFC_FN_TEMPLATE}"
     FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
     ;;
 
   "RETOP")
+    OBS_FN_TEMPLATE="${OBS_MRMS_RETOP_FN_TEMPLATE}"
     FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
     ;;
 
   *)
     print_err_msg_exit "\
-Thresholds have not been defined for this field (FIELDNAME_IN_MET_FILEDIR_NAMES):
+Verification parameters have not been defined for this field
+(FIELDNAME_IN_MET_FILEDIR_NAMES):
   FIELDNAME_IN_MET_FILEDIR_NAMES = \"${FIELDNAME_IN_MET_FILEDIR_NAMES}\""
     ;;
 
 esac
+#
+#-----------------------------------------------------------------------
+#
+# Set paths for input to and output from grid_stat.  Also, set the
+# suffix for the name of the log file that METplus will generate.
+#
+#-----------------------------------------------------------------------
+#
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
+else
+  OBS_INPUT_BASE="${OBS_DIR}"
+fi
+FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
+OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat_mean_cmn"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
+
+OBS_REL_PATH_TEMPLATE=$( eval echo ${OBS_FN_TEMPLATE} )
+FCST_REL_PATH_TEMPLATE=$( eval echo 'gen_ens_prod_${MODEL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
 #
 #-----------------------------------------------------------------------
 #
@@ -169,28 +190,9 @@ set_vx_fhr_list \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  obs_dir="${OBS_DIR}" \
-  obs_filename_prefix="${OBS_FILENAME_PREFIX}" \
-  obs_filename_suffix="${OBS_FILENAME_SUFFIX}" \
+  obs_dir="${OBS_INPUT_BASE}" \
+  obs_fn_template="${OBS_FN_TEMPLATE}" \
   outvarname_fhr_list="FHR_LIST"
-#
-#-----------------------------------------------------------------------
-#
-# Set paths for input to and output from grid_stat.  Also, set the
-# suffix for the name of the log file that METplus will generate.
-#
-#-----------------------------------------------------------------------
-#
-if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
-else
-  OBS_INPUT_BASE="${OBS_DIR}"
-fi
-FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
-OUTPUT_SUBDIR="metprd/grid_stat_mean_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -204,7 +206,7 @@ LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
+mkdir_vrfy -p "${OUTPUT_DIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -253,7 +255,7 @@ export CDATE
 export OBS_INPUT_BASE
 export FCST_INPUT_BASE
 export OUTPUT_BASE
-export OUTPUT_SUBDIR
+export OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
 export MODEL
@@ -264,13 +266,12 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-export OBS_FILENAME_PREFIX
-export OBS_FILENAME_SUFFIX
-export OBS_FILENAME_METPROC_PREFIX
-export OBS_FILENAME_METPROC_SUFFIX
 
 export FIELD_THRESHOLDS
 export ACCUM_NO_PAD
+
+export OBS_REL_PATH_TEMPLATE
+export FCST_REL_PATH_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #

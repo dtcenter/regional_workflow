@@ -89,10 +89,6 @@ FIELDNAME_IN_OBS_INPUT=""
 FIELDNAME_IN_FCST_INPUT=""
 FIELDNAME_IN_MET_OUTPUT=""
 FIELDNAME_IN_MET_FILEDIR_NAMES=""
-OBS_FILENAME_PREFIX=""
-OBS_FILENAME_SUFFIX=""
-OBS_FILENAME_METPROC_PREFIX=""
-OBS_FILENAME_METPROC_SUFFIX=""
 fhr_int=""
 
 set_vx_params \
@@ -104,11 +100,22 @@ set_vx_params \
   outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
   outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
   outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES" \
-  outvarname_obs_filename_prefix="OBS_FILENAME_PREFIX" \
-  outvarname_obs_filename_suffix="OBS_FILENAME_SUFFIX" \
-  outvarname_obs_filename_METproc_prefix="OBS_FILENAME_METPROC_PREFIX" \
-  outvarname_obs_filename_METproc_suffix="OBS_FILENAME_METPROC_SUFFIX" \
   outvarname_fhr_intvl_hrs="fhr_int"
+#
+#-----------------------------------------------------------------------
+#
+# Set paths for input to and output from pcp_combine.  Also, set the
+# suffix for the name of the log file that METplus will generate.
+#
+#-----------------------------------------------------------------------
+#
+OBS_INPUT_DIR="${OBS_DIR}"
+OBS_OUTPUT_BASE="${MET_OUTPUT_DIR}"
+OBS_OUTPUT_DIR="${OBS_OUTPUT_BASE}/metprd/pb2nc_obs_cmn"
+STAGING_DIR="${OBS_OUTPUT_BASE}/stage_cmn/pb2nc_obs"
+LOG_SUFFIX="_${CDATE}"
+
+OBS_NDAS_SFCorUPA_REL_PATH_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #
@@ -116,9 +123,6 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-echo "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
-echo "  CDATE = |$CDATE|"
-
 set_vx_fhr_list \
   obtype="${OBTYPE}" \
   field="" \
@@ -128,23 +132,9 @@ set_vx_fhr_list \
   fhr_int="1" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  obs_dir="${OBS_DIR}" \
-  obs_filename_prefix="${OBS_FILENAME_PREFIX}" \
-  obs_filename_suffix="${OBS_FILENAME_SUFFIX}" \
+  obs_dir="${OBS_INPUT_DIR}" \
+  obs_fn_template="${OBS_NDAS_SFCorUPA_FN_TEMPLATE}" \
   outvarname_fhr_list="FHR_LIST"
-#
-#-----------------------------------------------------------------------
-#
-# Set paths for input to and output from pcp_combine.  Also, set the
-# suffix for the name of the log file that METplus will generate.
-#
-#-----------------------------------------------------------------------
-#
-INPUT_BASE="${OBS_DIR}"
-OUTPUT_BASE="${MET_OUTPUT_DIR}"
-OUTPUT_SUBDIR="metprd/pb2nc_obs_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/pb2nc_obs"
-LOG_SUFFIX="_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -158,7 +148,7 @@ LOG_SUFFIX="_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
+mkdir_vrfy -p "${OBS_OUTPUT_DIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -195,9 +185,9 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export INPUT_BASE
-export OUTPUT_BASE
-export OUTPUT_SUBDIR
+export OBS_INPUT_DIR
+export OBS_OUTPUT_BASE
+export OBS_OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
 export FHR_LIST
@@ -206,10 +196,8 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-export OBS_FILENAME_PREFIX
-export OBS_FILENAME_SUFFIX
-export OBS_FILENAME_METPROC_PREFIX
-export OBS_FILENAME_METPROC_SUFFIX
+
+export OBS_NDAS_SFCorUPA_REL_PATH_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #

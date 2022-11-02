@@ -1997,18 +1997,29 @@ CRTM_DIR=""
 #
 DO_ENSEMBLE="FALSE"
 NUM_ENS_MEMBERS="1"
-
 #
-# The following are verification-related parameters.  Need to define.
+# Array specifying time-lagging of each ensemble member.  Currently only
+# used in verification, not in running the forecasts (i.e. can't (yet?)
+# time-lag the forecasts).
 #
 ENS_TIME_LAG_HRS=("")
-
-FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${slash_ensmem_subdir_or_null}/postprd'
+#
+# These templates are used in the verification tasks, but they should 
+# also be used in the GET_OBS_... tasks.
+#
+OBS_CCPA_APCP01h_FN_TEMPLATE='{valid?fmt=%Y%m%d}/ccpa.t{valid?fmt=%H}z.01h.hrap.conus.gb2'
+OBS_CCPA_APCPgt01h_FN_TEMPLATE='${OBS_CCPA_APCP01h_FN_TEMPLATE}_a${ACCUM}h.nc'
+OBS_MRMS_REFC_FN_TEMPLATE='{valid?fmt=%Y%m%d}/MergedReflectivityQCComposite_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
+OBS_MRMS_RETOP_FN_TEMPLATE='{valid?fmt=%Y%m%d}/EchoTop_18_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
+OBS_NDAS_SFCorUPA_FN_TEMPLATE='prepbufr.ndas.{valid?fmt=%Y%m%d%H}'
+OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE='${OBS_NDAS_SFCorUPA_FN_TEMPLATE}.nc'
+#
+# These templates are used in the verification tasks, but they should 
+# also be used in the RUN_FCST_TN and/or RUN_POST_TN tasks.
+#
+FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd'
 FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${time_lag}}z.prslev.f{lead?fmt=%HHH?shift=${time_lag}}.${POST_OUTPUT_DOMAIN_NAME}.grib2'
-
-#FCST_SUBDIR_METPROC_TEMPLATE='${slash_ensmem_subdir_or_null}/metprd/pcp_combine_fcst_cmn'
-FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${slash_ensmem_subdir_or_null}/metprd/pcp_combine_fcst_cmn'
-#FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a{level?fmt=%HH}h.nc'
+FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn'
 FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a${ACCUM}h.nc'
 #
 #-----------------------------------------------------------------------

@@ -89,10 +89,6 @@ FIELDNAME_IN_OBS_INPUT=""
 FIELDNAME_IN_FCST_INPUT=""
 FIELDNAME_IN_MET_OUTPUT=""
 FIELDNAME_IN_MET_FILEDIR_NAMES=""
-OBS_FILENAME_PREFIX=""
-OBS_FILENAME_SUFFIX=""
-OBS_FILENAME_METPROC_PREFIX=""
-OBS_FILENAME_METPROC_SUFFIX=""
 fhr_int=""
 
 set_vx_params \
@@ -104,11 +100,35 @@ set_vx_params \
   outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
   outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
   outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES" \
-  outvarname_obs_filename_prefix="OBS_FILENAME_PREFIX" \
-  outvarname_obs_filename_suffix="OBS_FILENAME_SUFFIX" \
-  outvarname_obs_filename_METproc_prefix="OBS_FILENAME_METPROC_PREFIX" \
-  outvarname_obs_filename_METproc_suffix="OBS_FILENAME_METPROC_SUFFIX" \
   outvarname_fhr_intvl_hrs="fhr_int"
+#
+#-----------------------------------------------------------------------
+#
+# Get the time-lag (if any) for the current ensemble member forecast.
+#
+#-----------------------------------------------------------------------
+#
+time_lag="0"
+mem_indx="${mem_indx:-}"
+if [ ! -z "${mem_indx}" ]; then
+  time_lag=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
+fi
+#
+#-----------------------------------------------------------------------
+#
+# Set paths for input to and output from pcp_combine.  Also, set the
+# suffix for the name of the log file that METplus will generate.
+#
+#-----------------------------------------------------------------------
+#
+FCST_INPUT_DIR="${MET_INPUT_DIR}"
+FCST_OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+FCST_OUTPUT_DIR="${FCST_OUTPUT_BASE}/metprd/pcp_combine_fcst_cmn"
+STAGING_DIR="${FCST_OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+
+FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
+FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #
@@ -143,39 +163,9 @@ set_vx_fhr_list \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  obs_dir="${OBS_DIR}" \
-  obs_filename_prefix="${OBS_FILENAME_PREFIX}" \
-  obs_filename_suffix="${OBS_FILENAME_SUFFIX}" \
+  obs_dir="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn" \
+  obs_fn_template="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}" \
   outvarname_fhr_list="FHR_LIST"
-#
-#-----------------------------------------------------------------------
-#
-# Get the time-lag (if any) for the current ensemble member forecast.
-#
-#-----------------------------------------------------------------------
-#
-time_lag="0"
-mem_indx="${mem_indx:-}"
-if [ ! -z "${mem_indx}" ]; then
-  time_lag=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
-fi
-# Calculate the negative of the time lag.  This is needed because in the
-# METplus configuration file, simply placing a minus sign in front of
-# TIME_LAG causes an error.
-#MNS_TIME_LAG=$((-${TIME_LAG}))
-#
-#-----------------------------------------------------------------------
-#
-# Set paths for input to and output from pcp_combine.  Also, set the
-# suffix for the name of the log file that METplus will generate.
-#
-#-----------------------------------------------------------------------
-#
-INPUT_BASE="${MET_INPUT_DIR}"
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-OUTPUT_SUBDIR="metprd/pcp_combine_fcst_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -189,7 +179,7 @@ LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CD
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${OUTPUT_SUBDIR}"
+mkdir_vrfy -p "${FCST_OUTPUT_DIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -226,55 +216,22 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export INPUT_BASE
-export OUTPUT_BASE
-export OUTPUT_SUBDIR
+export FCST_INPUT_DIR
+export FCST_OUTPUT_BASE
+export FCST_OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
 export MODEL
 export NET
 export FHR_LIST
-#export TIME_LAG
-#export MNS_TIME_LAG
 
 export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-export OBS_FILENAME_PREFIX
-export OBS_FILENAME_SUFFIX
-export OBS_FILENAME_METPROC_PREFIX
-export OBS_FILENAME_METPROC_SUFFIX
 
-
-
-FCST_REL_PATH_TEMPLATE=""
-FCST_REL_PATH_METPROC_TEMPLATE=""
-echo
-echo "PPPPPPPPPPPPPP"
-echo "FCST_REL_PATH_TEMPLATE = |${FCST_REL_PATH_TEMPLATE}|"
-echo
-echo "QQQQQQQQQQQQQQ"
-echo "FCST_REL_PATH_METPROC_TEMPLATE = |${FCST_REL_PATH_METPROC_TEMPLATE=}|"
-
-#export FCST_FN_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_TEMPLATE} )
-#export FCST_FN_METPROC_TEMPLATE_EXPAND=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
-#export time_lag
-#export slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-export FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
-#export FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_SUBDIR_METPROC_TEMPLATE}/${FCST_FN_METPROC_TEMPLATE} )
-export FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
-
-echo
-echo "PPPPPPPPPPPPPP"
-echo "time_lag = |${time_lag}|"
-echo "slash_ensmem_subdir_or_null = |${slash_ensmem_subdir_or_null}|"
-echo "FCST_REL_PATH_TEMPLATE = |${FCST_REL_PATH_TEMPLATE}|"
-echo
-echo "QQQQQQQQQQQQQQ"
-echo "FCST_REL_PATH_METPROC_TEMPLATE = |${FCST_REL_PATH_METPROC_TEMPLATE=}|"
-
+export FCST_REL_PATH_TEMPLATE
+export FCST_REL_PATH_METPROC_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
