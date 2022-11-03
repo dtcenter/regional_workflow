@@ -229,7 +229,15 @@ function source_util_funcs() {
 #-----------------------------------------------------------------------
 #
   . ${bashutils_dir}/get_bash_file_contents.sh
-
+#
+#-----------------------------------------------------------------------
+#
+# Source the file containing the function that evaluates a METplus time
+# string template.
+#
+#-----------------------------------------------------------------------
+#
+  . ${bashutils_dir}/eval_METplus_timestr_tmpl.sh
 }
 source_util_funcs
 

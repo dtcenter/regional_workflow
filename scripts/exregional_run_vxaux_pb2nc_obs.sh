@@ -124,16 +124,14 @@ OBS_NDAS_SFCorUPA_REL_PATH_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_TEMPLATE
 #-----------------------------------------------------------------------
 #
 set_vx_fhr_list \
-  obtype="${OBTYPE}" \
-  field="" \
-  field_is_APCPgt01h="${field_is_APCPgt01h}" \
-  accum="" \
   fhr_min="0" \
   fhr_int="1" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  obs_dir="${OBS_INPUT_DIR}" \
-  obs_fn_template="${OBS_NDAS_SFCorUPA_FN_TEMPLATE}" \
+  base_dir="${OBS_INPUT_DIR}" \
+  fn_template="${OBS_NDAS_SFCorUPA_FN_TEMPLATE}" \
+  check_hourly_files="FALSE" \
+  accum="" \
   outvarname_fhr_list="FHR_LIST"
 #
 #-----------------------------------------------------------------------

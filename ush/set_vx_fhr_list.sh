@@ -45,16 +45,14 @@ function set_vx_fhr_list() {
 #-----------------------------------------------------------------------
 #
   local valid_args=( \
-        "obtype" \
-        "field" \
-        "field_is_APCPgt01h" \
-        "accum" \
         "fhr_min" \
         "fhr_int" \
         "fhr_max" \
         "cdate" \
-        "obs_dir" \
-        "obs_fn_template" \
+        "base_dir" \
+        "fn_template" \
+        "check_hourly_files" \
+        "accum" \
         "outvarname_fhr_list" \
         )
   process_args valid_args "$@"
@@ -75,196 +73,160 @@ function set_vx_fhr_list() {
 #
 #-----------------------------------------------------------------------
 #
-  local actual_value \
+  local crnt_tmpl \
+        crnt_tmpl_esc \
         fhr \
         fhr_array \
         fhr_list \
-        hh_init \
-        hh_valid_tmpl \
-        hhmmss_valid_tmpl \
-        hrs_since_init \
+        fn \
+        fp \
         i \
-        j \
         num_fcst_hrs \
-        num_missing_obs_files \
-        num_supported_timestrs \
-        obs_fn \
-        obs_fp \
+        num_missing_files \
+        regex_search_tmpl \
         remainder \
-        regex_search \
-        skip_this_fhr \
-        supported_timestr \
-        supported_timestrs \
-        timestr \
-        yyyymmdd_init \
-        yyyymmdd_init_tmpl \
-        yyyymmdd_valid_tmpl \
-        yyyymmddhh_init_tmpl \
-        yyyymmddhh_valid_tmpl
-#
-#-----------------------------------------------------------------------
-#
-# List of supported METplus time string templates.
-#
-#-----------------------------------------------------------------------
-#
-yyyymmddhh_init_tmpl="{init?fmt=%Y%m%d%H}"
-yyyymmddhh_valid_tmpl="{valid?fmt=%Y%m%d%H}"
-yyyymmdd_valid_tmpl="{valid?fmt=%Y%m%d}"
-hhmmss_valid_tmpl="{valid?fmt=%H%M%S}"
-hh_valid_tmpl="{valid?fmt=%H}"
-supported_timestrs=( "${yyyymmddhh_init_tmpl}" \
-                     "${yyyymmddhh_valid_tmpl}" \
-                     "${yyyymmdd_valid_tmpl}" \
-                     "${hhmmss_valid_tmpl}" \
-                     "${hh_valid_tmpl}" )
-num_supported_timestrs=${#supported_timestrs[@]}
-#
-#-----------------------------------------------------------------------
-#
-# Loop through all forecast hours.  For each one for which the obs file
-# exists, add the forecast hour to fhr_list.  fhr_list will be a scalar
-# containing a comma-separated list of forecast hours for which obs
-# files exist.  Also, use the variable num_missing_obs_files to keep
-# track of the number of obs files that are missing.
+        skip_this_fhr
 #
 #-----------------------------------------------------------------------
 #
 # Create array containing set of forecast hours for which we will check
-# for the existence of corresponding observations file.
+# for the existence of corresponding observation or forecast file.
 #
-fhr_array=($( seq ${fhr_min} ${fhr_int} ${fhr_max} ))
+#-----------------------------------------------------------------------
 #
-# Get the yyymmdd and hh corresponding to the forecast's initial time
-# (cdate).
+  fhr_array=($( seq ${fhr_min} ${fhr_int} ${fhr_max} ))
+  print_info_msg "$VERBOSE" "\
+Initial (i.e. before filtering for missing files) set of forecast hours
+is:
+  fhr_array = ( $( printf "\"%s\" " "${fhr_array[@]}" ))
+"
 #
-yyyymmdd_init=${cdate:0:8}
-hh_init=${cdate:8:2}
-
-fhr_list=""
-num_missing_obs_files=0
-num_fcst_hrs=${#fhr_array[@]}
-for (( i=0; i<${num_fcst_hrs}; i++ )); do
-
-  fhr="${fhr_array[$i]}"
-  skip_this_fhr="FALSE"
-  hrs_since_init=$(( ${hh_init} + ${fhr} ))
+#-----------------------------------------------------------------------
 #
-# Set the name of/relative path to the observation file from the provided
-# templates.
+# Loop through all forecast hours.  For each one for which a corresponding
+# file exists, add the forecast hour to fhr_list.  fhr_list will be a
+# scalar containing a comma-separated list of forecast hours for which
+# corresponding files exist.  Also, use the variable num_missing_files
+# to keep track of the number of files that are missing.
 #
-  obs_fn="${obs_fn_template}"
-  remainder="${obs_fn_template}"
-  timestr="not_empty"
-  while [ ! -z "$timestr" ]; do
+#-----------------------------------------------------------------------
+#
+  fhr_list=""
+  num_missing_files="0"
+  num_fcst_hrs=${#fhr_array[@]}
+  for (( i=0; i<${num_fcst_hrs}; i++ )); do
 
-    regex_search="(.*)(\{.*\})(.*)"
-    timestr=$( printf "%s" "${remainder}" | \
-               $SED -n -r -e "s|${regex_search}|\2|p" )
-    remainder=$( printf "%s" "${remainder}" | \
-                 $SED -n -r -e "s|${regex_search}|\1\3|p" )
+    fhr_orig="${fhr_array[$i]}"
+echo
+echo "i = $i  (fhr_orig = $fhr_orig)"
 
-    if [ ! -z "$timestr" ]; then
-      regex_search="${timestr}"
-      regex_search=$( echo "${regex_search}" | $SED -r -e "s/\?/\\\?/g" -e "s/\{/\\\{/g" -e "s/\}/\\\}/g" )
+    if [ "${check_hourly_files}" = "TRUE" ]; then
+      fhr=$(( ${fhr_orig} - ${accum} + 1 ))
+      num_back_hrs=${accum}
+    else
+      fhr=${fhr_orig}
+      num_back_hrs=1
+    fi
 
-      actual_value=""
-      for (( j=0; k<${num_supported_timestrs}; j++ )); do
-        supported_timestr="${supported_timestrs[$j]}"
-        if [ "${timestr}" = "${supported_timestr}" ]; then
-          case "${supported_timestr}" in
+    skip_this_fhr="FALSE"
+    for (( j=0; j<${num_back_hrs}; j++ )); do
+echo "  j = $j  (fhr = $fhr)"
+#
+# Use the provided template to set the name of/relative path to the file 
+#
+      fn="${fn_template}"
+      regex_search_tmpl="(.*)(\{.*\})(.*)"
+      crnt_tmpl=$( printf "%s" "${fn_template}" | \
+                   $SED -n -r -e "s|${regex_search_tmpl}|\2|p" )
+      remainder=$( printf "%s" "${fn_template}" | \
+                   $SED -n -r -e "s|${regex_search_tmpl}|\1\3|p" )
+      while [ ! -z "${crnt_tmpl}" ]; do
 
-            '{init?fmt=%Y%m%d%H}')
-              actual_value="${cdate}"
-              break
-              ;;
+        eval_METplus_timestr_tmpl \
+          init_time="$cdate" \
+          fhr="$fhr" \
+          tmpl="${crnt_tmpl}" \
+          outvarname_formatted_time="actual_value"
+#
+# Replace METplus time templates in fn with actual times.  Note that
+# when using sed, we need to escape various characters (question mark,
+# closing and opening curly braces, etc) in the METplus template in 
+# order for the sed command below to work properly.
+#
+        crnt_tmpl_esc=$( echo "${crnt_tmpl}" | \
+                         $SED -r -e "s/\?/\\\?/g" -e "s/\{/\\\{/g" -e "s/\}/\\\}/g" )
+        fn=$( echo "${fn}" | \
+              $SED -n -r "s|(.*)(${crnt_tmpl_esc})(.*)|\1${actual_value}\3|p" )
+#
+# Set up values for the next iteration of the while-loop.
+#
+        crnt_tmpl=$( printf "%s" "${remainder}" | \
+                     $SED -n -r -e "s|${regex_search_tmpl}|\2|p" )
+        remainder=$( printf "%s" "${remainder}" | \
+                     $SED -n -r -e "s|${regex_search_tmpl}|\1\3|p" )
 
-            '{valid?fmt=%Y%m%d%H}')
-              actual_value=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%Y%m%d%H" )
-              break
-              ;;
-
-            '{valid?fmt=%Y%m%d}')
-              actual_value=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%Y%m%d" )
-              break
-              ;;
-
-            '{valid?fmt=%H%M%S}')
-              actual_value=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%H%M%S" )
-              break
-              ;;
-
-            '{valid?fmt=%H}')
-              actual_value=$( date --date="${yyyymmdd_init} + ${hrs_since_init} hours" +"%H" )
-              break
-              ;;
-
-          esac
-        fi
       done
+#
+# Get the full path to the file and check if it exists.
+#
+      fp="${base_dir}/${fn}"
 
-      if [ -z "${actual_value}" ]; then
-        print_err_msg_exit "\
-  A method for replacing the current METplus time string (timestr) has not
-  been specified:
-    timestr = \"${timestr}\""
+      if [ -f "${fp}" ]; then
+        print_info_msg "\
+Found file (fp) for the current forecast hour (fhr; relative to the cycle
+date cdate):
+  fhr = \"$fhr\"
+  cdate = \"$cdate\"
+  fp = \"${fp}\"
+"
       else
-        obs_fn=$( echo "${obs_fn}" | \
-                  $SED -n -r "s|(.*)(${regex_search})(.*)|\1${actual_value}\3|p" )
+        skip_this_fhr="TRUE"
+        num_missing_files=$(( ${num_missing_files} + 1 ))
+        print_info_msg "\
+The file (fp) for the current forecast hour (fhr; relative to the cycle
+date cdate) is missing:
+  fhr = \"$fhr\"
+  cdate = \"$cdate\"
+  fp = \"${fp}\"
+Not including the current forecast hour from the list of hours passed
+to the METplus configuration file."
+        break
       fi
 
+      fhr=$(( $fhr + 1 ))
+
+    done
+
+    if [ "${skip_this_fhr}" != "TRUE" ]; then
+      fhr_list="${fhr_list},${fhr_orig}"
     fi
 
   done
 #
-# Get the full path to the observation file and check if it exists.
-#
-  obs_fp="${obs_dir}/${obs_fn}"
-
-  if [ -f "${obs_fp}" ]; then
-    print_info_msg "\
-Found observation file (obs_fp) for the current forecast hour (fhr;
-relative to the cycle date cdate):
-  fhr = \"$fhr\"
-  cdate = \"$cdate\"
-  obs_fp = \"${obs_fp}\"
-"
-    fhr_list="${fhr_list},${fhr}"
-  else
-    skip_this_fhr="TRUE"
-    num_missing_obs_files=$(( ${num_missing_obs_files} + 1 ))
-    print_info_msg "\
-The observation file (obs_fp) for the current forecast hour (fhr;
-relative to the cycle date cdate) is missing:
-  fhr = \"$fhr\"
-  cdate = \"$cdate\"
-  obs_fp = \"${obs_fp}\"
-Not including the current forecast hour from the list of hours passed
-to the METplus configuration file."
-    break
-  fi
-
-done
-#
 # Remove leading comma from fhr_list.
 #
-fhr_list=$( echo "${fhr_list}" | $SED "s/^,//g" )
+  fhr_list=$( echo "${fhr_list}" | $SED "s/^,//g" )
+  print_info_msg "$VERBOSE" "\
+Final (i.e. after filtering for missing files) set of foreast hours is
+(written as a single string):
+  fhr_list = \"${fhr_list}\"
+"
 #
 #-----------------------------------------------------------------------
 #
-# If the number of missing obs files is greater than the user-specified
+# If the number of missing files is greater than the user-specified
 # variable NUM_MISSING_OBS_FILES_MAX, print out an error message and
 # exit.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${num_missing_obs_files}" -gt "${NUM_MISSING_OBS_FILES_MAX}" ]; then
-  print_err_msg_exit "\
-The number of missing obs files (num_obs_missig) is greater than the
+  if [ "${num_missing_files}" -gt "${NUM_MISSING_OBS_FILES_MAX}" ]; then
+    print_err_msg_exit "\
+The number of missing files (num_missing_files) is greater than the
 maximum allowed number (NUM_MISSING_OBS_MAS):
-  num_missing_obs_files = ${num_missing_obs_files}
+  num_missing_files = ${num_missing_files}
   NUM_MISSING_OBS_FILES_MAX = ${NUM_MISSING_OBS_FILES_MAX}"
-fi
+  fi
 #
 #-----------------------------------------------------------------------
 #

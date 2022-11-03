@@ -98,10 +98,6 @@ function set_vx_params() {
 The accumulation (accum2d) must be a 2-digit integer:
   accum2d = \"${accum2d}\""
   fi
-
-
-echo
-echo "=======>>>>  obtype = $obtype"
 #
 #-----------------------------------------------------------------------
 #

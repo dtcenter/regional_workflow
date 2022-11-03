@@ -141,16 +141,14 @@ FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} 
 #-----------------------------------------------------------------------
 #
 set_vx_fhr_list \
-  obtype="${OBTYPE}" \
-  field="${VAR}" \
-  field_is_APCPgt01h="${field_is_APCPgt01h}" \
-  accum="${ACCUM}" \
   fhr_min="0" \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  obs_dir="${OBS_INPUT_BASE}" \
-  obs_fn_template="${OBS_FN_TEMPLATE}" \
+  base_dir="${OBS_INPUT_BASE}" \
+  fn_template="${OBS_FN_TEMPLATE}" \
+  check_hourly_files="FALSE" \
+  accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
 #
 #-----------------------------------------------------------------------

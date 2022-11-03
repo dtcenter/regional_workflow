@@ -121,14 +121,14 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-FCST_INPUT_DIR="${MET_INPUT_DIR}"
-FCST_OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-FCST_OUTPUT_DIR="${FCST_OUTPUT_BASE}/metprd/pcp_combine_fcst_cmn"
-STAGING_DIR="${FCST_OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+FCST_INPUT_BASE="${MET_INPUT_DIR}"
+FCST_OUTPUT_BASE="${MET_OUTPUT_DIR}"
+FCST_OUTPUT_DIR="${FCST_OUTPUT_BASE}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn"
+STAGING_DIR="${FCST_OUTPUT_BASE}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 
 FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
-FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_SUBDIR_METPROC_TEMPLATE}/${FCST_FN_METPROC_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #
@@ -151,21 +151,20 @@ FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #
-echo "AAAAAAAAAAAAAAAAAAAAaaaaa"
-echo "  CDATE = |$CDATE|"
-
 set_vx_fhr_list \
-  obtype="${OBTYPE}" \
-  field="${VAR}" \
-  field_is_APCPgt01h="${field_is_APCPgt01h}" \
-  accum="${ACCUM}" \
   fhr_min="${ACCUM}" \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  obs_dir="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn" \
-  obs_fn_template="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}" \
+  base_dir="${MET_INPUT_DIR}" \
+  fn_template="${FCST_REL_PATH_TEMPLATE}" \
+  check_hourly_files="TRUE" \
+  accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
+#  base_dir="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn" \
+#  fn_template="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}" \
+#  base_dir="${OBS_DIR}" \
+#  fn_template="${OBS_CCPA_APCP01h_FN_TEMPLATE}" \
 #
 #-----------------------------------------------------------------------
 #
@@ -216,9 +215,8 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export FCST_INPUT_DIR
+export FCST_INPUT_BASE
 export FCST_OUTPUT_BASE
-export FCST_OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
 export MODEL

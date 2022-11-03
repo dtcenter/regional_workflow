@@ -109,7 +109,7 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_DIR="${OBS_DIR}"
+OBS_INPUT_BASE="${OBS_DIR}"
 OBS_OUTPUT_BASE="${MET_OUTPUT_DIR}"
 OBS_OUTPUT_DIR="${OBS_OUTPUT_BASE}/metprd/pcp_combine_obs_cmn"
 STAGING_DIR="${OBS_OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
@@ -125,16 +125,14 @@ OBS_CCPA_APCPgt01h_REL_PATH_TEMPLATE=$( eval echo ${OBS_CCPA_APCPgt01h_FN_TEMPLA
 #-----------------------------------------------------------------------
 #
 set_vx_fhr_list \
-  obtype="${OBTYPE}" \
-  field="${VAR}" \
-  field_is_APCPgt01h="${field_is_APCPgt01h}" \
-  accum="${ACCUM}" \
   fhr_min="${ACCUM}" \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  obs_dir="${OBS_INPUT_DIR}" \
-  obs_fn_template="${OBS_CCPA_APCP01h_FN_TEMPLATE}" \
+  base_dir="${OBS_INPUT_BASE}" \
+  fn_template="${OBS_CCPA_APCP01h_FN_TEMPLATE}" \
+  check_hourly_files="TRUE" \
+  accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
 #
 #-----------------------------------------------------------------------
@@ -186,7 +184,7 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export OBS_INPUT_DIR
+export OBS_INPUT_BASE
 export OBS_OUTPUT_BASE
 export OBS_OUTPUT_DIR
 export STAGING_DIR
