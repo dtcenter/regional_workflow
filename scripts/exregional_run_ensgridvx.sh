@@ -256,7 +256,6 @@ export OUTPUT_BASE
 export LOG_SUFFIX
 export VX_FCST_MODEL_NAME
 export NET
-export POST_OUTPUT_DOMAIN_NAME
 export NUM_ENS_MEMBERS
 export NUM_PAD
 export acc

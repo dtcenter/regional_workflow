@@ -1398,16 +1398,51 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# If POST_OUTPUT_DOMAIN_NAME has not been specified by the user, set it
+# to PREDEF_GRID_NAME (which won't be empty if using a predefined grid).
+# Then change it to lowercase.  Finally, if running one or more of the 
+# tasks that require a non-empty value for POST_OUTPUT_DOMAIN_NAME, 
+# ensure that it does not end up getting set to an empty string.
+#
+#-----------------------------------------------------------------------
+#
+POST_OUTPUT_DOMAIN_NAME="${POST_OUTPUT_DOMAIN_NAME:-${PREDEF_GRID_NAME}}"
+POST_OUTPUT_DOMAIN_NAME=$(echo_lowercase "${POST_OUTPUT_DOMAIN_NAME}")
+
+if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ] || \
+   [ "${RUN_TASK_RUN_POST}" = "TRUE" ]; then
+#   [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
+#   [ "${RUN_TASKS_VXENS}" = "TRUE" ]; then
+#   [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
+#   [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ] || \
+#   [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ] || \
+#   [ "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
+
+  if [ -z "${POST_OUTPUT_DOMAIN_NAME}" ]; then
+    print_err_msg_exit "\
+The domain name used in naming the run_post output files (POST_OUTPUT_DOMAIN_NAME)
+has not been set:
+  POST_OUTPUT_DOMAIN_NAME = \"${POST_OUTPUT_DOMAIN_NAME}\"
+If this experiment is not using a predefined grid (i.e. if PREDEF_GRID_NAME 
+is set to a null string), POST_OUTPUT_DOMAIN_NAME must be set in the SRW 
+App's configuration file (\"${EXPT_CONFIG_FN}\")."
+  fi
+
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Checks on and default values for user-specified verification (vx)
 # parameters.
 #
 #-----------------------------------------------------------------------
 #
+num_vx_fields="${#VX_FIELDS[@]}"
+if [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
+   [ "${RUN_TASKS_VXENS}" = "TRUE" ]; then
+#
 # Ensure that the fields to be verified have valid values.
 #
-num_vx_fields="${#VX_FIELDS[@]}"
-if [ "${RUN_TASKS_VXDET}" = "TRUE" -o "${RUN_TASKS_VXENS}" = "TRUE" ]; then
-
   if [ "${num_vx_fields}" -gt 0 ]; then
     for (( i=0; i<${num_vx_fields}; i++ )); do
       check_var_valid_value "VX_FIELDS[$i]" "valid_vals_VX_FIELDS"
@@ -1420,6 +1455,23 @@ in VX_FIELDS (i.e. VX_FIELDS cannot be empty):
   RUN_TASKS_VXDET = \"${RUN_TASKS_VXDET}\"
   RUN_TASKS_VXENS = \"${RUN_TASKS_VXENS}\"
   VX_FIELDS = ()"
+  fi
+#
+# If necessary, set VX_FCST_MODEL_NAME to a default value.
+#
+  if [ -z "${VX_FCST_MODEL_NAME}" ]; then
+    if [ -z "${NET}" ] || [ -z "${POST_OUTPUT_DOMAIN_NAME}" ]; then
+      print_err_msg_exit "\
+Cannot set VX_FCST_MODEL_NAME to its default value because NET and/or
+POST_OUTPUT_DOMAIN_NAME is set to an empty string:
+  NET = \"${NET}\"
+  POST_OUTPUT_DOMAIN_NAME = \"${POST_OUTPUT_DOMAIN_NAME}\"
+In the SRW App's configuration file (\"${EXPT_CONFIG_FN}\"), either set
+NET and/or POST_OUTPUT_DOMAIN_NAME to non-empty strings or expliclty set
+VX_FCST_MODEL_NAME."
+    else
+      VX_FCST_MODEL_NAME="${NET}.${POST_OUTPUT_DOMAIN_NAME}"
+    fi
   fi
 #
 # When verification tasks are turned off, then if VX_FIELDS is set to an
@@ -1473,44 +1525,6 @@ for (( i=0; i<${num_vx_fields}; i++ )); do
     break
   fi
 done
-#
-# Default value for VX_FCST_MODEL_NAME.
-#
-VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME:-${NET}.${POST_OUTPUT_DOMAIN_NAME}}
-#
-#-----------------------------------------------------------------------
-#
-# If POST_OUTPUT_DOMAIN_NAME has not been specified by the user, set it
-# to PREDEF_GRID_NAME (which won't be empty if using a predefined grid).
-# Then change it to lowercase.  Finally, if running one or more of the 
-# tasks that require a non-empty value for POST_OUTPUT_DOMAIN_NAME, 
-# ensure that it does not end up getting set to an empty string.
-#
-#-----------------------------------------------------------------------
-#
-POST_OUTPUT_DOMAIN_NAME="${POST_OUTPUT_DOMAIN_NAME:-${PREDEF_GRID_NAME}}"
-POST_OUTPUT_DOMAIN_NAME=$(echo_lowercase "${POST_OUTPUT_DOMAIN_NAME}")
-
-if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ] || \
-   [ "${RUN_TASK_RUN_POST}" = "TRUE" ] || \
-   [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
-   [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ] || \
-   [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
-   [ "${RUN_TASKS_VXENS}" = "TRUE" ] || \
-   [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ] || \
-   [ "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
-
-  if [ -z "${POST_OUTPUT_DOMAIN_NAME}" ]; then
-    print_err_msg_exit "\
-The domain name used in naming the run_post output files (POST_OUTPUT_DOMAIN_NAME)
-has not been set:
-  POST_OUTPUT_DOMAIN_NAME = \"${POST_OUTPUT_DOMAIN_NAME}\"
-If this experiment is not using a predefined grid (i.e. if PREDEF_GRID_NAME 
-is set to a null string), POST_OUTPUT_DOMAIN_NAME must be set in the SRW 
-App's configuration file (\"${EXPT_CONFIG_FN}\")."
-  fi
-
-fi
 #
 #-----------------------------------------------------------------------
 #

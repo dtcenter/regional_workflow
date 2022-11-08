@@ -152,7 +152,6 @@ export METPLUS_PATH
 export METPLUS_CONF
 export VX_FCST_MODEL_NAME
 export NET
-export POST_OUTPUT_DOMAIN_NAME
 #
 #-----------------------------------------------------------------------
 #

@@ -17,33 +17,34 @@ LAYOUT_X="10"
 LAYOUT_Y="4"
 CCPP_PHYS_SUITE="FV3_GFS_2017_gfdlmp"
 
-EXTRN_MDL_NAME_ICS="GSMGFS"
-EXTRN_MDL_NAME_LBCS="GSMGFS"
+EXTRN_MDL_NAME_ICS="FV3GFS"
+EXTRN_MDL_NAME_LBCS="FV3GFS"
 USE_USER_STAGED_EXTRN_FILES="TRUE"
 
-DATE_FIRST_CYCL="20190520"
-DATE_LAST_CYCL="20190520"
+DATE_FIRST_CYCL="20190701"
+DATE_LAST_CYCL="20190701"
 CYCL_HRS=( "00" )
 
 FCST_LEN_HRS="6"
-LBC_SPEC_INTVL_HRS="6"
+LBC_SPEC_INTVL_HRS="3"
 #
-# This test assumes the observation files are staged.  Thus, deactivate
-# the GET_OBS_... tasks and instead instead specify the obs staging
-# directories.
+# This test assumes the observation files will be fetched using the
+# GET_OBS_... tasks.  Thus, activate these tasks and specify the
+# locations for staging the files.
 #
-RUN_TASK_GET_OBS_CCPA="FALSE"
-CCPA_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/test_get_obs_data/ccpa/proc"
-RUN_TASK_GET_OBS_MRMS="FALSE"
-MRMS_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/test_get_obs_data/mrms/proc"
-RUN_TASK_GET_OBS_NDAS="FALSE"
-NDAS_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/test_get_obs_data/ndas/proc"
+RUN_TASK_GET_OBS_CCPA="TRUE"
+CCPA_OBS_DIR='$EXPTDIR/obs_data/ccpa/proc'
+RUN_TASK_GET_OBS_MRMS="TRUE"
+MRMS_OBS_DIR='$EXPTDIR/obs_data/mrms/proc'
+RUN_TASK_GET_OBS_NDAS="TRUE"
+NDAS_OBS_DIR='$EXPTDIR/obs_data/ndas/proc'
 #
-# Run deterministic vx on each member of the forecast ensemble (i.e. set
-# RUN_TASKS_VXDET to "TRUE"), but do not run vx on the ensemble as a
-# whole (i.e. set RUN_TASKS_VXENS to "FALSE").
+# Run deterministic vx on each member of the forecast ensemble.
 #
 RUN_TASKS_VXDET="TRUE"
+#
+# Do not run vx on the ensemble as a whole.
+#
 RUN_TASKS_VXENS="FALSE"
 #
 # MET and METplus paths.  Move these to the machine files?
