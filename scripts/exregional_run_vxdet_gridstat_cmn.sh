@@ -106,15 +106,21 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Get the time-lag (if any) for the current ensemble member forecast.
+# If performing ensemble verification, get the time lag (if any) of the
+# current ensemble forecast member.  The time lag is the duration (in 
+# seconds) by which the current forecast member was initialized before
+# the current cycle date and time (with the latter specified by CDATE).
+# For example, a time lag of 3600 means that the current member was
+# initialized 1 hour before the current CDATE, while a time lag of 0
+# means the current member was initialized on CDATE.
+# 
+# Note that if we're not running ensemble verification (i.e. if we're 
+# running verification for a single deterministic forecast), the time
+# lag gets set to 0.
 #
 #-----------------------------------------------------------------------
 #
-time_lag="0"
-mem_indx="${mem_indx:-}"
-if [ ! -z "${mem_indx}" ]; then
-  time_lag=$(( ${ENS_TIME_LAG_HRS[${mem_indx}-1]}*${secs_per_hour} ))
-fi
+time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)*${secs_per_hour} ))
 #
 #-----------------------------------------------------------------------
 #
@@ -177,7 +183,7 @@ if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
   FCST_INPUT_BASE="${MET_OUTPUT_DIR}"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
-  FCST_INPUT_BASE="${MET_INPUT_DIR}"
+  FCST_INPUT_BASE="${MET_FCST_INPUT_DIR}"
 fi
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat_cmn"
@@ -278,7 +284,7 @@ export OUTPUT_BASE
 export OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
-export MODEL
+export VX_FCST_MODEL_NAME
 export NET
 export FHR_LIST
 

@@ -177,7 +177,8 @@ file (template_xml_fp):
   ens_timelag_var_name="\"\""
   ens_time_lag_hhmmss="\"\""
   cyclestr_offset=""
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  if [ "${IS_ENS_FCST}" = "TRUE" ] || \
+     [ "${RUN_TASKS_VXENS}" = "TRUE" ]; then
     ensmem_indx_name="mem"
     uscore_ensmem_name="_mem#${ensmem_indx_name}#"
     slash_ensmem_subdir="/mem#${ensmem_indx_name}#"
@@ -185,9 +186,6 @@ file (template_xml_fp):
     ens_time_lag_hhmmss=$( printf "%02d:00:00 " "${ENS_TIME_LAG_HRS[@]}" )
     cyclestr_offset=' offset="#'${ens_timelag_var_name}'#"'
   fi
-echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
-#exit 1
 
   settings="\
 #
@@ -235,10 +233,8 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
 #
 # Verification parameters.
 #
-  'vx_fields_gridded': [ $( printf "\'%s\', " "${VX_FIELDS_GRIDDED[@]}" ) ]
-  'vx_fields_point': [ $( printf "\'%s\', " "${VX_FIELDS_POINT[@]}" ) ]
-  'vx_fields': [ $( printf "\'%s\', " "${VX_FIELDS_GRIDDED[@]}" ; printf "\'%s\', " "${VX_FIELDS_POINT[@]}" ) ]
-  'vx_apcp_accums_hrs': [ $( printf "%s, " "${VX_APCP_ACCUMS_HRS[@]}" ) ]
+  'vx_fields': [ $( if [ "${#VX_FIELDS[@]}" -ne 0 ]; then printf "\'%s\', " "${VX_FIELDS[@]}"; fi )]
+  'vx_apcp_accums_hrs': [ $( printf "%s, " "${VX_APCP_ACCUMS_HRS[@]}" )]
 #
 # Number of nodes to use for each task.
 #
@@ -406,16 +402,15 @@ echo "ens_time_lag_hhmmss = |${ens_time_lag_hhmmss[@]}|"
 #
 # METPlus-specific information
 #
-  'model': ${MODEL}
   'ccpa_obs_dir': ${CCPA_OBS_DIR}
   'mrms_obs_dir': ${MRMS_OBS_DIR}
   'ndas_obs_dir': ${NDAS_OBS_DIR}
-# Move the following to somewhere more appropriate.
+# Move the variable NET to somewhere more appropriate.
   'net': ${NET}
 #
 # Ensemble-related parameters.
 #
-  'do_ensemble': ${DO_ENSEMBLE}
+  'is_ens_fcst': ${IS_ENS_FCST}
   'num_ens_members': ${NUM_ENS_MEMBERS}
   'ndigits_ensmem_names': !!str ${NDIGITS_ENSMEM_NAMES}
   'ensmem_indx_name': ${ensmem_indx_name}
@@ -909,7 +904,7 @@ Setting parameters in weather model's namelist file (FV3_NML_FP):
 'namsfc': {"
 
   dummy_run_dir="$EXPTDIR/any_cyc"
-  if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+  if [ "${IS_ENS_FCST}" = "TRUE" ]; then
     dummy_run_dir="${dummy_run_dir}/any_ensmem"
   fi
 

@@ -2,12 +2,12 @@
 # TEST PURPOSE/DESCRIPTION:
 # ------------------------
 #
-# This test checks the capability of the workflow to run ensemble forecasts
-# (i.e. DO_ENSEMBLE set to "TRUE") in community mode (i.e. RUN_ENVIR set 
-# to "community") with the number of ensemble members (NUM_ENS_MEMBERS)
-# set to "008".  The leading zeros in "008" should cause the ensemble 
-# members to be numbered "mem001", "mem002", ..., "mem008" (instead of, 
-# for instance, "mem1", "mem2", ..., "mem8").
+# This test checks the capability of the workflow to run an ensemble
+# forecast (i.e. IS_ENS_FCST set to "TRUE") in community mode (i.e.
+# RUN_ENVIR set to "community") with the number of ensemble members
+# (NUM_ENS_MEMBERS) set to "008".  The leading zeros in "008" should
+# cause the ensemble members to be numbered "mem001", "mem002", ...,
+# "mem008" (instead of, for instance, "mem1", "mem2", ..., "mem8").
 #
 
 RUN_ENVIR="community"
@@ -27,5 +27,5 @@ CYCL_HRS=( "00" "12" )
 FCST_LEN_HRS="6"
 LBC_SPEC_INTVL_HRS="3"
 
-DO_ENSEMBLE="TRUE"
+IS_ENS_FCST="TRUE"
 NUM_ENS_MEMBERS="008"

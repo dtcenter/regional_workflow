@@ -119,7 +119,7 @@ LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
 
 OBS_FN_TEMPLATE=${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE}
 OBS_REL_PATH_TEMPLATE=$( eval echo ${OBS_FN_TEMPLATE} )
-FCST_REL_PATH_TEMPLATE=$( eval echo 'gen_ens_prod_${MODEL}_ADP${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
+FCST_REL_PATH_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_ADP${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
 #
 #-----------------------------------------------------------------------
 #
@@ -193,7 +193,7 @@ export OUTPUT_BASE
 export OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
-export MODEL
+export VX_FCST_MODEL_NAME
 export NET
 export FHR_LIST
 

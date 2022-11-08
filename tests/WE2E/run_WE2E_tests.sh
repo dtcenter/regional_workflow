@@ -1100,21 +1100,25 @@ EXTRN_MDL_DATA_STORES=\"$data_stores\""
       check=1
     fi
 
-    if [ ! -d ${CCPA_OBS_DIR} ] ; then
+#    if [ ! -d $(eval echo ${CCPA_OBS_DIR}) ] ; then
+#    if [ ! -d ${CCPA_OBS_DIR} ] ; then
+    if [ -z ${CCPA_OBS_DIR} ] ; then
       print_info_msg "\
         The CCPA observation location must be set for this machine!
           CCPA_OBS_DIR = \"${CCPA_OBS_DIR}\""
       check=1
     fi
 
-    if [ ! -d ${MRMS_OBS_DIR} ] ; then
+#    if [ ! -d ${MRMS_OBS_DIR} ] ; then
+    if [ -z ${MRMS_OBS_DIR} ] ; then
       print_info_msg "\
         The MRMS observation location must be set for this machine!
           MRMS_OBS_DIR = \"${MRMS_OBS_DIR}\""
       check=1
     fi
 
-    if [ ! -d ${NDAS_OBS_DIR} ] ; then
+#    if [ ! -d ${NDAS_OBS_DIR} ] ; then
+    if [ -z ${NDAS_OBS_DIR} ] ; then
       print_info_msg "\
         The NDAS observation location must be set for this machine!
           NDAS_OBS_DIR = \"${NDAS_OBS_DIR}\""

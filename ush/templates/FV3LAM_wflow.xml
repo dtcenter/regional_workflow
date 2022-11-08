@@ -449,7 +449,7 @@ or ensemble verification tasks are going to be run.
 #}
 {%- if run_tasks_vxdet or run_tasks_vxens %}
 
-  {%- if ("SFC" in vx_fields_point) or ("UPA" in vx_fields_point) %}
+  {%- if ("SFC" in vx_fields) or ("UPA" in vx_fields) %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -495,7 +495,7 @@ this task calls).
   </task>
   {%- endif %}
 
-  {%- if ("APCP" in vx_fields_gridded) %}
+  {%- if ("APCP" in vx_fields) %}
 {#- #}
     {%- for accum in vx_apcp_accums_hrs -%}
       {%- set fmtstr = "%02d" %}
@@ -558,7 +558,7 @@ done by the scripts that this task calls).
 
 {%- endif %}
 
-{%- if do_ensemble %}
+{%- if is_ens_fcst or run_tasks_vxens %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -991,7 +991,7 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>01</value></envar>
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
@@ -1046,7 +1046,7 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>REFC</value></envar>
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
@@ -1101,7 +1101,7 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>RETOP</value></envar>
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
@@ -1158,7 +1158,7 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>03</value></envar>
-    {%- if do_ensemble %}
+    {%- if is_ens_fcst %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
@@ -1199,7 +1199,7 @@ the <task> tag to be identical to the ones above for other output times.
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>06</value></envar>
-    {%- if do_ensemble %}
+    {%- if is_ens_fcst %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
@@ -1249,7 +1249,7 @@ be removed once that bug is fixed.
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>24</value></envar>
-    {%- if do_ensemble %}
+    {%- if is_ens_fcst %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
@@ -1300,7 +1300,7 @@ be removed once that bug is fixed.
     <envar><name>CDATE</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr{{ cyclestr_offset }}>@Y@m@d</cyclestr></value></envar>
     <envar><name>cyc</name><value><cyclestr{{ cyclestr_offset }}>@H</cyclestr></value></envar>
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
     <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
@@ -1343,7 +1343,7 @@ or ensemble verification tasks are going to be run.
 #}
 {%- if run_tasks_vxdet or run_tasks_vxens %}
 
-  {%- if ("APCP" in vx_fields_gridded) %}
+  {%- if ("APCP" in vx_fields) %}
 
     {%- for accum in vx_apcp_accums_hrs -%}
       {%- set fmtstr = "%02d" %}
@@ -1383,8 +1383,10 @@ or ensemble verification tasks are going to be run.
     <envar><name>ACCUM</name><value>{{accum2d}}</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-          {%- if do_ensemble %}
-    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
+          {%- if is_ens_fcst or run_tasks_vxens %}
+    <envar><name>MEM_INDX_OR_NULL</name><value>#{{ensmem_indx_name}}#</value></envar>
+          {%- else %}
+    <envar><name>MEM_INDX_OR_NULL</name><value></value></envar>
           {%- endif %}
 
     <dependency>
@@ -1504,21 +1506,42 @@ First, generate grid-based deterministic vx tasks.
     <envar><name>ACCUM</name><value>{{accum2d_or_null}}</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-    {%- if do_ensemble %}
-    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
+    {%- if is_ens_fcst or run_tasks_vxens %}
+    <envar><name>MEM_INDX_OR_NULL</name><value>#{{ensmem_indx_name}}#</value></envar>
+    {%- else %}
+    <envar><name>MEM_INDX_OR_NULL</name><value></value></envar>
     {%- endif %}
 
     {%- if run_task_run_fcst or run_task_get_obs_mrms or (accum > 1) %}
 
     <dependency>
       <and>
+{#-
+If the data fetching task for the current observation type is part of 
+the workflow, make sure it has completed.
+#}
+      {%- if run_task_get_obs %}
+        <taskdep task="&GET_OBS_{{obtype}}_TN;"/>
+      {%- endif %}
       {%- if accum > 1 %}
         <taskdep task="&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
         <taskdep task="&RUN_VXAUX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}"/>
       {%- endif %}
-      {%- if run_task_get_obs_mrms %}
+{#-
+      {%- if (field == "APCP" ) %}
+        {% if (run_task_get_ccpa) %}
+        <taskdep task="&GET_OBS_CCPA_TN;"/>
+        {%- endif %}
+        {%- if accum > 1 %}
+        <taskdep task="&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
+        <taskdep task="&RUN_VXAUX_PCPCOMBINE_FCST_TN;_{{fieldname}}{{ uscore_ensmem_name }}"/>
+        {%- endif %}
+      {%- elif (field == "REFC" or field == "RETOP" ) %}
+        {% if (run_task_get_mrms) %}
         <taskdep task="&GET_OBS_MRMS_TN;"/>
+        {%- endif %}
       {%- endif %}
+#}
       {%- if run_task_run_fcst %}
         {%- if write_dopost %}
         <taskdep task="&RUN_FCST_TN;{{ uscore_ensmem_name }}"/>
@@ -1564,16 +1587,18 @@ Now generate point-based deterministic vx tasks.
     <envar><name>ACCUM</name><value>{{accum2d_or_null}}</value></envar>
     <envar><name>USCORE_ENSMEM_NAME_OR_NULL</name><value>{{ uscore_ensmem_name }}</value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR_OR_NULL</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
-    {%- if do_ensemble %}
-    <envar><name>mem_indx</name><value>#{{ ensmem_indx_name }}#</value></envar>
+    {%- if is_ens_fcst or run_tasks_vxens %}
+    <envar><name>MEM_INDX_OR_NULL</name><value>#{{ensmem_indx_name}}#</value></envar>
+    {%- else %}
+    <envar><name>MEM_INDX_OR_NULL</name><value></value></envar>
     {%- endif %}
 
     <dependency>
       <and>
-        <taskdep task="&RUN_VXAUX_PB2NC_OBS_TN;"/>
       {%- if run_task_get_obs_ndas %}
         <taskdep task="&GET_OBS_NDAS_TN;"/>
       {%- endif %}
+        <taskdep task="&RUN_VXAUX_PB2NC_OBS_TN;"/>
       {%- if run_task_run_fcst %}
         {%- if write_dopost %}
         <taskdep task="&RUN_FCST_TN;{{ uscore_ensmem_name }}"/>
@@ -1592,7 +1617,7 @@ Now generate point-based deterministic vx tasks.
 
 {%- endif %}
 
-{%- if do_ensemble %}
+{%- if is_ens_fcst or run_tasks_vxens %}
   </metatask>
 {%- endif %}
 
@@ -1640,7 +1665,7 @@ probabilistic ensemble stats.
     <envar><name>ACCUM</name><value>01</value></envar>
 
     <dependency>
-  {%- if run_task_get_obs_ccpa or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_ccpa or run_task_run_post or is_ens_fcst %}
       <and>
         <streq><left>&VX_RUN_OLD_VXENS_TASKS;</left><right>TRUE</right></streq>
   {%- endif %}
@@ -1660,10 +1685,10 @@ in the run_ens_metatask complete before the ensemble verification tasks
 can launch.  But the taskthrottle attribute should really be used for 
 this purpose.
 -->
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
         <metataskdep metatask="run_ens_mems"/>
   {%- endif %}
-  {%- if run_task_get_obs_ccpa or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_ccpa or run_task_run_post or is_ens_fcst %}
       </and>
   {%- endif %}
     </dependency>
@@ -1696,7 +1721,7 @@ this purpose.
     <envar><name>VAR</name><value>REFC</value></envar>
 
     <dependency>
-  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_mrms or run_task_run_post or is_ens_fcst %}
       <and>
         <streq><left>&VX_RUN_OLD_VXENS_TASKS;</left><right>TRUE</right></streq>
   {%- endif %}
@@ -1716,10 +1741,10 @@ in the run_ens_metatask complete before the ensemble verification tasks
 can launch.  But the taskthrottle attribute should really be used for 
 this purpose.
 -->
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
         <metataskdep metatask="run_ens_mems"/>
   {%- endif %}
-  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_mrms or run_task_run_post or is_ens_fcst %}
       </and>
   {%- endif %}
     </dependency>
@@ -1752,7 +1777,7 @@ this purpose.
     <envar><name>VAR</name><value>RETOP</value></envar>
 
     <dependency>
-  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_mrms or run_task_run_post or is_ens_fcst %}
       <and>
         <streq><left>&VX_RUN_OLD_VXENS_TASKS;</left><right>TRUE</right></streq>
   {%- endif %}
@@ -1772,10 +1797,10 @@ in the run_ens_metatask complete before the ensemble verification tasks
 can launch.  But the taskthrottle attribute should really be used for 
 this purpose.
 -->
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
         <metataskdep metatask="run_ens_mems"/>
   {%- endif %}
-  {%- if run_task_get_obs_mrms or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_mrms or run_task_run_post or is_ens_fcst %}
       </and>
   {%- endif %}
     </dependency>
@@ -1810,14 +1835,14 @@ this purpose.
     <envar><name>ACCUM</name><value>03</value></envar>
 
     <dependency>
-    {%- if run_task_get_obs_ccpa or do_ensemble %}
+    {%- if run_task_get_obs_ccpa or is_ens_fcst %}
       <and>
         <streq><left>&VX_RUN_OLD_VXENS_TASKS;</left><right>TRUE</right></streq>
     {%- endif %}
     {%- if run_task_get_obs_ccpa %}
         <taskdep task="&GET_OBS_CCPA_TN;"/>
     {%- endif %}
-    {%- if do_ensemble %}
+    {%- if is_ens_fcst %}
 <!--
 The VX_ENSGRID_APCP03h_TN task depends on the presence of NetCDF files
 generated by the PcpCombine tool in the deterministic verification tasks
@@ -1829,7 +1854,7 @@ before this task can be launched.
     {%- endif %}
 <!-- The following is probably not necessary.  Commenting out. -->
 <!--    <taskdep task="&VX_ENSGRID_APCP01h_TN;"/> -->
-    {%- if run_task_get_obs_ccpa or do_ensemble %}
+    {%- if run_task_get_obs_ccpa or is_ens_fcst %}
       </and>
     {%- endif %}
     </dependency>
@@ -1865,14 +1890,14 @@ before this task can be launched.
     <envar><name>ACCUM</name><value>06</value></envar>
 
     <dependency>
-    {%- if run_task_get_obs_ccpa or do_ensemble %}
+    {%- if run_task_get_obs_ccpa or is_ens_fcst %}
       <and>
         <streq><left>&VX_RUN_OLD_VXENS_TASKS;</left><right>TRUE</right></streq>
     {%- endif %}
     {%- if run_task_get_obs_ccpa %}
         <taskdep task="&GET_OBS_CCPA_TN;"/>
     {%- endif %}
-    {%- if do_ensemble %}
+    {%- if is_ens_fcst %}
 <!--
 The VX_ENSGRID_APCP06h_TN task depends on the presence of NetCDF files
 generated by the PcpCombine tool in the deterministic verification tasks
@@ -1884,7 +1909,7 @@ before this task can be launched.
     {%- endif %}
 <!-- The following is probably not necessary.  Commenting out. -->
 <!--    <taskdep task="&VX_ENSGRID_APCP01h_TN;"/> -->
-    {%- if run_task_get_obs_ccpa or do_ensemble %}
+    {%- if run_task_get_obs_ccpa or is_ens_fcst %}
       </and>
     {%- endif %}
     </dependency>
@@ -1920,14 +1945,14 @@ before this task can be launched.
     <envar><name>ACCUM</name><value>24</value></envar>
 
     <dependency>
-    {%- if run_task_get_obs_ccpa or do_ensemble %}
+    {%- if run_task_get_obs_ccpa or is_ens_fcst %}
       <and>
         <streq><left>&VX_RUN_OLD_VXENS_TASKS;</left><right>TRUE</right></streq>
     {%- endif %}
     {%- if run_task_get_obs_ccpa %}
         <taskdep task="&GET_OBS_CCPA_TN;"/>
     {%- endif %}
-    {%- if do_ensemble %}
+    {%- if is_ens_fcst %}
 <!--
 The VX_ENSGRID_APCP24h_TN task depends on the presence of NetCDF files
 generated by the PcpCombine tool in the deterministic verification tasks
@@ -1939,7 +1964,7 @@ before this task can be launched.
     {%- endif %}
 <!-- The following is probably not necessary.  Commenting out. -->
 <!--    <taskdep task="&VX_ENSGRID_APCP01h_TN;"/> -->
-    {%- if run_task_get_obs_ccpa or do_ensemble %}
+    {%- if run_task_get_obs_ccpa or is_ens_fcst %}
       </and>
     {%- endif %}
     </dependency>
@@ -2343,7 +2368,7 @@ ensemble.
 <!--   <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
 
     <dependency>
-  {%- if run_task_get_obs_ndas or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_ndas or run_task_run_post or is_ens_fcst %}
       <and>
         <streq><left>&VX_RUN_OLD_VXENS_TASKS;</left><right>TRUE</right></streq>
   {%- endif %}
@@ -2363,10 +2388,10 @@ in the run_ens_metatask complete before the ensemble verification tasks
 can launch.  But the taskthrottle attribute should really be used for 
 this purpose.
 -->
-  {%- if do_ensemble %}
+  {%- if is_ens_fcst %}
         <metataskdep metatask="run_ens_mems"/>
   {%- endif %}
-  {%- if run_task_get_obs_ndas or run_task_run_post or do_ensemble %}
+  {%- if run_task_get_obs_ndas or run_task_run_post or is_ens_fcst %}
       </and>
   {%- endif %}
     </dependency>

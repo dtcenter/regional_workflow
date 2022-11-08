@@ -98,7 +98,7 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE=${MET_INPUT_DIR}
+INPUT_BASE=${MET_FCST_INPUT_DIR}
 #OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
 OUTPUT_BASE=${MET_OUTPUT_DIR}
 #
@@ -212,7 +212,7 @@ export MET_INSTALL_DIR
 export MET_BIN_EXEC
 export METPLUS_PATH
 export METPLUS_CONF
-export MODEL
+export VX_FCST_MODEL_NAME
 export NET
 export POST_OUTPUT_DOMAIN_NAME
 export NUM_ENS_MEMBERS

@@ -2,9 +2,9 @@
 # TEST PURPOSE/DESCRIPTION:
 # ------------------------
 #
-# This test checks the capability of the workflow to run ensemble forecasts
-# that require the forecast model to write output files and perform post-
-# processing on a sub-hourly time interval.
+# This test checks the capability of the workflow to run an ensemble
+# forecast that requires the forecast model to write output files and
+# perform post-processing on a sub-hourly time interval.
 #
 # This test is needed in addition to the one named "subhourly_post" 
 # because in the jinja template file from which the rocoto workflow XML
@@ -36,5 +36,5 @@ DT_ATMOS="120"
 SUB_HOURLY_POST="TRUE"
 DT_SUBHOURLY_POST_MNTS="12"
 
-DO_ENSEMBLE="TRUE"
+IS_ENS_FCST="TRUE"
 NUM_ENS_MEMBERS="2"

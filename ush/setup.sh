@@ -201,6 +201,14 @@ RUN_TASK_GET_OBS_MRMS=$(boolify "${RUN_TASK_GET_OBS_MRMS}")
 check_var_valid_value "RUN_TASK_GET_OBS_NDAS" "valid_vals_BOOLEAN"
 RUN_TASK_GET_OBS_NDAS=$(boolify "${RUN_TASK_GET_OBS_NDAS}")
 
+check_var_valid_value "RUN_TASKS_VXDET" "valid_vals_BOOLEAN"
+RUN_TASKS_VXDET=$(boolify "${RUN_TASKS_VXDET}")
+
+check_var_valid_value "RUN_TASKS_VXENS" "valid_vals_BOOLEAN"
+RUN_TASKS_VXENS=$(boolify "${RUN_TASKS_VXENS}")
+
+
+# Remove the following at some point.
 check_var_valid_value "RUN_TASK_VX_GRIDSTAT" "valid_vals_BOOLEAN"
 RUN_TASK_VX_GRIDSTAT=$(boolify "${RUN_TASK_VX_GRIDSTAT}")
 
@@ -880,7 +888,7 @@ if [ "${RUN_TASK_GET_EXTRN_LBCS}" = "TRUE" ] || \
 Forecast length must be at most a 3-digit integer:
   FCST_LEN_HRS = \"${FCST_LEN_HRS}\""
   fi
-  
+
   rem=$(( ${FCST_LEN_HRS}%${LBC_SPEC_INTVL_HRS} ))
   if [ "$rem" -eq "0" ]; then
     LBC_SPEC_FCST_HRS=($( seq ${LBC_SPEC_INTVL_HRS} ${LBC_SPEC_INTVL_HRS} \
@@ -1257,7 +1265,7 @@ fi
 #-----------------------------------------------------------------------
 #
 METPLUS_CONF=${METPLUS_CONF:-"${TEMPLATE_DIR}/parm/metplus"}
-MET_INPUT_DIR="${MET_INPUT_DIR:-$EXPTDIR}"
+MET_FCST_INPUT_DIR="${MET_FCST_INPUT_DIR:-$EXPTDIR}"
 MET_OUTPUT_DIR="${MET_OUTPUT_DIR:-$EXPTDIR}"
 #
 #-----------------------------------------------------------------------
@@ -1390,63 +1398,85 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Checks on user-specified verification parameters.
+# Checks on and default values for user-specified verification (vx)
+# parameters.
 #
 #-----------------------------------------------------------------------
 #
 # Ensure that the fields to be verified have valid values.
 #
-num_elems="${#VX_FIELDS_GRIDDED[@]}"
-for (( i=0; i<${num_elems}; i++ )); do
-  field_name="${VX_FIELDS_GRIDDED[$i]}"
-  check_var_valid_value "field_name" "valid_vals_VX_FIELDS_GRIDDED"
-done
+num_vx_fields="${#VX_FIELDS[@]}"
+if [ "${RUN_TASKS_VXDET}" = "TRUE" -o "${RUN_TASKS_VXENS}" = "TRUE" ]; then
 
-num_elems="${#VX_FIELDS_POINT[@]}"
-for (( i=0; i<${num_elems}; i++ )); do
-  field_name="${VX_FIELDS_POINT[$i]}"
-  check_var_valid_value "field_name" "valid_vals_VX_FIELDS_POINT"
-done
-
-num_elems="${#VX_APCP_ACCUMS_HRS[@]}"
-for (( i=0; i<${num_elems}; i++ )); do
-  field_name="${VX_APCP_ACCUMS_HRS[$i]}"
-  check_var_valid_value "field_name" "valid_vals_VX_APCP_ACCUMS_HRS"
-done
+  if [ "${num_vx_fields}" -gt 0 ]; then
+    for (( i=0; i<${num_vx_fields}; i++ )); do
+      check_var_valid_value "VX_FIELDS[$i]" "valid_vals_VX_FIELDS"
+    done
+  else
+    print_err_msg_exit "\
+When deterministic or ensemble verification is enabled (via RUN_TASKS_VXDET
+or RUN_TASKS_VXENS), at least one field must be specified for verification
+in VX_FIELDS (i.e. VX_FIELDS cannot be empty):
+  RUN_TASKS_VXDET = \"${RUN_TASKS_VXDET}\"
+  RUN_TASKS_VXENS = \"${RUN_TASKS_VXENS}\"
+  VX_FIELDS = ()"
+  fi
+#
+# When verification tasks are turned off, then if VX_FIELDS is set to an
+# empty array (which is considered an undefined in bash), reset it to an
+# empty string to avoid "undefined variable" messages.
+#
+else
+  if [ "${num_vx_fields}" -eq 0 ]; then
+    VX_FIELDS=""
+  fi
+fi
 #
 # If APCP (accumulated precipitation) is one of the fields to be verified,
-# make sure that there is at least one accumulation period specified.
+# make sure that there is at least one accumulation period specified and
+# that the specified periods are valid.
 # 
-is_element_of "VX_FIELDS_GRIDDED" "APCP" && {
-  num_elems="${#VX_APCP_ACCUMS_HRS[@]}"
-  if [ ${num_elems} -eq 0 ]; then
+is_element_of "VX_FIELDS" "APCP" && {
+  num_apcp_accums="${#VX_APCP_ACCUMS_HRS[@]}"
+  if [ ${num_apcp_accums} -eq 0 ]; then
     print_err_msg_exit "\
 When \"APCP\" is specified as one of the fields to verify (as an element
-of the array VX_FIELDS_GRIDDED), at least one valid accumulation period
-must be specified in the array VX_APCP_ACCUMS_HRS:
-  VX_FIELDS_GRIDDED = ( $( printf "\"%s\" " "${VX_FIELDS_GRIDDED[@]}" ))
+of the array VX_FIELDS), at least one valid accumulation period must be
+specified in the array VX_APCP_ACCUMS_HRS:
+  VX_FIELDS = ( $( printf "\"%s\" " "${VX_FIELDS[@]}" ))
   VX_APCP_ACCUMS_HRS = ( $( printf "\"%s\" " "${VX_APCP_ACCUMS_HRS[@]}" ))
 Valid values for the elements of VX_APCP_ACCUMS_HRS are:
   $( printf "\"%s\" " "${valid_vals_VX_APCP_ACCUMS_HRS[@]}" )"
   fi
+
+  for (( i=0; i<${num_apcp_accums}; i++ )); do
+    check_var_valid_value "VX_APCP_ACCUMS_HRS[$i]" "valid_vals_VX_APCP_ACCUMS_HRS"
+  done
 }
 #
-# When generating the verification (vx) tasks in the rocoto workflow xml
-# from the jinja xml template by looping over all user-specified vx
-# fields and accumulations, an accumulation of 00 is used to trigger
-# actions (e.g. creation of tasks) for non-APCP (accumulated precipitation)
-# fields.  Thus, if the list of fields to verify contains any non-APCP
-# fields (e.g. REFC, RETOP, SFC, UPA), a "00" must be prepended to the
-# list of accumulations in order for the xml to be generated properly.
+# During generation of the vx tasks in the rocoto workflow xml (which
+# is done in the jinja xml template by looping over all user-specified
+# vx fields and accumulations), an accumulation of 00 is used to trigger
+# certain actions (e.g. creation of tasks) for fields other than APCP
+# (accumulated precipitation).  Thus, if the list of fields to verify
+# contains any non-APCP fields (e.g. REFC, RETOP, SFC, UPA), a "00" must
+# be prepended to the list of accumulations in order for the vx tasks in
+# xml to be properly generated.
 #
-include_00_accum="FALSE"
-is_element_of "VX_FIELDS_GRIDDED" "REFC" && include_00_accum="TRUE"
-is_element_of "VX_FIELDS_GRIDDED" "RETOP" && include_00_accum="TRUE"
-is_element_of "VX_FIELDS_POINT" "SFC" && include_00_accum="TRUE"
-is_element_of "VX_FIELDS_POINT" "UPA" && include_00_accum="TRUE"
-if [ "${include_00_accum}" = "TRUE" ]; then
-  VX_APCP_ACCUMS_HRS=( "00" ${VX_APCP_ACCUMS_HRS[@]} )
-fi
+for (( i=0; i<${num_vx_fields}; i++ )); do
+  vx_field="${VX_FIELDS[$i]}"
+  if [ "${vx_field}" = "REFC" ] || \
+     [ "${vx_field}" = "RETOP" ] || \
+     [ "${vx_field}" = "SFC" ] || \
+     [ "${vx_field}" = "UPA" ]; then
+    VX_APCP_ACCUMS_HRS=( "00" ${VX_APCP_ACCUMS_HRS[@]} )
+    break
+  fi
+done
+#
+# Default value for VX_FCST_MODEL_NAME.
+#
+VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME:-${NET}.${POST_OUTPUT_DOMAIN_NAME}}
 #
 #-----------------------------------------------------------------------
 #
@@ -1465,6 +1495,8 @@ if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ] || \
    [ "${RUN_TASK_RUN_POST}" = "TRUE" ] || \
    [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
    [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ] || \
+   [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
+   [ "${RUN_TASKS_VXENS}" = "TRUE" ] || \
    [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ] || \
    [ "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
 
@@ -1638,21 +1670,39 @@ NOMADS=$(boolify "${NOMADS}")
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that DO_ENSEMBLE is set to a valid value.  Then set the names
-# of the ensemble members.  These will be used to set the ensemble member
-# directories.  Also, set the full path to the FV3 namelist file corresponding
-# to each ensemble member.
+# Make sure that IS_ENS_FCST is set to a valid value.  Then, if it is
+# set to "TRUE":
+#
+# 1) Make sure there is at least one memeber in the ensemble.
+# 2) Set the names of the ensemble members.  These will be used to set
+#    the ensemble member directories.
+# 3) Set the full path to the FV3 namelist file corresponding to each
+#    ensemble member.
 #
 #-----------------------------------------------------------------------
 #
-check_var_valid_value "DO_ENSEMBLE" "valid_vals_BOOLEAN"
-DO_ENSEMBLE=$(boolify "${DO_ENSEMBLE}")
+check_var_valid_value "IS_ENS_FCST" "valid_vals_BOOLEAN"
+IS_ENS_FCST=$(boolify "${IS_ENS_FCST}")
 
 NDIGITS_ENSMEM_NAMES="0"
 ENSMEM_NAMES=("")
 FV3_NML_ENSMEM_FPS=("")
 
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+if [ "${IS_ENS_FCST}" = "TRUE" ]; then
+
+  if [ "${NUM_ENS_MEMBERS}" -lt 1 ]; then
+    print_err_msg_exit "\
+When running an ensemble forecast (or assuming staged forecast data for
+verification is in an ensemble directory structure), i.e. when IS_ENS_FCST
+is set to \"TRUE\", the number of ensemble members (NUM_ENS_MEMBERS) must
+be greater than 0.  Current values are:
+  IS_ENS_FCST = \"${IS_ENS_FCST}\"
+  NUM_ENS_MEMBERS = \"${NUM_ENS_MEMBERS}\"
+  RUN_TASKS_VXDET = \"${RUN_TASKS_VXDET}\"
+Either reset NUM_ENS_MEMBERS to a value greater than 0 or reset IS_ENS_FCST
+to \"FALSE\", then rerun."
+  fi
+
   NDIGITS_ENSMEM_NAMES="${#NUM_ENS_MEMBERS}"
 # Strip away all leading zeros in NUM_ENS_MEMBERS by converting it to a 
 # decimal (leading zeros will cause bash to interpret the number as an 
@@ -1665,26 +1715,69 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
     ENSMEM_NAMES[$i]="mem${ip1}"
     FV3_NML_ENSMEM_FPS[$i]="$EXPTDIR/${FV3_NML_FN}_${ENSMEM_NAMES[$i]}"
   done
+
 fi
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that DO_ENSEMBLE is set to TRUE when running ensemble vx.
+# If running either deterministic or ensemble vx on an ensemble forecast,
+# make sure that IS_ENS_FCST is also set to "TRUE".  This causes the vx
+# tasks to assume that the post-processed forecast output files (whether
+# they were generated as part of the current experiment or were staged
+# from the forecast output of another experiment) are in an ensemble
+# directory structure (e.g. under subdirectories named "mem01", "mem02",
+# etc).
+#
+# Note that the deterministic vx tasks assume that the post-processed
+# forecast output files are in an ensemble directory structure if 
+# NUM_ENS_MEMBERS is greater than 0, and the ensemble vx tasks always
+# assume an ensemble directory structure.
 #
 #-----------------------------------------------------------------------
 #
-if [ "${DO_ENSEMBLE}" = "FALSE" ] && \
-   [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" -o \
-     "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
-  print_err_msg_exit "\
-Ensemble verification can not be run (i.e. RUN_TASK_VX_ENSGRID or 
-RUN_TASK_VX_ENSPOINT cannot be set to \"TRUE\") unless running in 
-ensemble mode (i.e. DO_ENSEMBLE is set to \"TRUE\").  Current values 
-are:
-   DO_ENSEMBLE = \"${DO_ENSEMBLE}\"
-   RUN_TASK_VX_ENSGRID = \"${RUN_TASK_VX_ENSGRID}\"
-   RUN_TASK_VX_ENSPOINT = \"${RUN_TASK_VX_ENSPOINT}\""
+if [ "${IS_ENS_FCST}" = "FALSE" ]; then
+
+  if [ "${RUN_TASKS_VXDET}" = "TRUE" ] && \
+     [ "${NUM_ENS_MEMBERS}" -gt 0 ]; then
+
+    print_err_msg_exit "\
+When running deterministic verification on an ensemble forecast (i.e.
+when RUN_TASKS_VXDET is set to \"TRUE\" and NUM_ENS_MEMBERS is greater
+than 0), IS_ENS_FCST must also be set to \"TRUE\" in order for the
+verification tasks to assume that the post-processed forecast output
+files are in an ensemble directory structure (e.g. in subdirectories
+\"mem01\", \"mem02\", etc).  Current values are:
+  IS_ENS_FCST = \"${IS_ENS_FCST}\"
+  NUM_ENS_MEMBERS = \"${NUM_ENS_MEMBERS}\"
+  RUN_TASKS_VXDET = \"${RUN_TASKS_VXDET}\"
+Reset IS_ENS_FCST to \"TRUE\" and rerun."
+
+  elif [ "${RUN_TASKS_VXENS}" = "TRUE" ]; then
+
+    print_err_msg_exit "\
+When running ensemble verification (i.e. when RUN_TASKS_VXENS is set to
+\"TRUE\"), IS_ENS_FCST must also be set to \"TRUE\" in order for the 
+verification tasks to assume that the post-processed forecast output
+files are in an ensemble directory structure (e.g. in subdirectories
+\"mem01\", \"mem02\", etc).  Current values are:
+  IS_ENS_FCST = \"${IS_ENS_FCST}\"
+  RUN_TASKS_VXENS = \"${RUN_TASKS_VXENS}\"
+Reset IS_ENS_FCST to \"TRUE\" and rerun."
+
+  fi
+
 fi
+#
+#-----------------------------------------------------------------------
+#
+# The directories in which the obs are fetched are allowed to be template
+# variables.  Evaluate these templates now.
+#
+#-----------------------------------------------------------------------
+#
+CCPA_OBS_DIR=$( eval echo ${CCPA_OBS_DIR} )
+MRMS_OBS_DIR=$( eval echo ${MRMS_OBS_DIR} )
+NDAS_OBS_DIR=$( eval echo ${NDAS_OBS_DIR} )
 #
 #-----------------------------------------------------------------------
 #
@@ -1797,7 +1890,6 @@ Reset values are:
   RUN_TASK_MAKE_GRID = \"${RUN_TASK_MAKE_GRID}\"
   GRID_DIR = \"${GRID_DIR}\"
 "
-
     print_info_msg "$msg"
 
   fi
@@ -1835,7 +1927,6 @@ Reset values are:
   RUN_TASK_MAKE_OROG = \"${RUN_TASK_MAKE_OROG}\"
   OROG_DIR = \"${OROG_DIR}\"
 "
-
     print_info_msg "$msg"
 
   fi
@@ -1874,7 +1965,6 @@ one above.  Reset values are:
   RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
   SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\"
 "
-
     print_info_msg "$msg"
 
   fi
@@ -1892,7 +1982,6 @@ Resetting RUN_TASK_VX_GRIDSTAT to \"FALSE\".  Reset value is:"
     msg="$msg""
   RUN_TASK_VX_GRIDSTAT = \"${RUN_TASK_VX_GRIDSTAT}\"
 "
-
     print_info_msg "$msg"
 
   fi
@@ -1911,27 +2000,22 @@ Reset value is:"
     msg="$msg""
   RUN_TASK_VX_POINTSTAT = \"${RUN_TASK_VX_POINTSTAT}\"
 "
-
     print_info_msg "$msg"
 
   fi
 
-  if [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ]; then
+  if [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
+     [ "${RUN_TASKS_VXENS}" = "TRUE" ]; then
 
-    msg="
-When RUN_ENVIR is set to \"nco\", it is assumed that the verification
-will not be run.
-  RUN_TASK_VX_ENSGRID = \"${RUN_TASK_VX_ENSGRID}\"
-Resetting RUN_TASK_VX_ENSGRID to \"FALSE\" 
-Reset value is:"
-
-    RUN_TASK_VX_ENSGRID="FALSE"
-
-    msg="$msg""
-  RUN_TASK_VX_ENSGRID = \"${RUN_TASK_VX_ENSGRID}\"
-"
-
-    print_info_msg "$msg"
+    print_error_msg_exit "
+Currently, verification cannot be run in NCO mode (i.e. when RUN_ENVIR
+is set to \"nco\"):
+  RUN_ENVIR = \"${RUN_ENVIR}\"
+Current values of RUN_TASKS_VXDET and RUN_TASKS_VXENS are:
+  RUN_TASKS_VXDET = \"${RUN_TASKS_VXDET}\"
+  RUN_TASKS_VXENS = \"${RUN_TASKS_VXENS}\"
+Reset these both to \"FALSE\" in the SRW App's configuration file and
+rerun."
 
   fi
 #

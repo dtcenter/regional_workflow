@@ -136,7 +136,7 @@ settings="\
 'namsfc': {"
 
 dummy_run_dir="$EXPTDIR/any_cyc"
-if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+if [ "${IS_ENS_FCST}" = "TRUE" ]; then
   dummy_run_dir="${dummy_run_dir}/any_ensmem"
 fi
 

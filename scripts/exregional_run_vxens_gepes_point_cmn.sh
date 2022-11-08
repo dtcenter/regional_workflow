@@ -111,7 +111,7 @@ set_vx_params \
 #-----------------------------------------------------------------------
 #
 OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_cmn"
-FCST_INPUT_BASE="${MET_INPUT_DIR}"
+FCST_INPUT_BASE="${MET_FCST_INPUT_DIR}"
 OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
 OUTPUT_DIR_GEN_ENS_PROD="${OUTPUT_BASE}/metprd/gen_ens_prod_cmn"
 OUTPUT_DIR_ENSEMBLE_STAT="${OUTPUT_BASE}/metprd/ensemble_stat_cmn"
@@ -226,7 +226,7 @@ export OUTPUT_DIR_GEN_ENS_PROD
 export OUTPUT_DIR_ENSEMBLE_STAT
 export STAGING_DIR
 export LOG_SUFFIX
-export MODEL
+export VX_FCST_MODEL_NAME
 export NET
 export FHR_LIST
 

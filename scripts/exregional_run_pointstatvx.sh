@@ -120,22 +120,22 @@ echo "fhr_list = |${fhr_list}|"
 #
 #uscore_ensmem_or_null=""
 #slash_ensmem_subdir_or_null=""
-#if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+#if [ "${IS_ENS_FCST}" = "TRUE" ]; then
 #  uscore_ensmem_or_null="_${mem_indx}"
 #  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 #fi
 
-#INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
+#INPUT_BASE=${MET_FCST_INPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
 #OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${slash_ensmem_subdir_or_null}
 #LOG_SUFFIX="pointstat_${CDATE}${uscore_ensmem_or_null}"
-#MODEL=${MODEL}${uscore_ensmem_or_null}
-INPUT_BASE=${MET_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
+#VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME}${uscore_ensmem_or_null}
+INPUT_BASE=${MET_FCST_INPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
 OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
 LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}"
-#MODEL=${MODEL}${USCORE_ENSMEM_NAME_OR_NULL}
+#VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME}${USCORE_ENSMEM_NAME_OR_NULL}
 
 echo "USCORE_ENSMEM_NAME_OR_NULL = |${USCORE_ENSMEM_NAME_OR_NULL}|"
-echo "MODEL = |$MODEL|"
+echo "VX_FCST_MODEL_NAME = |$VX_FCST_MODEL_NAME|"
 #exit 1
 
 ##
@@ -146,15 +146,15 @@ echo "MODEL = |$MODEL|"
 ##
 ##-----------------------------------------------------------------------
 ##
-#if [ "${DO_ENSEMBLE}" = "FALSE" ]; then
-#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/postprd
+#if [ "${IS_ENS_FCST}" = "FALSE" ]; then
+#  INPUT_BASE=${MET_FCST_INPUT_DIR}/${CDATE}/postprd
 #  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
 #  LOG_SUFFIX=pointstat_${CDATE}
-#elif [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-#  INPUT_BASE=${MET_INPUT_DIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}/postprd
+#elif [ "${IS_ENS_FCST}" = "TRUE" ]; then
+#  INPUT_BASE=${MET_FCST_INPUT_DIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}/postprd
 #  OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}
 #  ENSMEM=`echo ${SLASH_ENSMEM_SUBDIR} | cut -d"/" -f2`
-#  MODEL=${MODEL}_${ENSMEM}
+#  VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME}_${ENSMEM}
 #  LOG_SUFFIX=pointstat_${CDATE}_${ENSMEM}
 #fi
 #
@@ -200,7 +200,7 @@ export MET_INSTALL_DIR
 export MET_BIN_EXEC
 export METPLUS_PATH
 export METPLUS_CONF
-export MODEL
+export VX_FCST_MODEL_NAME
 export NET
 export POST_OUTPUT_DOMAIN_NAME
 #

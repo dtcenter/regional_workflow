@@ -3,7 +3,7 @@
 #
 # This file defines a function that, for an ensemble-enabled experiment 
 # (i.e. for an experiment for which the workflow configuration variable 
-# DO_ENSEMBLE has been set to "TRUE"), creates new namelist files with
+# IS_ENS_FCST has been set to "TRUE"), creates new namelist files with
 # unique stochastic "seed" parameters, using a base namelist file in the 
 # ${EXPTDIR} directory as a template. These new namelist files are stored 
 # within each member directory housed within each cycle directory. Files 

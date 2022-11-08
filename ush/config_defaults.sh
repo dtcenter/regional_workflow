@@ -486,119 +486,6 @@ WRITE_DOPOST="FALSE"
 #
 #-----------------------------------------------------------------------
 #
-# Set METplus parameters.  Definitions:
-#
-# MODEL: 
-# String that specifies a descriptive name for the model being verified.
-#
-# MET_INSTALL_DIR:
-# Location to top-level directory of MET installation.
-#
-# METPLUS_PATH:
-# Location to top-level directory of METplus installation.
-#
-# METPLUS_CONF:
-# Directory containing METplus configuration files.
-#
-# MET_INPUT_DIR:
-# Location to top-level directory of METplus input. This can be user
-# specified, and if not specified, it is set to EXPTDIR.
-#
-# MET_OUTPUT_DIR:
-# Location to top-level directory of METplus output. This can be user
-# specified, and if not specified, it is set to EXPTDIR.
-#
-# CCPA_OBS_DIR:
-# User-specified location of top-level directory where CCPA hourly
-# precipitation files used by METplus are located. This parameter needs
-# to be set for both user-provided observations and for observations 
-# that are retrieved from the NOAA HPSS (if the user has access) via
-# the get_obs_ccpa_tn task (activated in workflow by setting
-# RUN_TASK_GET_OBS_CCPA="TRUE"). In the case of pulling observations 
-# directly from NOAA HPSS, the data retrieved will be placed in this 
-# directory. Please note, this path must be defind as 
-# /full-path-to-obs/ccpa/proc. METplus is configured to verify 01-, 
-# 03-, 06-, and 24-h accumulated precipitation using hourly CCPA files.
-# METplus configuration files require the use of predetermined directory 
-# structure and file names. Therefore, if the CCPA files are user 
-# provided, they need to follow the anticipated naming structure: 
-# {YYYYMMDD}/ccpa.t{HH}z.01h.hrap.conus.gb2, where YYYY is the 4-digit 
-# valid year, MM the 2-digit valid month, DD the 2-digit valid day of 
-# the month, and HH the 2-digit valid hour of the day. In addition, a 
-# caveat is noted for using hourly CCPA data. There is a problem with 
-# the valid time in the metadata for files valid from 19 - 00 UTC (or 
-# files under the '00' directory). The script to pull the CCPA data 
-# from the NOAA HPSS has an example of how to account for this as well
-# as organizing the data into a more intuitive format: 
-# regional_workflow/scripts/exregional_get_ccpa_files.sh. When a fix
-# is provided, it will be accounted for in the
-# exregional_get_ccpa_files.sh script.
-#
-# MRMS_OBS_DIR:
-# User-specified location of top-level directory where MRMS composite
-# reflectivity files used by METplus are located.  This parameter needs
-# to be set for both user-provided observations and for observations
-# that are retrieved from the NOAA HPSS (if the user has access) via the
-# get_obs_mrms_tn task (activated in workflow by setting
-# RUN_TASK_GET_OBS_MRMS="TRUE").  In the case of pulling observations 
-# directly from NOAA HPSS, the data retrieved will be placed in this 
-# directory. Please note, this path must be defind as 
-# /full-path-to-obs/mrms/proc. METplus configuration files require the
-# use of predetermined directory structure and file names. Therefore, if
-# the MRMS files are user provided, they need to follow the anticipated 
-# naming structure:
-# {YYYYMMDD}/MergedReflectivityQCComposite_00.50_{YYYYMMDD}-{HH}{mm}{SS}.grib2,
-# where YYYY is the 4-digit valid year, MM the 2-digit valid month, DD 
-# the 2-digit valid day of the month, HH the 2-digit valid hour of the 
-# day, mm the 2-digit valid minutes of the hour, and SS is the two-digit
-# valid seconds of the hour. In addition, METplus is configured to look
-# for a MRMS composite reflectivity file for the valid time of the 
-# forecast being verified; since MRMS composite reflectivity files do 
-# not always exactly match the valid time, a script, within the main 
-# script to retrieve MRMS data from the NOAA HPSS, is used to identify
-# and rename the MRMS composite reflectivity file to match the valid
-# time of the forecast.  The script to pull the MRMS data from the NOAA 
-# HPSS has an example of the expected file naming structure: 
-# regional_workflow/scripts/exregional_get_mrms_files.sh. This script 
-# calls the script used to identify the MRMS file closest to the valid 
-# time: regional_workflow/ush/mrms_pull_topofhour.py.
-#
-# NDAS_OBS_DIR:
-# User-specified location of top-level directory where NDAS prepbufr 
-# files used by METplus are located. This parameter needs to be set for
-# both user-provided observations and for observations that are 
-# retrieved from the NOAA HPSS (if the user has access) via the 
-# get_obs_ndas_tn task (activated in workflow by setting 
-# RUN_TASK_GET_OBS_NDAS="TRUE"). In the case of pulling observations 
-# directly from NOAA HPSS, the data retrieved will be placed in this 
-# directory. Please note, this path must be defind as 
-# /full-path-to-obs/ndas/proc. METplus is configured to verify 
-# near-surface variables hourly and upper-air variables at times valid 
-# at 00 and 12 UTC with NDAS prepbufr files.  METplus configuration files
-# require the use of predetermined file names. Therefore, if the NDAS 
-# files are user provided, they need to follow the anticipated naming 
-# structure: prepbufr.ndas.{YYYYMMDDHH}, where YYYY is the 4-digit valid
-# year, MM the 2-digit valid month, DD the 2-digit valid day of the 
-# month, and HH the 2-digit valid hour of the day. The script to pull 
-# the NDAS data from the NOAA HPSS has an example of how to rename the
-# NDAS data into a more intuitive format with the valid time listed in 
-# the file name: regional_workflow/scripts/exregional_get_ndas_files.sh
-#
-#-----------------------------------------------------------------------
-#
-MODEL=""
-MET_INSTALL_DIR=""
-MET_BIN_EXEC="bin"
-METPLUS_PATH=""
-METPLUS_CONF=""
-MET_INPUT_DIR=""
-MET_OUTPUT_DIR=""
-CCPA_OBS_DIR=""
-MRMS_OBS_DIR=""
-NDAS_OBS_DIR=""
-#
-#-----------------------------------------------------------------------
-#
 # Set initial and lateral boundary condition generation parameters.  
 # Definitions:
 #
@@ -1421,34 +1308,163 @@ RUN_TASK_GET_OBS_MRMS="FALSE"
 RUN_TASK_GET_OBS_NDAS="FALSE"
 RUN_TASKS_VXDET="FALSE"
 RUN_TASKS_VXENS="FALSE"
+RUN_GEN_ENS_PROD="TRUE"
+RUN_ENSEMBLE_STAT="TRUE"
 
 RUN_TASK_VX_GRIDSTAT="FALSE"
 RUN_TASK_VX_POINTSTAT="FALSE"
 RUN_TASK_VX_ENSGRID="FALSE"
 RUN_TASK_VX_ENSPOINT="FALSE"
-
-RUN_GEN_ENS_PROD="FALSE"
-RUN_ENSEMBLE_STAT="FALSE"
 #
 #-----------------------------------------------------------------------
 #
-# VX_FIELDS_GRIDDED:
-# The gridded fields (or groups of fields) on which to run verification.
+# Set METplus parameters.  Definitions:
 #
-# VX_FIELDS_POINT:
-# The point-based fields (or groups of fields) on which to run verification.
+# MET_INSTALL_DIR:
+# Location to top-level directory of MET installation.
+#
+# METPLUS_PATH:
+# Location to top-level directory of METplus installation.
+#
+# METPLUS_CONF:
+# Directory containing METplus configuration files.
+#
+# MET_FCST_INPUT_DIR:
+# Location to top-level directory of METplus forecast input (does not
+# include obs).  If not specified, it gets set to EXPTDIR.
+#
+# MET_OUTPUT_DIR:
+# Location to top-level directory of METplus output.  If not specified,
+# it gets set to EXPTDIR.
+#
+#-----------------------------------------------------------------------
+#
+MET_INSTALL_DIR=""
+MET_BIN_EXEC="bin"
+METPLUS_PATH=""
+METPLUS_CONF=""
+MET_FCST_INPUT_DIR=""
+MET_OUTPUT_DIR=""
+#
+#-----------------------------------------------------------------------
+#
+# VX_FCST_MODEL_NAME: 
+# String that specifies a descriptive name for the forecast model being
+# verified.
+#
+# VX_FIELDS:
+# The fields or groups of fields on which to run verification.
 #
 # VX_APCP_ACCUMS_HRS:
 # The accumulation periods (in units of hours) to consider for APCP 
-# (accumulated precipitation).  If VX_FIELDS_GRIDDED contains "APCP", 
-# then VX_APCP_ACCUMS_HRS must contain at least one element.  If not,
+# (accumulated precipitation).  If VX_FIELD contains "APCP", then 
+# VX_APCP_ACCUMS_HRS must contain at least one element.  If not,
 # VX_APCP_ACCUMS_HRS will be ignored.
 #
 #-----------------------------------------------------------------------
 #
-VX_FIELDS_GRIDDED=( "APCP" "REFC" "RETOP" )
-VX_FIELDS_POINT=( "SFC" "UPA" )
+VX_FCST_MODEL_NAME=""
+VX_FIELDS=( "APCP" "REFC" "RETOP" "SFC" "UPA" )
 VX_APCP_ACCUMS_HRS=( "01" "03" "06" "24" )
+#
+# CCPA_OBS_DIR:
+# User-specified location of top-level directory where CCPA hourly
+# precipitation files used by METplus are located. This parameter needs
+# to be set for both user-provided observations and for observations 
+# that are retrieved from the NOAA HPSS (if the user has access) via
+# the get_obs_ccpa_tn task (activated in workflow by setting
+# RUN_TASK_GET_OBS_CCPA="TRUE"). In the case of pulling observations 
+# directly from NOAA HPSS, the data retrieved will be placed in this 
+# directory. Please note, this path must be defind as 
+# /full-path-to-obs/ccpa/proc. METplus is configured to verify 01-, 
+# 03-, 06-, and 24-h accumulated precipitation using hourly CCPA files.
+# METplus configuration files require the use of predetermined directory 
+# structure and file names. Therefore, if the CCPA files are user 
+# provided, they need to follow the anticipated naming structure: 
+# {YYYYMMDD}/ccpa.t{HH}z.01h.hrap.conus.gb2, where YYYY is the 4-digit 
+# valid year, MM the 2-digit valid month, DD the 2-digit valid day of 
+# the month, and HH the 2-digit valid hour of the day. In addition, a 
+# caveat is noted for using hourly CCPA data. There is a problem with 
+# the valid time in the metadata for files valid from 19 - 00 UTC (or 
+# files under the '00' directory). The script to pull the CCPA data 
+# from the NOAA HPSS has an example of how to account for this as well
+# as organizing the data into a more intuitive format: 
+# regional_workflow/scripts/exregional_get_ccpa_files.sh. When a fix
+# is provided, it will be accounted for in the
+# exregional_get_ccpa_files.sh script.
+#
+# MRMS_OBS_DIR:
+# User-specified location of top-level directory where MRMS composite
+# reflectivity files used by METplus are located.  This parameter needs
+# to be set for both user-provided observations and for observations
+# that are retrieved from the NOAA HPSS (if the user has access) via the
+# get_obs_mrms_tn task (activated in workflow by setting
+# RUN_TASK_GET_OBS_MRMS="TRUE").  In the case of pulling observations 
+# directly from NOAA HPSS, the data retrieved will be placed in this 
+# directory. Please note, this path must be defind as 
+# /full-path-to-obs/mrms/proc. METplus configuration files require the
+# use of predetermined directory structure and file names. Therefore, if
+# the MRMS files are user provided, they need to follow the anticipated 
+# naming structure:
+# {YYYYMMDD}/MergedReflectivityQCComposite_00.50_{YYYYMMDD}-{HH}{mm}{SS}.grib2,
+# where YYYY is the 4-digit valid year, MM the 2-digit valid month, DD 
+# the 2-digit valid day of the month, HH the 2-digit valid hour of the 
+# day, mm the 2-digit valid minutes of the hour, and SS is the two-digit
+# valid seconds of the hour. In addition, METplus is configured to look
+# for a MRMS composite reflectivity file for the valid time of the 
+# forecast being verified; since MRMS composite reflectivity files do 
+# not always exactly match the valid time, a script, within the main 
+# script to retrieve MRMS data from the NOAA HPSS, is used to identify
+# and rename the MRMS composite reflectivity file to match the valid
+# time of the forecast.  The script to pull the MRMS data from the NOAA 
+# HPSS has an example of the expected file naming structure: 
+# regional_workflow/scripts/exregional_get_mrms_files.sh. This script 
+# calls the script used to identify the MRMS file closest to the valid 
+# time: regional_workflow/ush/mrms_pull_topofhour.py.
+#
+# NDAS_OBS_DIR:
+# User-specified location of top-level directory where NDAS prepbufr 
+# files used by METplus are located. This parameter needs to be set for
+# both user-provided observations and for observations that are 
+# retrieved from the NOAA HPSS (if the user has access) via the 
+# get_obs_ndas_tn task (activated in workflow by setting 
+# RUN_TASK_GET_OBS_NDAS="TRUE"). In the case of pulling observations 
+# directly from NOAA HPSS, the data retrieved will be placed in this 
+# directory. Please note, this path must be defind as 
+# /full-path-to-obs/ndas/proc. METplus is configured to verify 
+# near-surface variables hourly and upper-air variables at times valid 
+# at 00 and 12 UTC with NDAS prepbufr files.  METplus configuration files
+# require the use of predetermined file names. Therefore, if the NDAS 
+# files are user provided, they need to follow the anticipated naming 
+# structure: prepbufr.ndas.{YYYYMMDDHH}, where YYYY is the 4-digit valid
+# year, MM the 2-digit valid month, DD the 2-digit valid day of the 
+# month, and HH the 2-digit valid hour of the day. The script to pull 
+# the NDAS data from the NOAA HPSS has an example of how to rename the
+# NDAS data into a more intuitive format with the valid time listed in 
+# the file name: regional_workflow/scripts/exregional_get_ndas_files.sh
+#
+# These templates are used in the verification tasks, but they should 
+# also be used in the GET_OBS_... tasks.
+#
+CCPA_OBS_DIR=""
+OBS_CCPA_APCP01h_FN_TEMPLATE='{valid?fmt=%Y%m%d}/ccpa.t{valid?fmt=%H}z.01h.hrap.conus.gb2'
+OBS_CCPA_APCPgt01h_FN_TEMPLATE='${OBS_CCPA_APCP01h_FN_TEMPLATE}_a${ACCUM}h.nc'
+
+MRMS_OBS_DIR=""
+OBS_MRMS_REFC_FN_TEMPLATE='{valid?fmt=%Y%m%d}/MergedReflectivityQCComposite_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
+OBS_MRMS_RETOP_FN_TEMPLATE='{valid?fmt=%Y%m%d}/EchoTop_18_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
+
+NDAS_OBS_DIR=""
+OBS_NDAS_SFCorUPA_FN_TEMPLATE='prepbufr.ndas.{valid?fmt=%Y%m%d%H}'
+OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE='${OBS_NDAS_SFCorUPA_FN_TEMPLATE}.nc'
+#
+# These templates are used in the verification tasks, but they should 
+# also be used in the RUN_FCST_TN and/or RUN_POST_TN tasks.
+#
+FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd'
+FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${time_lag}}z.prslev.f{lead?fmt=%HHH?shift=${time_lag}}.${POST_OUTPUT_DOMAIN_NAME}.grib2'
+FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn'
+FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a${ACCUM}h.nc'
 #
 #-----------------------------------------------------------------------
 #
@@ -1974,14 +1990,42 @@ CRTM_DIR=""
 #
 # Set parameters associated with running ensembles.  Definitions:
 #
-# DO_ENSEMBLE:
-# Flag that determines whether to run a set of ensemble forecasts (for
-# each set of specified cycles).  If this is set to "TRUE", NUM_ENS_MEMBERS
-# forecasts are run for each cycle, each with a different set of stochastic
-# seed values.  Otherwise, a single forecast is run for each cycle.
+# IS_ENS_FCST:
+# Flag that determines whether to run a set of ensemble forecasts for
+# each specified cycle.  If this along with RUN_TASK_RUN_FCST and other
+# related task activation flags (listed below) are set to "TRUE", then 
+# NUM_ENS_MEMBERS forecasts are run for each cycle, each with a different
+# set of stochastic seed values.  Otherwise, a single forecast is run
+# for each cycle.  Default value is "FALSE".
+#
+# If running verification only on staged forecast output (i.e. if not
+# running any forecasts), this flag determines whether the staged forecast
+# files that the verification will use as input are assumed to be in an
+# ensemble directory structure, e.g. with the forecast output for each
+# member of each cycle date placed in subdirectories named "mem01",
+# "mem02", etc.  Forecasts can be turned off but verification tasks left
+# on by setting 
+# 
+#   RUN_TASK_MAKE_GRID
+#   RUN_TASK_MAKE_OROG
+#   RUN_TASK_MAKE_SFC_CLIMO
+#   RUN_TASK_GET_EXTRN_ICS
+#   RUN_TASK_GET_EXTRN_LBCS
+#   RUN_TASK_MAKE_ICS
+#   RUN_TASK_MAKE_LBCS
+#   RUN_TASK_RUN_FCST
+#   RUN_TASK_RUN_POST
+# 
+# all to "FALSE" and setting RUN_TASKS_VXDET and/or RUN_TASKS_VXENS to
+# "TRUE".
 #
 # NUM_ENS_MEMBERS:
-# The number of ensemble members to run if DO_ENSEMBLE is set to "TRUE".
+# The number of ensemble members to run if IS_ENS_FCST is set to "TRUE",
+# and/or the number of ensemble members to consider if RUN_TASKS_VXDET
+# and/or RUN_TASKS_VXENS are set to "TRUE".  Default value is 0 (i.e.
+# there are no ensemble members) to match the default value of "FALSE"
+# for IS_ENS_FCST (i.e. there is no ensemble).
+#
 # This variable also controls the naming of the ensemble member directories.  
 # For example, if this is set to "8", the member directories will be named 
 # mem1, mem2, ..., mem8.  If it is set to "08" (note the leading zero), 
@@ -1991,36 +2035,18 @@ CRTM_DIR=""
 # in the names of the member directories), the workflow generation scripts
 # strip away those leading zeros.  Thus, in the variable definitions file 
 # (GLOBAL_VAR_DEFNS_FN), this variable appear with its leading zeros 
-# stripped.  This variable is not used if DO_ENSEMBLE is not set to "TRUE".
+# stripped.  This variable is not used if IS_ENS_FCST is not set to "TRUE".
 # 
 #-----------------------------------------------------------------------
 #
-DO_ENSEMBLE="FALSE"
-NUM_ENS_MEMBERS="1"
+IS_ENS_FCST="FALSE"
+NUM_ENS_MEMBERS="0"
 #
 # Array specifying time-lagging of each ensemble member.  Currently only
 # used in verification, not in running the forecasts (i.e. can't (yet?)
 # time-lag the forecasts).
 #
 ENS_TIME_LAG_HRS=("")
-#
-# These templates are used in the verification tasks, but they should 
-# also be used in the GET_OBS_... tasks.
-#
-OBS_CCPA_APCP01h_FN_TEMPLATE='{valid?fmt=%Y%m%d}/ccpa.t{valid?fmt=%H}z.01h.hrap.conus.gb2'
-OBS_CCPA_APCPgt01h_FN_TEMPLATE='${OBS_CCPA_APCP01h_FN_TEMPLATE}_a${ACCUM}h.nc'
-OBS_MRMS_REFC_FN_TEMPLATE='{valid?fmt=%Y%m%d}/MergedReflectivityQCComposite_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
-OBS_MRMS_RETOP_FN_TEMPLATE='{valid?fmt=%Y%m%d}/EchoTop_18_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
-OBS_NDAS_SFCorUPA_FN_TEMPLATE='prepbufr.ndas.{valid?fmt=%Y%m%d%H}'
-OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE='${OBS_NDAS_SFCorUPA_FN_TEMPLATE}.nc'
-#
-# These templates are used in the verification tasks, but they should 
-# also be used in the RUN_FCST_TN and/or RUN_POST_TN tasks.
-#
-FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd'
-FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${time_lag}}z.prslev.f{lead?fmt=%HHH?shift=${time_lag}}.${POST_OUTPUT_DOMAIN_NAME}.grib2'
-FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn'
-FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a${ACCUM}h.nc'
 #
 #-----------------------------------------------------------------------
 #

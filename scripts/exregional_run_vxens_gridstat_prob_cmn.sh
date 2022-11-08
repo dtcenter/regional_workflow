@@ -166,7 +166,7 @@ STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn_${CDATE}"
 
 OBS_REL_PATH_TEMPLATE=$( eval echo ${OBS_FN_TEMPLATE} )
-FCST_REL_PATH_TEMPLATE=$( eval echo 'gen_ens_prod_${MODEL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
+FCST_REL_PATH_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
 #
 #-----------------------------------------------------------------------
 #
@@ -249,7 +249,7 @@ export OUTPUT_BASE
 export OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
-export MODEL
+export VX_FCST_MODEL_NAME
 export NET
 export FHR_LIST
 

@@ -121,7 +121,7 @@ NUM_PAD=${NDIGITS_ENSMEM_NAMES}
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE=${MET_INPUT_DIR}
+INPUT_BASE=${MET_FCST_INPUT_DIR}
 #OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
 OUTPUT_BASE=${MET_OUTPUT_DIR}
 #
@@ -254,7 +254,7 @@ export CDATE
 export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
-export MODEL
+export VX_FCST_MODEL_NAME
 export NET
 export POST_OUTPUT_DOMAIN_NAME
 export NUM_ENS_MEMBERS
