@@ -117,8 +117,6 @@ is:
   for (( i=0; i<${num_fcst_hrs}; i++ )); do
 
     fhr_orig="${fhr_array[$i]}"
-echo
-echo "i = $i  (fhr_orig = $fhr_orig)"
 
     if [ "${check_hourly_files}" = "TRUE" ]; then
       fhr=$(( ${fhr_orig} - ${accum} + 1 ))
@@ -130,7 +128,6 @@ echo "i = $i  (fhr_orig = $fhr_orig)"
 
     skip_this_fhr="FALSE"
     for (( j=0; j<${num_back_hrs}; j++ )); do
-echo "  j = $j  (fhr = $fhr)"
 #
 # Use the provided template to set the name of/relative path to the file 
 #
@@ -145,7 +142,7 @@ echo "  j = $j  (fhr = $fhr)"
         eval_METplus_timestr_tmpl \
           init_time="$cdate" \
           fhr="$fhr" \
-          tmpl="${crnt_tmpl}" \
+          METplus_timestr_tmpl="${crnt_tmpl}" \
           outvarname_formatted_time="actual_value"
 #
 # Replace METplus time templates in fn with actual times.  Note that

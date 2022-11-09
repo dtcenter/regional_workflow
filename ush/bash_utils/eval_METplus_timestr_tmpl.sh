@@ -1,7 +1,7 @@
 #
 #-----------------------------------------------------------------------
 #
-# This file defines a function that 
+# This file defines a function that
 #
 #-----------------------------------------------------------------------
 #
@@ -47,7 +47,7 @@ function eval_METplus_timestr_tmpl() {
   local valid_args=( \
         "init_time" \
         "fhr" \
-        "tmpl" \
+        "METplus_timestr_tmpl" \
         "outvarname_formatted_time" \
         )
   process_args valid_args "$@"
@@ -68,65 +68,20 @@ function eval_METplus_timestr_tmpl() {
 #
 #-----------------------------------------------------------------------
 #
-  local formatted_time \
+  local fmt \
+        formatted_time \
         hh_init \
-        hh_valid_tmpl \
-        hhmmss_valid_tmpl \
-        i \
-        is_valid_tmpl \
+        init_time_str \
+        lead_hrs \
         len \
         mn_init \
-        num_supported_tmpls \
+        METplus_time_fmt \
+        METplus_time_shift \
+        METplus_time_type \
+        regex_search \
         ss_init \
-        str \
-        supported_metplus_timestr_tmpls \
-        supported_tmpl \
-        valid_time \
-        yyyymmdd_init \
-        yyyymmdd_valid_tmpl \
-        yyyymmddhh_init_tmpl \
-        yyyymmddhh_valid_tmpl
-#
-#-----------------------------------------------------------------------
-#
-# Set list of supported METplus time string templates.
-#
-#-----------------------------------------------------------------------
-#
-tmpl_init_yyyymmddhh="{init?fmt=%Y%m%d%H}"
-tmpl_init_yyyymmddhh_shiftm0="{init?fmt=%Y%m%d%H?shift=-0}"
-tmpl_init_yyyymmddhh_shiftm43200="{init?fmt=%Y%m%d%H?shift=-43200}"
-tmpl_init_hh='{init?fmt=%H}'
-tmpl_init_hh_shift0='{init?fmt=%H?shift=0}'
-tmpl_init_hh_shiftm0='{init?fmt=%H?shift=-0}'
-tmpl_init_hh_shiftm43200='{init?fmt=%H?shift=-43200}'
-tmpl_valid_yyyymmddhh="{valid?fmt=%Y%m%d%H}"
-tmpl_valid_yyyymmdd="{valid?fmt=%Y%m%d}"
-tmpl_valid_hhmmss="{valid?fmt=%H%M%S}"
-tmpl_valid_hh="{valid?fmt=%H}"
-tmpl_lead_hhh="{lead?fmt=%HHH}"
-tmpl_lead_hhh_shift0="{lead?fmt=%HHH?shift=0}"
-tmpl_lead_hhh_shiftm0="{lead?fmt=%HHH?shift=-0}"
-tmpl_lead_hhh_shift43200="{lead?fmt=%HHH?shift=43200}"
-
-supported_metplus_timestr_tmpls=( \
-  "${tmpl_init_yyyymmddhh}" \
-  "${tmpl_init_yyyymmddhh_shiftm0}" \
-  "${tmpl_init_yyyymmddhh_shiftm43200}" \
-  "${tmpl_init_hh}" \
-  "${tmpl_init_hh_shift0}" \
-  "${tmpl_init_hh_shiftm0}" \
-  "${tmpl_init_hh_shiftm43200}" \
-  "${tmpl_valid_yyyymmddhh}" \
-  "${tmpl_valid_yyyymmdd}" \
-  "${tmpl_valid_hhmmss}" \
-  "${tmpl_valid_hh}" \
-  "${tmpl_lead_hhh}" \
-  "${tmpl_lead_hhh_shift0}" \
-  "${tmpl_lead_hhh_shiftm0}" \
-  "${tmpl_lead_hhh_shift43200}" \
-  )
-num_supported_tmpls=${#supported_metplus_timestr_tmpls[@]}
+        valid_time_str \
+        yyyymmdd_init
 #
 #-----------------------------------------------------------------------
 #
@@ -134,154 +89,133 @@ num_supported_tmpls=${#supported_metplus_timestr_tmpls[@]}
 #
 #-----------------------------------------------------------------------
 #
-if [ -z "$tmpl" ]; then
-  print_err_msg_exit "\
-The specified METplus time string template (tmpl) cannot be empty:
-  tmpl = \"${tmpl}\""
-fi
-
-is_valid_tmpl="FALSE"
-for (( i=0; i<${num_supported_tmpls}; i++ )); do
-  supported_tmpl="${supported_metplus_timestr_tmpls[$i]}"
-  if [ "${tmpl}" = "${supported_tmpl}" ]; then
-    is_valid_tmpl="TRUE"
-  fi
-done
-
-if [ "${is_valid_tmpl}" != "TRUE" ]; then
-  str=$( printf "  %s\n" "${supported_metplus_timestr_tmpls[@]}" )
-  print_err_msg_exit "\
-The specified METplus time string template (tmpl) is not supported:
-  tmpl = \"${tmpl}\"
-Supported templates are:
-$str"
-fi
-
-len=${#init_time}
-if [[ ${init_time} =~ ^[0-9]+$ ]]; then
-  if [ "$len" -ne 10 ] && [ "$len" -ne 12 ] && [ "$len" -ne 14 ]; then
+  if [ -z "${METplus_timestr_tmpl}" ]; then
     print_err_msg_exit "\
+The specified METplus time string template (METplus_timestr_tmpl) cannot be empty:
+  METplus_timestr_tmpl = \"${METplus_timestr_tmpl}\""
+  fi
+
+  len=${#init_time}
+  if [[ ${init_time} =~ ^[0-9]+$ ]]; then
+    if [ "$len" -ne 10 ] && [ "$len" -ne 12 ] && [ "$len" -ne 14 ]; then
+      print_err_msg_exit "\
 The specified initial time string (init_time) must contain exactly 10,
 12, or 14 integers (but contains $len):
   init_time = \"${init_time}\""
-  fi
-else
-  print_err_msg_exit "\
+    fi
+  else
+    print_err_msg_exit "\
 The specified initial time string (init_time) must consist of only
 integers and cannot be empty:
   init_time = \"${init_time}\""
-fi
+  fi
 
-if ! [[ $fhr =~ ^[0-9]+$ ]]; then
-  print_err_msg_exit "\
+  if ! [[ $fhr =~ ^[0-9]+$ ]]; then
+    print_err_msg_exit "\
 The specified forecast hour (fhr) must consist of only integers and
 cannot be empty:
   fhr = \"${fhr}\""
-fi
-
-yyyymmdd_init=${init_time:0:8}
-hh_init=${init_time:8:2}
-
-mn_init="00"
-if [ "$len" -gt "10" ]; then
-  mn_init=${init_time:10:2}
-fi
-
-ss_init="00"
-if [ "$len" -gt "12" ]; then
-  ss_init=${init_time:12:2}
-fi
-#
-#-----------------------------------------------------------------------
-#
-# Get the initial and valid times in string formats that can be input
-# into the "date" command.
-#
-#
-#-----------------------------------------------------------------------
-#
-#init_time=$( date --date="${yyyymmdd_init} + ${hh_init} hours + \
-#                           ${mn_init} minutes + ${ss_init} seconds" +"%Y-%m-%d %T" )
-#valid_time=$( date --date="${yyyymmdd_init} + $((${hh_init} + ${fhr})) hours + \
-#                           ${mn_init} minutes + ${ss_init} seconds" +"%Y-%m-%d %T" )
-init_time=$( printf "%s" "${yyyymmdd_init} + ${hh_init} hours + ${mn_init} minutes + ${ss_init} seconds" )
-valid_time=$( printf "%s" "${init_time} + ${fhr} hours" )
-
-formatted_time=""
-for (( i=0; i<${num_supported_tmpls}; i++ )); do
-  supported_tmpl="${supported_metplus_timestr_tmpls[$i]}"
-  if [ "${tmpl}" = "${supported_tmpl}" ]; then
-    case "${supported_tmpl}" in
-
-     ${tmpl_init_yyyymmddhh}|${tmpl_init_yyyymmddhh_shiftm0})
-        formatted_time=$( date --date="${init_time}" +"%Y%m%d%H" )
-        break
-        ;;
-
-     ${tmpl_init_yyyymmddhh_shiftm43200})
-        formatted_time=$( date --date="${init_time} - 12 hours" +"%Y%m%d%H" )
-        break
-        ;;
-
-      ${tmpl_init_hh}|${tmpl_init_hh_shift0}|${tmpl_init_hh_shiftm0})
-        formatted_time=$( date --date="${init_time}" +"%H" )
-        break
-        ;;
-
-      ${tmpl_init_hh_shiftm43200})
-        formatted_time=$( date --date="${init_time} - 43200 seconds" +"%H" )
-        break
-        ;;
-
-      ${tmpl_valid_yyyymmddhh})
-        formatted_time=$( date --date="${valid_time}" +"%Y%m%d%H" )
-        break
-        ;;
-
-      ${tmpl_valid_yyyymmdd})
-        formatted_time=$( date --date="${valid_time}" +"%Y%m%d" )
-        break
-        ;;
-
-      ${tmpl_valid_hhmmss})
-        formatted_time=$( date --date="${valid_time}" +"%H%M%S" )
-        break
-        ;;
-
-      ${tmpl_valid_hh})
-        formatted_time=$( date --date="${valid_time}" +"%H" )
-        break
-        ;;
-
-      ${tmpl_lead_hhh}|${tmpl_lead_hhh_shift0}|${tmpl_lead_hhh_shiftm0})
-        formatted_time=$(( ($( date --date="${valid_time}" +"%s" ) \
-                          - $( date --date="${init_time}" +"%s" ) \
-                           )/${secs_per_hour} ))
-        formatted_time=$( printf "%03d" "${formatted_time}" )
-        break
-        ;;
-
-      ${tmpl_lead_hhh_shift43200})
-        formatted_time=$(( ($( date --date="${valid_time}" +"%s" ) \
-                          - $( date --date="${init_time}" +"%s" ) \
-                          + 43200)/${secs_per_hour} ))
-        formatted_time=$( printf "%03d" "${formatted_time}" )
-        break
-        ;;
-
-    esac
   fi
-done
+#
+#-----------------------------------------------------------------------
+#
+# Set strings for the initial and valid times that can be passed to the
+# "date" utility for evaluation.
+#
+#-----------------------------------------------------------------------
+#
+  yyyymmdd_init=${init_time:0:8}
+  hh_init=${init_time:8:2}
 
-if [ -z "${formatted_time}" ]; then
-  str=$( printf "  %s\n" "${supported_metplus_timestr_tmpls[@]}" )
-  print_err_msg_exit "\
-The specified METplus time string template (tmpl) could not be evaluated
-for the given initial time (init_time) and forecast hour (fhr):
-  tmpl = \"${tmpl}\"
+  mn_init="00"
+  if [ "$len" -gt "10" ]; then
+    mn_init=${init_time:10:2}
+  fi
+
+  ss_init="00"
+  if [ "$len" -gt "12" ]; then
+    ss_init=${init_time:12:2}
+  fi
+
+  init_time_str=$( printf "%s" "${yyyymmdd_init} + ${hh_init} hours + ${mn_init} minutes + ${ss_init} seconds" )
+  valid_time_str=$( printf "%s" "${init_time_str} + ${fhr} hours" )
+#
+#-----------------------------------------------------------------------
+#
+# Parse the input METplus time string template.
+#
+#-----------------------------------------------------------------------
+#
+  regex_search="^\{(init|valid|lead)(\?)(fmt=)([^\?]*)(\?)?(shift=)?([^\?]*)?\}"
+  METplus_time_type=$( \
+    printf "%s" "${METplus_timestr_tmpl}" | $SED -n -r -e "s/${regex_search}/\1/p" )
+  METplus_time_fmt=$( \
+    printf "%s" "${METplus_timestr_tmpl}" | $SED -n -r -e "s/${regex_search}/\4/p" )
+  METplus_time_shift=$( \
+    printf "%s" "${METplus_timestr_tmpl}" | $SED -n -r -e "s/${regex_search}/\7/p" )
+#
+#-----------------------------------------------------------------------
+#
+# Get strings for the time format and time shift that can be passed to
+# the "date" utility or the "printf" command.
+#
+#-----------------------------------------------------------------------
+#
+  case "${METplus_time_fmt}" in
+    "%Y%m%d%H"|"%Y%m%d"|"%H%M%S"|"%H")
+      fmt="${METplus_time_fmt}"
+      ;;
+    "%HHH")
+      fmt="%03d"
+      ;;
+    *)
+      print_err_msg_exit "\
+Unsupported METplus time format:
+  METplus_time_fmt = \"${METplus_time_fmt}\"
+METplus time string template passed to this function is:
+  METplus_timestr_tmpl = \"${METplus_timestr_tmpl}\""
+      ;;
+  esac
+
+  time_shift_str=$(( ${METplus_time_shift} + 0 ))" seconds"
+#
+#-----------------------------------------------------------------------
+#
+# Set the formatted time string.
+#
+#-----------------------------------------------------------------------
+#
+  case "${METplus_time_type}" in
+    "init")
+      formatted_time=$( date --date="${init_time_str} + ${time_shift_str}" +"${fmt}" )
+      ;;
+    "valid")
+      formatted_time=$( date --date="${valid_time_str} + ${time_shift_str}" +"${fmt}" )
+      ;;
+    "lead")
+      lead_hrs=$(( ($( date --date="${valid_time_str} + ${time_shift_str}" +"%s" ) \
+                  - $( date --date="${init_time_str}" +"%s" ) \
+                   )/${secs_per_hour} ))
+      formatted_time=$( printf "${fmt}" "${lead_hrs}" )
+      ;;
+    *)
+      print_err_msg_exit "\
+Unsupported METplus time type:
+  METplus_time_type = \"${METplus_time_type}\"
+METplus time string template passed to this function is:
+  METplus_timestr_tmpl = \"${METplus_timestr_tmpl}\""
+      ;;
+  esac
+
+  if [ -z "${formatted_time}" ]; then
+    print_err_msg_exit "\
+The specified METplus time string template (METplus_timestr_tmpl) could
+not be evaluated for the given initial time (init_time) and forecast
+hour (fhr):
+  METplus_timestr_tmpl = \"${METplus_timestr_tmpl}\"
   init_time = \"${init_time}\"
   fhr = \"${fhr}\""
-fi
+  fi
 #
 #-----------------------------------------------------------------------
 #
