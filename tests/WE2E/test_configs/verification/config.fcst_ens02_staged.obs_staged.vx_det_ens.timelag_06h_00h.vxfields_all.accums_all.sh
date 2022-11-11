@@ -34,7 +34,7 @@ RUN_TASK_RUN_POST="FALSE"
 # the default convention in the SRW App, explicitly specify their
 # subdirectory and file name templates.
 #
-MET_FCST_INPUT_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/fcst_ens"
+VX_FCST_INPUT_BASEDIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/fcst_ens"
 #
 # This test assumes the observation files are staged.  Thus, deactivate
 # the GET_OBS_... tasks and instead specify the obs staging directories.

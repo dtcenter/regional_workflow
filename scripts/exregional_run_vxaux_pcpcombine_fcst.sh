@@ -127,8 +127,8 @@ time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)
 #
 #-----------------------------------------------------------------------
 #
-FCST_INPUT_BASE="${MET_FCST_INPUT_DIR}"
-FCST_OUTPUT_BASE="${MET_OUTPUT_DIR}"
+FCST_INPUT_BASE="${VX_FCST_INPUT_BASEDIR}"
+FCST_OUTPUT_BASE="${VX_OUTPUT_BASEDIR}"
 FCST_OUTPUT_DIR="${FCST_OUTPUT_BASE}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn"
 STAGING_DIR="${FCST_OUTPUT_BASE}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
@@ -162,15 +162,11 @@ set_vx_fhr_list \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  base_dir="${MET_FCST_INPUT_DIR}" \
+  base_dir="${VX_FCST_INPUT_BASEDIR}" \
   fn_template="${FCST_REL_PATH_TEMPLATE}" \
   check_hourly_files="TRUE" \
   accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
-#  base_dir="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn" \
-#  fn_template="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}" \
-#  base_dir="${OBS_DIR}" \
-#  fn_template="${OBS_CCPA_APCP01h_FN_TEMPLATE}" \
 #
 #-----------------------------------------------------------------------
 #

@@ -1329,11 +1329,11 @@ RUN_TASK_VX_ENSPOINT="FALSE"
 # METPLUS_CONF:
 # Directory containing METplus configuration files.
 #
-# MET_FCST_INPUT_DIR:
-# Location to top-level directory of METplus forecast input (does not
-# include obs).  If not specified, it gets set to EXPTDIR.
+# VX_FCST_INPUT_BASEDIR:
+# Location to top-level directory of METplus forecast input (but not obs
+# input).  If not specified, it gets set to EXPTDIR.
 #
-# MET_OUTPUT_DIR:
+# VX_OUTPUT_BASEDIR:
 # Location to top-level directory of METplus output.  If not specified,
 # it gets set to EXPTDIR.
 #
@@ -1343,8 +1343,8 @@ MET_INSTALL_DIR=""
 MET_BIN_EXEC="bin"
 METPLUS_PATH=""
 METPLUS_CONF=""
-MET_FCST_INPUT_DIR=""
-MET_OUTPUT_DIR=""
+VX_FCST_INPUT_BASEDIR=""
+VX_OUTPUT_BASEDIR=""
 #
 #-----------------------------------------------------------------------
 #

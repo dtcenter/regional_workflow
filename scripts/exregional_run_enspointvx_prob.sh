@@ -104,7 +104,7 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-OUTPUT_BASE=${MET_OUTPUT_DIR}
+OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
 LOG_SUFFIX=enspoint_prob_${CDATE}
 #
 #-----------------------------------------------------------------------

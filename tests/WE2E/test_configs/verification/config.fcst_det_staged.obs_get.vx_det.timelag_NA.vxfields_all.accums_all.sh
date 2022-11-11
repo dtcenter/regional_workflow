@@ -31,7 +31,7 @@ RUN_TASK_RUN_POST="FALSE"
 #
 # Since the forecast files are staged, specify the base staging directory.
 #
-MET_FCST_INPUT_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/fcst_det"
+VX_FCST_INPUT_BASEDIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/fcst_det"
 #
 # This test assumes the observation files will be fetched using the
 # GET_OBS_... tasks.  Thus, activate these tasks and specify the

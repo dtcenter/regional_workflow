@@ -1265,8 +1265,8 @@ fi
 #-----------------------------------------------------------------------
 #
 METPLUS_CONF=${METPLUS_CONF:-"${TEMPLATE_DIR}/parm/metplus"}
-MET_FCST_INPUT_DIR="${MET_FCST_INPUT_DIR:-$EXPTDIR}"
-MET_OUTPUT_DIR="${MET_OUTPUT_DIR:-$EXPTDIR}"
+VX_FCST_INPUT_BASEDIR="${VX_FCST_INPUT_BASEDIR:-$EXPTDIR}"
+VX_OUTPUT_BASEDIR="${VX_OUTPUT_BASEDIR:-$EXPTDIR}"
 #
 #-----------------------------------------------------------------------
 #

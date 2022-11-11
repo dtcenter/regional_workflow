@@ -155,12 +155,12 @@ esac
 #-----------------------------------------------------------------------
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pcp_combine_obs_cmn"
+  OBS_INPUT_BASE="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs_cmn"
 else
   OBS_INPUT_BASE="${OBS_DIR}"
 fi
-FCST_INPUT_BASE="${MET_OUTPUT_DIR}/$CDATE/metprd/gen_ens_prod_cmn"
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+FCST_INPUT_BASE="${VX_OUTPUT_BASEDIR}/$CDATE/metprd/gen_ens_prod_cmn"
+OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
 OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat_prob_cmn"
 STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn_${CDATE}"

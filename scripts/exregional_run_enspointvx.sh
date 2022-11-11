@@ -98,9 +98,9 @@ echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-INPUT_BASE=${MET_FCST_INPUT_DIR}
-#OUTPUT_BASE=${MET_OUTPUT_DIR}/${CDATE}
-OUTPUT_BASE=${MET_OUTPUT_DIR}
+INPUT_BASE=${VX_FCST_INPUT_BASEDIR}
+#OUTPUT_BASE=${VX_OUTPUT_BASEDIR}/${CDATE}
+OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
 #
 #-----------------------------------------------------------------------
 #

@@ -110,9 +110,9 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_BASE="${MET_OUTPUT_DIR}/metprd/pb2nc_obs_cmn"
-FCST_INPUT_BASE="${MET_FCST_INPUT_DIR}"
-OUTPUT_BASE="${MET_OUTPUT_DIR}/${CDATE}"
+OBS_INPUT_BASE="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
+FCST_INPUT_BASE="${VX_FCST_INPUT_BASEDIR}"
+OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
 OUTPUT_DIR_GEN_ENS_PROD="${OUTPUT_BASE}/metprd/gen_ens_prod_cmn"
 OUTPUT_DIR_ENSEMBLE_STAT="${OUTPUT_BASE}/metprd/ensemble_stat_cmn"
 STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"

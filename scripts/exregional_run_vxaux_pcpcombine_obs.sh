@@ -110,7 +110,7 @@ set_vx_params \
 #-----------------------------------------------------------------------
 #
 OBS_INPUT_BASE="${OBS_DIR}"
-OBS_OUTPUT_BASE="${MET_OUTPUT_DIR}"
+OBS_OUTPUT_BASE="${VX_OUTPUT_BASEDIR}"
 OBS_OUTPUT_DIR="${OBS_OUTPUT_BASE}/metprd/pcp_combine_obs_cmn"
 STAGING_DIR="${OBS_OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
