@@ -34,7 +34,7 @@ RUN_TASK_RUN_POST="FALSE"
 # the default convention in the SRW App, explicitly specify their
 # subdirectory and file name templates.
 #
-MET_FCST_INPUT_DIR="/scratch1/BMC/hmtb/beck/ens_design_RRFS/data"
+MET_FCST_INPUT_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/fcst_ens"
 FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd'
 FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${time_lag}}z.bgdawpf{lead?fmt=%HHH?shift=${time_lag}}.tm00.grib2'
 FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn'
@@ -45,11 +45,11 @@ FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a${
 # locations for staging the files.
 #
 RUN_TASK_GET_OBS_CCPA="TRUE"
-CCPA_OBS_DIR='$EXPTDIR/obs_data/ccpa/proc'
+CCPA_OBS_DIR='$EXPTDIR/obs/ccpa/proc'
 RUN_TASK_GET_OBS_MRMS="TRUE"
-MRMS_OBS_DIR='$EXPTDIR/obs_data/mrms/proc'
+MRMS_OBS_DIR='$EXPTDIR/obs/mrms/proc'
 RUN_TASK_GET_OBS_NDAS="TRUE"
-NDAS_OBS_DIR='$EXPTDIR/obs_data/ndas/proc'
+NDAS_OBS_DIR='$EXPTDIR/obs/ndas/proc'
 #
 # This test assumes that the forecast(s) to be verified is an ensemble
 # forecast, i.e. that the post-processed forecast files are in an ensemble
@@ -67,13 +67,21 @@ RUN_TASKS_VXDET="TRUE"
 #
 RUN_TASKS_VXENS="TRUE"
 #
-# Specify other vx parameters including ENS_TIME_LAG_HRS, which is the
-# time-lagging that the vx tasks should assume for each ensemble member
-# (in units of hours).
+# Specify other vx parameters.
 #
+# ENS_TIME_LAG_HRS is the time-lagging that the vx tasks should assume
+# for each ensemble member (in units of hours).
 ENS_TIME_LAG_HRS=( "0" "12" )
-VX_FCST_MODEL_NAME="FV3_RRFSE"
+# NET is needed to construct the paths/names of the staged forecast files
+# using the templates above, and both NET and POST_OUTPUT_DOMAIN_NAME
+# are needed to construct the default value of VX_FCST_MODEL_NAME if an
+# explicit value for it has not been specified (which is the case for
+# this test).  (VX_FCST_MODEL_NAME is the (base) forecast model name to
+# use in the vx output, both in the output file names and in their
+# contents.)  The alternative is to specify VX_FCST_MODEL_NAME, in which
+# case POST_OUTPUT_DOMAIN_NAME is not needed.
 NET='RRFSE_CONUS'
+POST_OUTPUT_DOMAIN_NAME="rrfs_conus_25km"
 #
 # MET and METplus paths.  Move these to the machine files?
 #

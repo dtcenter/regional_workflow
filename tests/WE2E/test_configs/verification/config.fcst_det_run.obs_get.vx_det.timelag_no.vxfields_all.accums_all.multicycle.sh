@@ -33,19 +33,15 @@ LBC_SPEC_INTVL_HRS="3"
 # locations for staging the files.
 #
 RUN_TASK_GET_OBS_CCPA="TRUE"
-CCPA_OBS_DIR='$EXPTDIR/obs_data/ccpa/proc'
+CCPA_OBS_DIR='$EXPTDIR/obs/ccpa/proc'
 RUN_TASK_GET_OBS_MRMS="TRUE"
-MRMS_OBS_DIR='$EXPTDIR/obs_data/mrms/proc'
+MRMS_OBS_DIR='$EXPTDIR/obs/mrms/proc'
 RUN_TASK_GET_OBS_NDAS="TRUE"
-NDAS_OBS_DIR='$EXPTDIR/obs_data/ndas/proc'
+NDAS_OBS_DIR='$EXPTDIR/obs/ndas/proc'
 #
-# Run deterministic vx on each member of the forecast ensemble.
+# Run deterministic vx on the forecast.
 #
 RUN_TASKS_VXDET="TRUE"
-#
-# Do not run vx on the ensemble as a whole.
-#
-RUN_TASKS_VXENS="FALSE"
 #
 # MET and METplus paths.  Move these to the machine files?
 #

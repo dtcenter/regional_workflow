@@ -29,23 +29,18 @@ FCST_LEN_HRS="6"
 LBC_SPEC_INTVL_HRS="3"
 #
 # This test assumes the observation files are staged.  Thus, deactivate
-# the GET_OBS_... tasks and instead instead specify the obs staging
-# directories.
+# the GET_OBS_... tasks and instead specify the obs staging directories.
 #
 RUN_TASK_GET_OBS_CCPA="FALSE"
-CCPA_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/test_get_obs_data/ccpa/proc"
+CCPA_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/obs/ccpa/proc"
 RUN_TASK_GET_OBS_MRMS="FALSE"
-MRMS_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/test_get_obs_data/mrms/proc"
+MRMS_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/obs/mrms/proc"
 RUN_TASK_GET_OBS_NDAS="FALSE"
-NDAS_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/test_get_obs_data/ndas/proc"
+NDAS_OBS_DIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/obs/ndas/proc"
 #
-# Run deterministic vx on each member of the forecast ensemble.
+# Run deterministic vx on the forecast.
 #
 RUN_TASKS_VXDET="TRUE"
-#
-# Do not run vx on the ensemble as a whole.
-#
-RUN_TASKS_VXENS="FALSE"
 #
 # MET and METplus paths.  Move these to the machine files?
 #

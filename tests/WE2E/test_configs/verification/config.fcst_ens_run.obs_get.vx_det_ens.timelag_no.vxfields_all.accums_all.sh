@@ -35,11 +35,11 @@ LBC_SPEC_INTVL_HRS="3"
 # locations for staging the files.
 #
 RUN_TASK_GET_OBS_CCPA="TRUE"
-CCPA_OBS_DIR='$EXPTDIR/obs_data/ccpa/proc'
+CCPA_OBS_DIR='$EXPTDIR/obs/ccpa/proc'
 RUN_TASK_GET_OBS_MRMS="TRUE"
-MRMS_OBS_DIR='$EXPTDIR/obs_data/mrms/proc'
+MRMS_OBS_DIR='$EXPTDIR/obs/mrms/proc'
 RUN_TASK_GET_OBS_NDAS="TRUE"
-NDAS_OBS_DIR='$EXPTDIR/obs_data/ndas/proc'
+NDAS_OBS_DIR='$EXPTDIR/obs/ndas/proc'
 #
 # This test assumes that the forecast(s) to be verified is an ensemble
 # forecast, i.e. that the post-processed forecast files are in an ensemble
@@ -57,13 +57,16 @@ RUN_TASKS_VXDET="TRUE"
 #
 RUN_TASKS_VXENS="TRUE"
 #
-# Specify other vx parameters including ENS_TIME_LAG_HRS, which is the
-# time-lagging that the vx tasks should assume for each ensemble member
-# (in units of hours).
+# Specify other vx parameters.
 #
+# ENS_TIME_LAG_HRS is the time-lagging that the vx tasks should assume
+# for each ensemble member (in units of hours).
 ENS_TIME_LAG_HRS=( "0" "0" )
-VX_FCST_MODEL_NAME="FV3_RRFSE"
-NET='RRFSE_CONUS'
+# VX_FCST_MODEL_NAME is the (base) forecast model name to use in the vx
+# output, both in the output file names and in their contents.  This has
+# a default value based on NET and POST_OUTPUT_DOMAIN_NAME (which have
+# their own default values).  Here, we explicitly specify its value.
+VX_FCST_MODEL_NAME="RRFSE_CONUS_25km"
 #
 # MET and METplus paths.  Move these to the machine files?
 #
