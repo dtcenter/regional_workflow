@@ -352,6 +352,7 @@ file (template_xml_fp):
   'run_task_make_grid': ${RUN_TASK_MAKE_GRID}
   'run_task_make_orog': ${RUN_TASK_MAKE_OROG}
   'run_task_make_sfc_climo': ${RUN_TASK_MAKE_SFC_CLIMO}
+  'run_task_get_obs_mrms': ${RUN_TASK_GET_OBS_MRMS}
   'run_task_get_extrn_ics': ${RUN_TASK_GET_EXTRN_ICS}
   'run_task_get_extrn_lbcs': ${RUN_TASK_GET_EXTRN_LBCS}
   'run_task_make_ics': ${RUN_TASK_MAKE_ICS}
@@ -359,7 +360,6 @@ file (template_xml_fp):
   'run_task_run_fcst': ${RUN_TASK_RUN_FCST}
   'run_task_run_post': ${RUN_TASK_RUN_POST}
   'run_task_get_obs_ccpa': ${RUN_TASK_GET_OBS_CCPA}
-  'run_task_get_obs_mrms': ${RUN_TASK_GET_OBS_MRMS}
   'run_task_get_obs_ndas': ${RUN_TASK_GET_OBS_NDAS}
   'run_tasks_vxdet': ${RUN_TASKS_VXDET}
   'run_tasks_vxens': ${RUN_TASKS_VXENS}
@@ -435,10 +435,6 @@ if [ "TRUE" = "TRUE" ]; then
 #
   settings="$settings
 #
-#  'run_task_run_vxaux_pb2nc_obs': \${RUN_TASK_RUN_VXAUX_PB2NC_OBS}
-#  'run_task_run_vxaux_pcpcombine_obs': \${RUN_TASK_RUN_VXAUX_PCPCOMBINE_OBS}
-#  'run_task_run_vxaux_pcpcombine_fcst': \${RUN_TASK_RUN_VXAUX_PCPCOMBINE_FCST}
-#
 # Whether to include old versions of vx tasks in the xml.
 #
   'include_old_vx_tasks_in_xml': ${INCLUDE_OLD_VX_TASKS_IN_XML}
@@ -510,6 +506,7 @@ if [ "TRUE" = "TRUE" ]; then
 #
 # Flags that specify whether to run various workflow tasks or groups of
 # tasks.
+# These are for old versions vx tasks and will soon be removed.
 #
   'run_task_vx_gridstat': ${RUN_TASK_VX_GRIDSTAT}
   'run_task_vx_pointstat': ${RUN_TASK_VX_POINTSTAT}

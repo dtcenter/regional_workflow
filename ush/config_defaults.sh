@@ -1283,6 +1283,7 @@ VX_ENSPOINT_PROB_TN="run_enspointvx_prob"
 # RUN_ENSEMBLE_STAT:
 # Flag that determines whether the ensemble-stat verification subtask is
 # to be run in the VX_ENSGRID and VX_ENSPOINT tasks.
+#
 #-----------------------------------------------------------------------
 #
 RUN_TASK_MAKE_GRID="TRUE"
@@ -1296,6 +1297,8 @@ SFC_CLIMO_DIR="/path/to/pregenerated/surface/climo/files"
 
 DOMAIN_PREGEN_BASEDIR=""
 
+RUN_TASK_GET_OBS_MRMS="FALSE"
+
 RUN_TASK_GET_EXTRN_ICS="TRUE"
 RUN_TASK_GET_EXTRN_LBCS="TRUE"
 RUN_TASK_MAKE_ICS="TRUE"
@@ -1304,7 +1307,6 @@ RUN_TASK_RUN_FCST="TRUE"
 RUN_TASK_RUN_POST="TRUE"
 
 RUN_TASK_GET_OBS_CCPA="FALSE"
-RUN_TASK_GET_OBS_MRMS="FALSE"
 RUN_TASK_GET_OBS_NDAS="FALSE"
 RUN_TASKS_VXDET="FALSE"
 RUN_TASKS_VXENS="FALSE"
