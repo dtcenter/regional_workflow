@@ -30,6 +30,7 @@ Workflow task names.
 <!ENTITY MAKE_GRID_TN                          "{{ make_grid_tn }}">
 <!ENTITY MAKE_OROG_TN                          "{{ make_orog_tn }}">
 <!ENTITY MAKE_SFC_CLIMO_TN                     "{{ make_sfc_climo_tn }}">
+<!ENTITY GET_OBS_MRMS_TN                       "{{ get_obs_mrms_tn }}">
 <!ENTITY GET_EXTRN_ICS_TN                      "{{ get_extrn_ics_tn }}">
 <!ENTITY GET_EXTRN_LBCS_TN                     "{{ get_extrn_lbcs_tn }}">
 <!ENTITY MAKE_ICS_TN                           "{{ make_ics_tn }}">
@@ -38,7 +39,6 @@ Workflow task names.
 <!ENTITY RUN_POST_TN                           "{{ run_post_tn }}">
 <!ENTITY GET_OBS_CCPA_TN                       "{{ get_obs_ccpa_tn }}">
 <!ENTITY GET_OBS_NDAS_TN                       "{{ get_obs_ndas_tn }}">
-<!ENTITY GET_OBS_MRMS_TN                       "{{ get_obs_mrms_tn }}">
 <!ENTITY VX_TN                                 "{{ vx_tn }}">
 <!ENTITY RUN_VXAUX_PB2NC_OBS_TN                "{{ run_vxaux_pb2nc_obs_tn }}">
 <!ENTITY RUN_VXAUX_PCPCOMBINE_OBS_TN           "{{ run_vxaux_pcpcombine_obs_tn }}">
@@ -86,14 +86,7 @@ Workflow task names.
 <!--
 Entity used to load the module file for each GET_OBS_* task.
 -->
-<!ENTITY GET_OBS                       "{{ get_obs }}">
-
-<!--
-Flags that specify whether to run the preprocessing and/or verification tasks.
--->
-<!ENTITY RUN_TASK_MAKE_GRID       "{{ run_task_make_grid | upper }}">
-<!ENTITY RUN_TASK_MAKE_OROG       "{{ run_task_make_orog | upper }}">
-<!ENTITY RUN_TASK_MAKE_SFC_CLIMO  "{{ run_task_make_sfc_climo | upper }}">
+<!ENTITY GET_OBS                  "{{ get_obs }}">
 
 <!--
 Number of physical cores per node for the current machine.  This is used
@@ -101,7 +94,7 @@ below in the <nodesize> tag, but that tag is not clearly documented.  This
 parameter may be unnecessary since each task now has its own variable that
 specifies the number of processes per node being used (the PPN_... entities).
 -->
-<!ENTITY NCORES_PER_NODE "{{ ncores_per_node }}">
+<!ENTITY NCORES_PER_NODE          "{{ ncores_per_node }}">
 
 <!--
 Directories and files.
@@ -234,13 +227,11 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+  {%- if run_task_make_grid %}
     <dependency>
-      <or>
-<!--        <taskdep task="make_grid"/> -->
-        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
-        <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-      </or>
+      <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
     </dependency>
+  {%- endif %}
 
   </task>
 {%- endif %}
@@ -264,22 +255,58 @@ MODULES_RUN_TASK_FP script.
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
 
+  {%- if run_task_make_grid or run_task_make_orog %}
     <dependency>
       <and>
-        <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
-        </or>
+    {%- if run_task_make_grid %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+    {%- endif %}
+    {%- if run_task_make_orog %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+    {%- endif %}
       </and>
     </dependency>
+  {%- endif %}
 
   </task>
+{%- endif %}
+{%- if run_task_get_obs_mrms %}
+  {%- for field in vx_fields -%}
+    {%- if (field in ["REFC", "RETOP"]) %}
+<!--
+************************************************************************
+************************************************************************
+-->
+  <task name="&GET_OBS_MRMS_TN;_{{field}}" cycledefs="at_start" maxtries="{{ maxtries_get_obs_mrms }}">
+
+    &RSRV_HPSS;
+    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_MRMS"</command>
+  {%- if machine in ["WCOSS_DELL_P3"] %}
+    <memory>2048M</memory><native>-R affinity[core]</native>
+  {%- endif %}
+    <nodes>{{ nnodes_get_obs_mrms }}:ppn={{ ppn_get_obs_mrms }}</nodes>
+    <walltime>{{ wtime_get_obs_mrms }}</walltime>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
+  {%- if machine in ["GAEA"]  %}
+    <native>&SLURM_NATIVE_CMD;</native>
+  {%- endif %}
+    <jobname>&GET_OBS_MRMS_TN;_{{field}}</jobname>
+    <join><cyclestr>&LOGDIR;/&GET_OBS_MRMS_TN;_{{field}}.log</cyclestr></join>
+
+    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
+    <envar><name>VAR</name><value>{{field}}</value></envar>
+<!--
+The following needs to be changed so that FHR_LIST specifies only the
+forecast output hours.  Currently, FHR_LIST gets set to every hour from
+0 to the length of the forecast, so the 1-hour increment here needs to
+be changed from 1 to whatever the proper variable is.
+-->
+    <envar><name>FHR_LIST</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1, 1) %}{{ " %02d" % h }}{% endfor %}</cyclestr></value></envar>
+ 
+  </task>
+    {%- endif %}
+  {%- endfor %}
 {%- endif %}
 {%- if run_task_get_extrn_ics %}
 <!--
@@ -369,39 +396,6 @@ MODULES_RUN_TASK_FP script.
     <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
     <envar><name>ACCUM</name><value>01</value></envar>
 
-  </task>
-{%- endif %}
-{%- if run_task_get_obs_mrms %}
-<!--
-************************************************************************
-************************************************************************
--->
-  <task name="&GET_OBS_MRMS_TN;" cycledefs="forecast" maxtries="{{ maxtries_get_obs_mrms }}">
-
-    &RSRV_HPSS;
-    <command>&LOAD_MODULES_RUN_TASK_FP; "&GET_OBS;" "&JOBSDIR;/JREGIONAL_GET_OBS_MRMS"</command>
-  {%- if machine in ["WCOSS_DELL_P3"] %}
-    <memory>2048M</memory><native>-R affinity[core]</native>
-  {%- endif %}
-    <nodes>{{ nnodes_get_obs_mrms }}:ppn={{ ppn_get_obs_mrms }}</nodes>
-    <walltime>{{ wtime_get_obs_mrms }}</walltime>
-    <nodesize>&NCORES_PER_NODE;</nodesize>
-  {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
-  {%- endif %}
-    <jobname>&GET_OBS_MRMS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&GET_OBS_MRMS_TN;_@Y@m@d@H.log</cyclestr></join>
-
-    <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
-    <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
-    <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
-    <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
-    <envar><name>FHR</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar>
-    <envar><name>SCRIPTSDIR</name><value>&SCRIPTSDIR;</value></envar>
-    <envar><name>VAR</name><value>REFC RETOP</value></envar>
- 
   </task>
 {%- endif %}
 {%- if run_task_get_obs_ndas %}
@@ -599,21 +593,15 @@ done by the scripts that this task calls).
     <dependency>
       <and>
         <taskdep task="&GET_EXTRN_ICS_TN;"/>
-        <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
-        </or>
+  {%- if run_task_make_grid %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+  {%- endif %}
+  {%- if run_task_make_orog %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+  {%- endif %}
+  {%- if run_task_make_sfc_climo %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
+  {%- endif %}
       </and>
     </dependency>
 
@@ -646,21 +634,15 @@ done by the scripts that this task calls).
     <dependency>
       <and>
         <taskdep task="&GET_EXTRN_LBCS_TN;"/>
-        <or>
-<!--          <taskdep task="&MAKE_GRID_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_GRID;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_OROG_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_OROG;</left><right>FALSE</right></streq>
-        </or>
-        <or>
-<!--          <taskdep task="&MAKE_SFC_CLIMO_TN;"/> -->
-          <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
-          <streq><left>&RUN_TASK_MAKE_SFC_CLIMO;</left><right>FALSE</right></streq>
-        </or>
+  {%- if run_task_make_grid %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_GRID_TN;_task_complete.txt</datadep>
+  {%- endif %}
+  {%- if run_task_make_orog %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_OROG_TN;_task_complete.txt</datadep>
+  {%- endif %}
+  {%- if run_task_make_sfc_climo %}
+        <datadep age="00:00:00:05">&LOGDIR;/&MAKE_SFC_CLIMO_TN;_task_complete.txt</datadep>
+  {%- endif %}
       </and>
     </dependency>
 
@@ -1454,7 +1436,7 @@ Apparently need to intialize some variables here.
       {%- set create_gridstat_task = false %}
       {%- set create_pointstat_task = false %}
 {#- #}
-      {%- if (field == "APCP") %}
+      {%- if (field in ["APCP"]) %}
         {%- set obtype = "CCPA" %}
         {%- set run_task_get_obs = run_task_get_obs_ccpa %}
         {%- if (accum > 0) and (fcst_len_hrs >= accum) %}
@@ -1463,14 +1445,14 @@ Apparently need to intialize some variables here.
           {%- set create_gridstat_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "REFC") or (field == "RETOP") %}
+      {%- elif (field in ["REFC", "RETOP"]) %}
         {%- set obtype = "MRMS" %}
         {%- set run_task_get_obs = run_task_get_obs_mrms %}
         {%- if accum == 0 %}
           {%- set create_gridstat_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "SFC") or (field == "UPA") %}
+      {%- elif (field in ["SFC", "UPA"]) %}
         {%- set obtype = "NDAS" %}
         {%- set run_task_get_obs = run_task_get_obs_ndas %}
         {%- if accum == 0 %}
@@ -1525,7 +1507,11 @@ If the data fetching task for the current observation type is part of
 the workflow, make sure it has completed.
 #}
       {%- if run_task_get_obs %}
+        {%- if (field in ["REFC", "RETOP"]) %}
+        <datadep age="00:00:00:05">&LOGDIR;/&GET_OBS_{{obtype}}_TN;_{{fieldname}}_task_complete.txt</datadep>
+        {%- else %}
         <taskdep task="&GET_OBS_{{obtype}}_TN;"/>
+        {%- endif %}
       {%- endif %}
       {%- if accum > 1 %}
         <taskdep task="&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
@@ -2486,7 +2472,7 @@ Apparently need to intialize some variables here.
       {%- set create_gepes_gridded_task = false %}
       {%- set create_gepes_point_task = false %}
 {#- #}
-      {%- if (field == "APCP") %}
+      {%- if (field in ["APCP"]) %}
         {%- set obtype = "CCPA" %}
         {%- set run_task_get_obs = run_task_get_obs_ccpa %}
         {%- if (accum > 0) and (fcst_len_hrs >= accum) %}
@@ -2495,14 +2481,14 @@ Apparently need to intialize some variables here.
           {%- set create_gepes_gridded_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "REFC") or (field == "RETOP") %}
+      {%- elif (field in ["REFC", "RETOP"]) %}
         {%- set obtype = "MRMS" %}
         {%- set run_task_get_obs = run_task_get_obs_mrms %}
         {%- if accum == 0 %}
           {%- set create_gepes_gridded_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "SFC") or (field == "UPA") %}
+      {%- elif (field in ["SFC", "UPA"]) %}
         {%- set obtype = "NDAS" %}
         {%- set run_task_get_obs = run_task_get_obs_ndas %}
         {%- if accum == 0 %}
@@ -2555,7 +2541,11 @@ If the data fetching task for the current observation type is part of
 the workflow, make sure it has completed.
 #}
         {%- if run_task_get_obs %}
+          {%- if (field in ["REFC", "RETOP"]) %}
+        <datadep age="00:00:00:05">&LOGDIR;/&GET_OBS_{{obtype}}_TN;_{{fieldname}}_task_complete.txt</datadep>
+          {%- else %}
         <taskdep task="&GET_OBS_{{obtype}}_TN;"/>
+          {%- endif %}
         {%- endif %}
 {#-
 If the forecast files are being generated by running the post-processor
@@ -2573,7 +2563,7 @@ For APCP with accumulation greater than 1 hour, the pcp_combine tasks
 for both the observations and all ensemble member forecasts must be 
 complete, so we include them here as dependencies.
 #}
-        {%- if (field == "APCP") and (accum > 1) %}
+        {%- if (field in ["APCP"]) and (accum > 1) %}
         <taskdep task="&RUN_VXAUX_PCPCOMBINE_OBS_TN;_{{fieldname}}"/>
           {%-for m in range(1, num_ens_members+1) %}
             {%- set fmtstr="%0"~ndigits_ensmem_names~"d" %}
@@ -2670,7 +2660,7 @@ Apparently need to intialize some variables here.
       {%- set create_gridstat_mean_task = false %}
       {%- set create_pointstat_mean_task = false %}
 {#- #}
-      {%- if (field == "APCP") %}
+      {%- if (field in ["APCP"]) %}
         {%- set obtype = "CCPA" %}
         {%- if (accum > 0) and (fcst_len_hrs >= accum) %}
           {%- set accum2d_or_null = fmtstr%accum %}
@@ -2678,13 +2668,13 @@ Apparently need to intialize some variables here.
           {%- set create_gridstat_mean_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "REFC") or (field == "RETOP") %}
+      {%- elif (field in ["REFC", "RETOP"]) %}
         {%- set obtype = "MRMS" %}
         {%- if accum == 0 %}
           {%- set create_gridstat_mean_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "SFC") or (field == "UPA") %}
+      {%- elif (field in ["SFC", "UPA"]) %}
         {%- set obtype = "NDAS" %}
         {%- if accum == 0 %}
           {%- set create_pointstat_mean_task = true %}
@@ -2809,7 +2799,7 @@ Apparently need to intialize some variables here.
       {%- set create_gridstat_prob_task = false %}
       {%- set create_pointstat_prob_task = false %}
 {#- #}
-      {%- if (field == "APCP") %}
+      {%- if (field in ["APCP"]) %}
         {%- set obtype = "CCPA" %}
         {%- if (accum > 0) and (fcst_len_hrs >= accum) %}
           {%- set accum2d_or_null = fmtstr%accum %}
@@ -2817,13 +2807,13 @@ Apparently need to intialize some variables here.
           {%- set create_gridstat_prob_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "REFC") or (field == "RETOP") %}
+      {%- elif (field in ["REFC", "RETOP"]) %}
         {%- set obtype = "MRMS" %}
         {%- if accum == 0 %}
           {%- set create_gridstat_prob_task = true %}
         {%- endif %}
 {#- #}
-      {%- elif (field == "SFC") or (field == "UPA") %}
+      {%- elif (field in ["SFC", "UPA"]) %}
         {%- set obtype = "NDAS" %}
         {%- if accum == 0 %}
           {%- set create_pointstat_prob_task = true %}
