@@ -63,14 +63,19 @@ for verification purposes.
 #
 #-----------------------------------------------------------------------
 #
-echo "VAR=${VAR}"
-for field in ${VAR[@]}; do
-  export field
-  echo "Field=${field}"
-  $SCRIPTSDIR/exregional_get_mrms_files.sh || \
+$SCRIPTSDIR/exregional_get_obs_mrms.sh || \
   print_err_msg_exit "\
-  Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
-done
+Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
+#
+#-----------------------------------------------------------------------
+#
+# Create a flag file to make rocoto aware that the make_grid task has
+# successfully completed (so that other tasks that depend on it can be
+# launched).
+#
+#-----------------------------------------------------------------------
+#
+touch "$LOGDIR/${GET_OBS_MRMS_TN}_${VAR}_task_complete.txt"
 #
 #-----------------------------------------------------------------------
 #
