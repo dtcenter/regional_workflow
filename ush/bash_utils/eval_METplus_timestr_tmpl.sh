@@ -187,14 +187,14 @@ METplus time string template passed to this function is:
 #
   case "${METplus_time_type}" in
     "init")
-      formatted_time=$( date --date="${init_time_str} + ${time_shift_str}" +"${fmt}" )
+      formatted_time=$( ${DATE_UTIL} --date="${init_time_str} + ${time_shift_str}" +"${fmt}" )
       ;;
     "valid")
-      formatted_time=$( date --date="${valid_time_str} + ${time_shift_str}" +"${fmt}" )
+      formatted_time=$( ${DATE_UTIL} --date="${valid_time_str} + ${time_shift_str}" +"${fmt}" )
       ;;
     "lead")
-      lead_hrs=$(( ($( date --date="${valid_time_str} + ${time_shift_str}" +"%s" ) \
-                  - $( date --date="${init_time_str}" +"%s" ) \
+      lead_hrs=$(( ($( ${DATE_UTIL} --date="${valid_time_str} + ${time_shift_str}" +"%s" ) \
+                  - $( ${DATE_UTIL} --date="${init_time_str}" +"%s" ) \
                    )/${secs_per_hour} ))
       formatted_time=$( printf "${fmt}" "${lead_hrs}" )
       ;;
