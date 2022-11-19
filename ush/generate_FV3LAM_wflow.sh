@@ -184,7 +184,7 @@ file (template_xml_fp):
     slash_ensmem_subdir="/mem#${ensmem_indx_name}#"
     ens_timelag_var_name="etl" # "etl" stands for "ensemble time lag"
     ens_time_lag_hhmmss=$( printf "%02d:00:00 " "${ENS_TIME_LAG_HRS[@]}" )
-    cyclestr_offset=' offset="#'${ens_timelag_var_name}'#"'
+    cyclestr_offset=' offset="-#'${ens_timelag_var_name}'#"'
   fi
 
   settings="\
