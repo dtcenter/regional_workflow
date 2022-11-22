@@ -122,38 +122,23 @@ time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from pcp_combine.  Also, set the
-# suffix for the name of the log file that METplus will generate.
+# Set paths and file templates for input to and output from pcp_combine
+# as well as other file/directory parameters.
 #
 #-----------------------------------------------------------------------
 #
-FCST_INPUT_BASE="${VX_FCST_INPUT_BASEDIR}"
-FCST_OUTPUT_BASE="${VX_OUTPUT_BASEDIR}"
-FCST_OUTPUT_DIR="${FCST_OUTPUT_BASE}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn"
-STAGING_DIR="${FCST_OUTPUT_BASE}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
+FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
 
-FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
-FCST_REL_PATH_METPROC_TEMPLATE=$( eval echo ${FCST_SUBDIR_METPROC_TEMPLATE}/${FCST_FN_METPROC_TEMPLATE} )
+FCST_OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+FCST_OUTPUT_DIR="${FCST_OUTPUT_BASE}/metprd/pcp_combine_fcst_cmn"
+FCST_OUTPUT_FN_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+STAGING_DIR="${FCST_OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
 # Set the array of forecast hours for which to run pcp_combine.
-#
-# Note that for ensemble forecasts (which may contain time-lagged
-# members), the forecast hours set below are relative to the non-time-
-# lagged initialization time of the cycle regardless of whether or not
-# the current ensemble member is time-lagged, i.e. the forecast hours
-# are not shifted to take the time-lagging into account.
-#
-# The time-lagging is taken into account in the METplus configuration
-# file used by the call below to METplus (which in turn calls MET's
-# pcp_combine tool).  In that configuration file, the locations and
-# names of the input grib2 files to MET's pcp_combine tool are set using
-# the time-lagging information.  This information is calculated and
-# stored below in the variable TIME_LAG (and MNS_TIME_LAG) and then
-# exported to the environment to make it available to the METplus
-# configuration file.
 #
 #-----------------------------------------------------------------------
 #
@@ -163,20 +148,14 @@ set_vx_fhr_list \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
   base_dir="${VX_FCST_INPUT_BASEDIR}" \
-  fn_template="${FCST_REL_PATH_TEMPLATE}" \
+  fn_template="${FCST_INPUT_FN_TEMPLATE}" \
   check_hourly_files="TRUE" \
   accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
 #
 #-----------------------------------------------------------------------
 #
-# Create the directory(ies) in which MET/METplus will place its output
-# from this script.  We do this here because (as of 20220811), when
-# multiple workflow tasks are launched that all require METplus to create
-# the same directory, some of the METplus tasks can fail.  This is a
-# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be
-# removed from this script.
+# Make sure the MET/METplus output directory(ies) exists.
 #
 #-----------------------------------------------------------------------
 #
@@ -217,8 +196,11 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export FCST_INPUT_BASE
+export FCST_INPUT_DIR
+export FCST_INPUT_FN_TEMPLATE
 export FCST_OUTPUT_BASE
+export FCST_OUTPUT_DIR
+export FCST_OUTPUT_FN_TEMPLATE
 export STAGING_DIR
 export LOG_SUFFIX
 export VX_FCST_MODEL_NAME
@@ -229,9 +211,6 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-
-export FCST_REL_PATH_TEMPLATE
-export FCST_REL_PATH_METPROC_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #

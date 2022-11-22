@@ -1465,7 +1465,6 @@ OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE='${OBS_NDAS_SFCorUPA_FN_TEMPLATE}.nc'
 #
 FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd'
 FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${time_lag}}z.prslev.f{lead?fmt=%HHH?shift=${time_lag}}.${POST_OUTPUT_DOMAIN_NAME}.grib2'
-FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn'
 FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.prslev.f{lead?fmt=%HHH}.${POST_OUTPUT_DOMAIN_NAME}_a${ACCUM}h.nc'
 #
 #-----------------------------------------------------------------------

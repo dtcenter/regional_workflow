@@ -104,19 +104,19 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from pcp_combine.  Also, set the
-# suffix for the name of the log file that METplus will generate.
+# Set paths and file templates for input to and output from pcp_combine
+# and ensemble_stat as well as other file/directory parameters.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_BASE="${OBS_DIR}"
+OBS_INPUT_DIR="${OBS_DIR}"
+OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_CCPA_APCP01h_FN_TEMPLATE} )
+
 OBS_OUTPUT_BASE="${VX_OUTPUT_BASEDIR}"
 OBS_OUTPUT_DIR="${OBS_OUTPUT_BASE}/metprd/pcp_combine_obs_cmn"
+OBS_OUTPUT_FN_TEMPLATE=$( eval echo ${OBS_CCPA_APCPgt01h_FN_TEMPLATE} )
 STAGING_DIR="${OBS_OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
-
-OBS_CCPA_APCP01h_REL_PATH_TEMPLATE=$( eval echo ${OBS_CCPA_APCP01h_FN_TEMPLATE} )
-OBS_CCPA_APCPgt01h_REL_PATH_TEMPLATE=$( eval echo ${OBS_CCPA_APCPgt01h_FN_TEMPLATE} )
 #
 #-----------------------------------------------------------------------
 #
@@ -129,7 +129,7 @@ set_vx_fhr_list \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  base_dir="${OBS_INPUT_BASE}" \
+  base_dir="${OBS_INPUT_DIR}" \
   fn_template="${OBS_CCPA_APCP01h_FN_TEMPLATE}" \
   check_hourly_files="TRUE" \
   accum="${ACCUM}" \
@@ -137,13 +137,7 @@ set_vx_fhr_list \
 #
 #-----------------------------------------------------------------------
 #
-# Create the directory(ies) in which MET/METplus will place its output
-# from this script.  We do this here because (as of 20220811), when
-# multiple workflow tasks are launched that all require METplus to create
-# the same directory, some of the METplus tasks can fail.  This is a
-# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be
-# removed from this script.
+# Make sure the MET/METplus output directory(ies) exists.
 #
 #-----------------------------------------------------------------------
 #
@@ -184,9 +178,11 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export OBS_INPUT_BASE
+export OBS_INPUT_DIR
+export OBS_INPUT_FN_TEMPLATE
 export OBS_OUTPUT_BASE
 export OBS_OUTPUT_DIR
+export OBS_OUTPUT_FN_TEMPLATE
 export STAGING_DIR
 export LOG_SUFFIX
 export FHR_LIST
@@ -195,9 +191,6 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-
-export OBS_CCPA_APCP01h_REL_PATH_TEMPLATE
-export OBS_CCPA_APCPgt01h_REL_PATH_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #

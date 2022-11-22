@@ -129,37 +129,30 @@ time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)
 #-----------------------------------------------------------------------
 #
 FIELD_THRESHOLDS=""
-OBS_FN_TEMPLATE=""
 
 case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
 
   "APCP01h")
-    OBS_FN_TEMPLATE="${OBS_CCPA_APCP01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54"
     ;;
 
   "APCP03h")
-    OBS_FN_TEMPLATE="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350"
     ;;
 
   "APCP06h")
-    OBS_FN_TEMPLATE="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700"
     ;;
 
   "APCP24h")
-    OBS_FN_TEMPLATE="${OBS_CCPA_APCPgt01h_FN_TEMPLATE}"
     FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700, ge25.400"
     ;;
 
   "REFC")
-    OBS_FN_TEMPLATE="${OBS_MRMS_REFC_FN_TEMPLATE}"
     FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
     ;;
 
   "RETOP")
-    OBS_FN_TEMPLATE="${OBS_MRMS_RETOP_FN_TEMPLATE}"
     FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
     ;;
 
@@ -173,48 +166,43 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from grid_stat.  Also, set the
-# suffix for the name of the log file that METplus will generate.
+# Set paths and file templates for input to and output from grid_stat 
+# as well as other file/directory parameters.
 #
 #-----------------------------------------------------------------------
 #
+OBS_INPUT_FN_TEMPLATE=""
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  OBS_INPUT_BASE="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs_cmn"
-  FCST_INPUT_BASE="${VX_OUTPUT_BASEDIR}"
+  OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs_cmn"
+  OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_CCPA_APCPgt01h_FN_TEMPLATE} )
+  FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn"
+  FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
 else
-  OBS_INPUT_BASE="${OBS_DIR}"
-  FCST_INPUT_BASE="${VX_FCST_INPUT_BASEDIR}"
+  OBS_INPUT_DIR="${OBS_DIR}"
+  case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
+  "APCP01h")
+    OBS_INPUT_FN_TEMPLATE="${OBS_CCPA_APCP01h_FN_TEMPLATE}"
+    ;;
+  "REFC")
+    OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_REFC_FN_TEMPLATE}"
+    ;;
+  "RETOP")
+    OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_RETOP_FN_TEMPLATE}"
+    ;;
+  esac
+  OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_INPUT_FN_TEMPLATE} )
+  FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
+  FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
 fi
+
 OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
 OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat_cmn"
 STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
-
-OBS_REL_PATH_TEMPLATE=$( eval echo ${OBS_FN_TEMPLATE} )
-if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_METPROC_TEMPLATE}/${FCST_FN_METPROC_TEMPLATE} )
-else
-  FCST_REL_PATH_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
-fi
 #
 #-----------------------------------------------------------------------
 #
 # Set the array of forecast hours for which to run grid_stat.
-#
-# Note that for ensemble forecasts (which may contain time-lagged
-# members), the forecast hours set below are relative to the non-time-
-# lagged initialization time of the cycle regardless of whether or not
-# the current ensemble member is time-lagged, i.e. the forecast hours
-# are not shifted to take the time-lagging into account.
-#
-# The time-lagging is taken into account in the METplus configuration
-# file used by the call below to METplus (which in turn calls MET's
-# grid_stat tool).  In that configuration file, the locations and
-# names of the input grib2 files to MET's grid_stat tool are set using
-# the time-lagging information.  This information is calculated and
-# stored below in the variable TIME_LAG (and MNS_TIME_LAG) and then
-# exported to the environment to make it available to the METplus
-# configuration file.
 #
 #-----------------------------------------------------------------------
 #
@@ -223,21 +211,15 @@ set_vx_fhr_list \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  base_dir="${OBS_INPUT_BASE}" \
-  fn_template="${OBS_FN_TEMPLATE}" \
+  base_dir="${OBS_INPUT_DIR}" \
+  fn_template="${OBS_INPUT_FN_TEMPLATE}" \
   check_hourly_files="FALSE" \
   accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
 #
 #-----------------------------------------------------------------------
 #
-# Create the directory(ies) in which MET/METplus will place its output
-# from this script.  We do this here because (as of 20220811), when
-# multiple workflow tasks are launched that all require METplus to create
-# the same directory, some of the METplus tasks can fail.  This is a
-# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be
-# removed from this script.
+# Make sure the MET/METplus output directory(ies) exists.
 #
 #-----------------------------------------------------------------------
 #
@@ -278,8 +260,10 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export OBS_INPUT_BASE
-export FCST_INPUT_BASE
+export OBS_INPUT_DIR
+export OBS_INPUT_FN_TEMPLATE
+export FCST_INPUT_DIR
+export FCST_INPUT_FN_TEMPLATE
 export OUTPUT_BASE
 export OUTPUT_DIR
 export STAGING_DIR
@@ -294,9 +278,6 @@ export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 
 export FIELD_THRESHOLDS
-
-export OBS_REL_PATH_TEMPLATE
-export FCST_REL_PATH_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #

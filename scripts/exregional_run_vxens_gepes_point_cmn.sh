@@ -104,30 +104,21 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from gen_ens_prod and ensemble_stat.
-# Also, set the suffix for the names of the log files that METplus will
-# generate.
+# Set paths and file templates for input to and output from gen_ens_prod
+# and ensemble_stat as well as other file/directory parameters.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_BASE="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
-FCST_INPUT_BASE="${VX_FCST_INPUT_BASEDIR}"
-OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
-OUTPUT_DIR_GEN_ENS_PROD="${OUTPUT_BASE}/metprd/gen_ens_prod_cmn"
-OUTPUT_DIR_ENSEMBLE_STAT="${OUTPUT_BASE}/metprd/ensemble_stat_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn_${CDATE}"
-
-OBS_FN_TEMPLATE="${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE}"
-OBS_REL_PATH_TEMPLATE=$( eval echo ${OBS_FN_TEMPLATE} )
+OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
+OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE} )
+FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
 #
-# Construct the variable fcst_pcp_combine_output_template that contains
-# a template (that METplus can read) of the paths to the files that the
-# pcp_combine tool has generated (in previous workflow tasks).  This
-# will be exported to the environment and read into various variables in
-# the METplus configuration files.
+# Construct variable that contains a METplus template of the paths to
+# the files that the pcp_combine tool has generated (in previous workflow
+# tasks).  This will be exported to the environment and read by the
+# METplus configuration files.
 #
-FCST_REL_PATH_TEMPLATE=""
+FCST_INPUT_FN_TEMPLATE=""
 for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
 
   mem_indx=$(($i+1))
@@ -136,15 +127,21 @@ for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
 
   SLASH_ENSMEM_SUBDIR_OR_NULL="/mem${mem_indx}"
   template="${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE}"
-  if [ -z "${FCST_REL_PATH_TEMPLATE}" ]; then
-    FCST_REL_PATH_TEMPLATE="  $(eval echo ${template})"
+  if [ -z "${FCST_INPUT_FN_TEMPLATE}" ]; then
+    FCST_INPUT_FN_TEMPLATE="  $(eval echo ${template})"
   else
-    FCST_REL_PATH_TEMPLATE="\
-${FCST_REL_PATH_TEMPLATE},
+    FCST_INPUT_FN_TEMPLATE="\
+${FCST_INPUT_FN_TEMPLATE},
   $(eval echo ${template})"
   fi
 
 done
+
+OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
+OUTPUT_DIR_GEN_ENS_PROD="${OUTPUT_BASE}/metprd/gen_ens_prod_cmn"
+OUTPUT_DIR_ENSEMBLE_STAT="${OUTPUT_BASE}/metprd/ensemble_stat_cmn"
+STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -158,21 +155,15 @@ set_vx_fhr_list \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  base_dir="${OBS_INPUT_BASE}" \
-  fn_template="${OBS_FN_TEMPLATE}" \
+  base_dir="${OBS_INPUT_DIR}" \
+  fn_template="${OBS_INPUT_FN_TEMPLATE}" \
   check_hourly_files="FALSE" \
   accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
 #
 #-----------------------------------------------------------------------
 #
-# Create the directory(ies) in which MET/METplus will place its output
-# from this script.  We do this here because (as of 20220811), when
-# multiple workflow tasks are launched that all require METplus to create
-# the same directory, some of the METplus tasks can fail.  This is a
-# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation steps can be
-# removed from this script.
+# Make sure the MET/METplus output directory(ies) exists.
 #
 #-----------------------------------------------------------------------
 #
@@ -219,8 +210,10 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export OBS_INPUT_BASE
-export FCST_INPUT_BASE
+export OBS_INPUT_DIR
+export OBS_INPUT_FN_TEMPLATE
+export FCST_INPUT_DIR
+export FCST_INPUT_FN_TEMPLATE
 export OUTPUT_BASE
 export OUTPUT_DIR_GEN_ENS_PROD
 export OUTPUT_DIR_ENSEMBLE_STAT
@@ -236,9 +229,6 @@ export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 
 export NUM_ENS_MEMBERS
-
-export OBS_REL_PATH_TEMPLATE
-export FCST_REL_PATH_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #

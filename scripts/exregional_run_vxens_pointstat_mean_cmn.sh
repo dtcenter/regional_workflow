@@ -105,21 +105,20 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from point_stat.  Also, set the
-# suffix for the name of the log file that METplus will generate.
+# Set paths and file templates for input to and output from point_stat
+# as well as other file/directory parameters.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_BASE="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
-FCST_INPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}/metprd/gen_ens_prod_cmn"
+OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
+OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE} )
+FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/${CDATE}/metprd/gen_ens_prod_cmn"
+FCST_INPUT_FN_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_ADP${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
+
 OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
 OUTPUT_DIR="${OUTPUT_BASE}/metprd/point_stat_mean_cmn"
 STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean"
 LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
-
-OBS_FN_TEMPLATE=${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE}
-OBS_REL_PATH_TEMPLATE=$( eval echo ${OBS_FN_TEMPLATE} )
-FCST_REL_PATH_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_ADP${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
 #
 #-----------------------------------------------------------------------
 #
@@ -132,21 +131,15 @@ set_vx_fhr_list \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
-  base_dir="${OBS_INPUT_BASE}" \
-  fn_template="${OBS_FN_TEMPLATE}" \
+  base_dir="${OBS_INPUT_DIR}" \
+  fn_template="${OBS_INPUT_FN_TEMPLATE}" \
   check_hourly_files="FALSE" \
   accum="${ACCUM}" \
   outvarname_fhr_list="FHR_LIST"
 #
 #-----------------------------------------------------------------------
 #
-# Create the directory(ies) in which MET/METplus will place its output
-# from this script.  We do this here because (as of 20220811), when
-# multiple workflow tasks are launched that all require METplus to create
-# the same directory, some of the METplus tasks can fail.  This is a
-# known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be
-# removed from this script.
+# Make sure the MET/METplus output directory(ies) exists.
 #
 #-----------------------------------------------------------------------
 #
@@ -187,8 +180,10 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 export CDATE
-export OBS_INPUT_BASE
-export FCST_INPUT_BASE
+export OBS_INPUT_DIR
+export OBS_INPUT_FN_TEMPLATE
+export FCST_INPUT_DIR
+export FCST_INPUT_FN_TEMPLATE
 export OUTPUT_BASE
 export OUTPUT_DIR
 export STAGING_DIR
@@ -201,9 +196,6 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-
-export OBS_REL_PATH_TEMPLATE
-export FCST_REL_PATH_TEMPLATE
 #
 #-----------------------------------------------------------------------
 #
