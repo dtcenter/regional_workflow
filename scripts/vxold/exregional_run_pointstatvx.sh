@@ -76,36 +76,87 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-echo "WWWWWWWWWWWWWWWWWWWWWWWWW"
-set -x
+echo "LLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+echo "  CDATE = |$CDATE|"
 
-#yyyymmdd=${CDATE:0:8}
-#hh=${CDATE:8:2}
-#cyc=$hh
-#export CDATE
-#export hh
-#
-#-----------------------------------------------------------------------
-#
-# Create a comma-separated list of forecast hours for METplus to step
-# through.
-#
-#-----------------------------------------------------------------------
-#
-export fhr_last=${FCST_LEN_HRS}
+yyyymmdd=${CDATE:0:8}
+hh=${CDATE:8:2}
+cyc=$hh
+export CDATE
+export hh
 
-fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
-export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+#mem_indx=$(( mem_indx+1))  # This needs to be removed after running the 2021050712 case.
+echo "  mem_indx = |${mem_indx}|"
+echo "  ENS_TIME_LAG_HRS = |${ENS_TIME_LAG_HRS[@]}|"
+i=$(( ${mem_indx} - 1 ))
+mem_fcst_len_hrs=$(( ${FCST_LEN_HRS} + ${ENS_TIME_LAG_HRS[$i]} ))
+echo "  mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
+
+mem_time_lag_hrs="${ENS_TIME_LAG_HRS[$i]}"
+echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
+#exit 1
+
+fhr_last=${mem_fcst_len_hrs}
+export fhr_last
+
+#fhr_array=($( seq 1 ${ACCUM:-1} ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+fhr_array=($( seq 0 1 ${mem_fcst_len_hrs} ))  # Does this list need to be formatted to have 0 padding to the left?
+echo "fhr_array = |${fhr_array[@]}|"
+fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+export fhr_list
+
+#echo "mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
+#echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
+echo "fhr_last = |${fhr_last}|"
 echo "fhr_list = |${fhr_list}|"
+#exit 1
 #
 #-----------------------------------------------------------------------
 #
-# Set OUTPUT_BASE and LOG_SUFFIX for use in METplus configuration files.
+# Set variables that the METplus conf files assume exist in the 
+# environment.
 #
 #-----------------------------------------------------------------------
 #
-OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
-LOG_SUFFIX=enspoint_prob_${CDATE}
+#uscore_ensmem_or_null=""
+#slash_ensmem_subdir_or_null=""
+#if [ "${IS_ENS_FCST}" = "TRUE" ]; then
+#  uscore_ensmem_or_null="_${mem_indx}"
+#  slash_ensmem_subdir_or_null="${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+#fi
+
+#INPUT_BASE=${VX_FCST_INPUT_BASEDIR}/${CDATE}${slash_ensmem_subdir_or_null}/postprd
+#OUTPUT_BASE=${VX_OUTPUT_BASEDIR}/${CDATE}${slash_ensmem_subdir_or_null}
+#LOG_SUFFIX="pointstat_${CDATE}${uscore_ensmem_or_null}"
+#VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME}${uscore_ensmem_or_null}
+INPUT_BASE=${VX_FCST_INPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd
+OUTPUT_BASE=${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}
+LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}"
+#VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME}${USCORE_ENSMEM_NAME_OR_NULL}
+
+echo "USCORE_ENSMEM_NAME_OR_NULL = |${USCORE_ENSMEM_NAME_OR_NULL}|"
+echo "VX_FCST_MODEL_NAME = |$VX_FCST_MODEL_NAME|"
+#exit 1
+
+##
+##-----------------------------------------------------------------------
+##
+## Create INPUT_BASE, OUTPUT_BASE, and LOG_SUFFIX to read into METplus
+## conf files.
+##
+##-----------------------------------------------------------------------
+##
+#if [ "${IS_ENS_FCST}" = "FALSE" ]; then
+#  INPUT_BASE=${VX_FCST_INPUT_BASEDIR}/${CDATE}/postprd
+#  OUTPUT_BASE=${VX_OUTPUT_BASEDIR}/${CDATE}
+#  LOG_SUFFIX=pointstat_${CDATE}
+#elif [ "${IS_ENS_FCST}" = "TRUE" ]; then
+#  INPUT_BASE=${VX_FCST_INPUT_BASEDIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}/postprd
+#  OUTPUT_BASE=${VX_OUTPUT_BASEDIR}/${CDATE}/${SLASH_ENSMEM_SUBDIR}
+#  ENSMEM=`echo ${SLASH_ENSMEM_SUBDIR} | cut -d"/" -f2`
+#  VX_FCST_MODEL_NAME=${VX_FCST_MODEL_NAME}_${ENSMEM}
+#  LOG_SUFFIX=pointstat_${CDATE}_${ENSMEM}
+#fi
 #
 #-----------------------------------------------------------------------
 #
@@ -119,8 +170,8 @@ LOG_SUFFIX=enspoint_prob_${CDATE}
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"                         # Output directory for pb2nc tool.
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/point_stat_prob"  # Output directory for point_stat tool.
+mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"           # Output directory for pb2nc tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/metprd/point_stat"  # Output directory for point_stat tool.
 #
 #-----------------------------------------------------------------------
 #
@@ -136,14 +187,13 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Export variables to environment to make them accessible in METplus
-# configuration files.
+# Export some environment variables passed in by the XML.
 #
 #-----------------------------------------------------------------------
 #
 export EXPTDIR
 export LOGDIR
-export CDATE
+export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
 export MET_INSTALL_DIR
@@ -161,7 +211,7 @@ export NET
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's PointStat tool for surface fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_conus_sfc_prob.conf"
+metplus_config_fp="${METPLUS_CONF}/vxold/PointStat_conus_sfc.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -175,7 +225,7 @@ METplus configuration file used is:
 
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's PointStat tool for upper air fields..."
-metplus_config_fp="${METPLUS_CONF}/PointStat_upper_air_prob.conf"
+metplus_config_fp="${METPLUS_CONF}/vxold/PointStat_upper_air.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \

@@ -52,8 +52,7 @@ Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs METplus for grid-stat on
-the UPP output files by initialization time for all forecast hours for 
-gridded data.
+the UPP output files by initialization time for all forecast hours.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -98,48 +97,76 @@ set_vx_fieldname_params \
 #
 #-----------------------------------------------------------------------
 #
-# Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE.
+# Check whether the field to verify is APCP with an accumulation interval
+# greater than 1 hour and set the flag field_is_APCPgt01h accordingly.
 #
 #-----------------------------------------------------------------------
 #
-echo "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-set -x
+if [ "${VAR}" = "APCP" ] && [ "${ACCUM: -1}" != "1" ]; then
+  field_is_APCPgt01h="TRUE"
+else
+  field_is_APCPgt01h="FALSE"
+fi
 #
 #-----------------------------------------------------------------------
 #
-# Create a comma-separated list of forecast hours for METplus to step
-# through.
-#
-#-----------------------------------------------------------------------
-#
-export fhr_last=${FCST_LEN_HRS}
+echo "KKKKKKKKKKKKKKKKKKKKKKKKKKK"
+echo "  CDATE = |$CDATE|"
 
-fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
-export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
-echo "fhr_list = |${fhr_list}|"
+#mem_indx=$(( mem_indx+1))  # This needs to be removed after running the 2021050712 case.
+echo "  mem_indx = |${mem_indx}|"
+echo "  ENS_TIME_LAG_HRS = |${ENS_TIME_LAG_HRS[@]}|"
+i=$(( ${mem_indx} - 1 ))
+mem_fcst_len_hrs=$(( ${FCST_LEN_HRS} + ${ENS_TIME_LAG_HRS[$i]} ))
+echo "  mem_fcst_len_hrs = |${mem_fcst_len_hrs}|"
+
+mem_time_lag_hrs="${ENS_TIME_LAG_HRS[$i]}"
+echo "mem_time_lag_hrs = |${mem_time_lag_hrs}|"
+#exit 1
+
+fhr_last=${mem_fcst_len_hrs}
+export fhr_last
+
+fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${mem_fcst_len_hrs} ))
+echo "fhr_array = |${fhr_array[@]}|"
+FHR_LIST=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
+echo "FHR_LIST = |${FHR_LIST}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set OUTPUT_BASE for use in METplus configuration files.
+# Set variables that the METplus conf files assume exist in the
+# environment.
 #
 #-----------------------------------------------------------------------
 #
-OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
+INPUT_BASE="${VX_FCST_INPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd"
+OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+
+LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
 #
 # Create the directory(ies) in which MET/METplus will place its output
-# from this script.  We do this here because (as of 20220811), when
+# from this script.  We do this here because (as of 20220811), when 
 # multiple workflow tasks are launched that all require METplus to create
-# the same directory, some of the METplus tasks can fail.  This is a
+# the same directory, some of the METplus tasks can fail.  This is a 
 # known bug and should be fixed by 20221000.  See https://github.com/dtcenter/METplus/issues/1657.
-# If/when it is fixed, the following directory creation step can be
+# If/when it is fixed, the following directory creation step can be 
 # removed from this script.
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/grid_stat_mean"  # Output directory for GridStat tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/metprd/grid_stat"
+#
+# If the variable is accumulated precipitation for a time interval 
+# (bucket) other than 1 hour, the MET/METplus tools called below will
+# include pcp_combine.  In that case, create (if necessary) directories
+# needed by pcp_combine.
+#
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+  mkdir_vrfy -p "${EXPTDIR}/metprd/pcp_combine"      # For observations
+  mkdir_vrfy -p "${OUTPUT_BASE}/metprd/pcp_combine"  # For forecast
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -155,42 +182,35 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Set variables needed in forming the names of METplus configuration and
-# log files.
-#
-#-----------------------------------------------------------------------
-#
-# Once acc is no longer used in all the conf files, remove it from here.
-acc=""
-if [ "${VAR}" = "APCP" ]; then
-  acc="${ACCUM}h"
-fi
-#config_fn_str="${VAR}${acc}_mean"
-#LOG_SUFFIX="ensgrid_mean_${CDATE}_${VAR}${acc:+_${acc}}"
-
-LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-#
-#-----------------------------------------------------------------------
-#
 # Export variables to environment to make them accessible in METplus
 # configuration files.
 #
 #-----------------------------------------------------------------------
 #
-export EXPTDIR
+# Variables needed in the common METplus configuration file (at 
+# ${METPLUS_CONF}/common.conf).
+#
+export MET_INSTALL_DIR
+export METPLUS_PATH
+export MET_BIN_EXEC
+export METPLUS_CONF
 export LOGDIR
+#
+# Variables needed in the METplus configuration file metplus_config_fp
+# defined below.
+#
 export CDATE
+export INPUT_BASE
 export OUTPUT_BASE
 export LOG_SUFFIX
-export MET_INSTALL_DIR
-export MET_BIN_EXEC
-export METPLUS_PATH
-export METPLUS_CONF
 export VX_FCST_MODEL_NAME
 export NET
-export acc
+export FHR_LIST
+export FIELDNAME_IN_OBS_INPUT
+export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
+export EXPTDIR
 #
 #-----------------------------------------------------------------------
 #
@@ -200,7 +220,7 @@ export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool..."
-metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean.conf"
+metplus_config_fp="${METPLUS_CONF}/vxold/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -217,7 +237,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus grid-stat completed successfully.
+METplus grid_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

@@ -12,15 +12,6 @@
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that sets various field-
-# dependent naming parameters needed by MET/METplus verification tasks.
-#
-#-----------------------------------------------------------------------
-#
-. $USHDIR/set_vx_fieldname_params.sh
-#
-#-----------------------------------------------------------------------
-#
 # Save current shell options (in a global array).  Then set new options
 # for this script/function.
 #
@@ -51,9 +42,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs METplus for grid-stat on
-the UPP output files by initialization time for all forecast hours for 
-gridded data.
+This is the ex-script for the task that runs METplus for point-stat on
+the UPP output files by initialization time for all forecast hours.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -80,30 +70,13 @@ print_input_args "valid_args"
 #
 #-----------------------------------------------------------------------
 #
-# Set various field name parameters associated with the field to be
-# verified.
-#
-#-----------------------------------------------------------------------
-#
-FIELDNAME_IN_OBS_INPUT=""
-FIELDNAME_IN_FCST_INPUT=""
-FIELDNAME_IN_MET_OUTPUT=""
-FIELDNAME_IN_MET_FILEDIR_NAMES=""
-set_vx_fieldname_params \
-  field="$VAR" accum="${ACCUM:-}" \
-  outvarname_fieldname_in_obs_input="FIELDNAME_IN_OBS_INPUT" \
-  outvarname_fieldname_in_fcst_input="FIELDNAME_IN_FCST_INPUT" \
-  outvarname_fieldname_in_MET_output="FIELDNAME_IN_MET_OUTPUT" \
-  outvarname_fieldname_in_MET_filedir_names="FIELDNAME_IN_MET_FILEDIR_NAMES"
-#
-#-----------------------------------------------------------------------
-#
 # Get the cycle date and hour (in formats of yyyymmdd and hh, respect-
-# ively) from CDATE.
+# ively) from CDATE. Also read in FHR and create a comma-separated list
+# for METplus to run over.
 #
 #-----------------------------------------------------------------------
 #
-echo "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"
+echo "VVVVVVVVVVVVVVVVVVVVVVVVVVVVV"
 set -x
 
 #yyyymmdd=${CDATE:0:8}
@@ -111,7 +84,6 @@ set -x
 #cyc=$hh
 #export CDATE
 #export hh
-
 #
 #-----------------------------------------------------------------------
 #
@@ -122,17 +94,18 @@ set -x
 #
 export fhr_last=${FCST_LEN_HRS}
 
-fhr_array=($( seq ${ACCUM:-1} ${ACCUM:-1} ${FCST_LEN_HRS} ))
+fhr_array=($( seq 0 1 ${FCST_LEN_HRS} ))
 export fhr_list=$( echo "${fhr_array[@]}" | $SED "s/ /,/g" )
 echo "fhr_list = |${fhr_list}|"
 #
 #-----------------------------------------------------------------------
 #
-# Set OUTPUT_BASE for use in METplus configuration files.
+# Set OUTPUT_BASE and LOG_SUFFIX for use in METplus configuration files.
 #
 #-----------------------------------------------------------------------
 #
 OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
+LOG_SUFFIX=enspoint_mean_${CDATE}
 #
 #-----------------------------------------------------------------------
 #
@@ -146,7 +119,8 @@ OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/grid_stat_prob"  # Output directory for GridStat tool.
+mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"                         # Output directory for pb2nc tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/point_stat_mean"  # Output directory for point_stat tool.
 #
 #-----------------------------------------------------------------------
 #
@@ -159,23 +133,6 @@ if [ ! -d "${OBS_DIR}" ]; then
 OBS_DIR does not exist or is not a directory:
   OBS_DIR = \"${OBS_DIR}\""
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Set variables needed in forming the names of METplus configuration and
-# log files.
-#
-#-----------------------------------------------------------------------
-#
-# Once acc is no longer used in all the conf files, remove it from here.
-acc=""
-if [ "${VAR}" = "APCP" ]; then
-  acc="${ACCUM}h"
-fi
-#config_fn_str="${VAR}${acc}_prob"
-#LOG_SUFFIX="ensgrid_prob_${CDATE}_${VAR}${acc:+_${acc}}"
-
-LOG_SUFFIX="${CDATE}_${FIELDNAME_IN_MET_FILEDIR_NAMES}"
 #
 #-----------------------------------------------------------------------
 #
@@ -195,9 +152,6 @@ export METPLUS_PATH
 export METPLUS_CONF
 export VX_FCST_MODEL_NAME
 export NET
-export acc
-export FIELDNAME_IN_MET_OUTPUT
-export FIELDNAME_IN_MET_FILEDIR_NAMES
 #
 #-----------------------------------------------------------------------
 #
@@ -206,8 +160,8 @@ export FIELDNAME_IN_MET_FILEDIR_NAMES
 #-----------------------------------------------------------------------
 #
 print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GridStat tool..."
-metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob.conf"
+Calling METplus to run MET's PointStat tool for surface fields..."
+metplus_config_fp="${METPLUS_CONF}/vxold/PointStat_conus_sfc_mean.conf"
 ${METPLUS_PATH}/ush/run_metplus.py \
   -c ${METPLUS_CONF}/common.conf \
   -c ${metplus_config_fp} || \
@@ -215,6 +169,20 @@ print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+
+print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for upper air fields..."
+metplus_config_fp="${METPLUS_CONF}/vxold/PointStat_upper_air_mean.conf"
+${METPLUS_PATH}/ush/run_metplus.py \
+  -c ${METPLUS_CONF}/common.conf \
+  -c ${metplus_config_fp} || \
+print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+#print_info_msg "
+#METplus/PointStat for upper air fields returned with the following
+#non-zero return code: $?"
 #
 #-----------------------------------------------------------------------
 #
@@ -224,7 +192,7 @@ METplus configuration file used is:
 #
 print_info_msg "
 ========================================================================
-METplus grid-stat completed successfully.
+METplus point-stat completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

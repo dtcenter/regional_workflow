@@ -276,7 +276,7 @@ export EXPTDIR
 if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GenEnsProd tool..."
-  metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+  metplus_config_fp="${METPLUS_CONF}/vxold/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \
@@ -289,7 +289,7 @@ fi
 if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's EnsembleStat tool..."
-  metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+  metplus_config_fp="${METPLUS_CONF}/vxold/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \
