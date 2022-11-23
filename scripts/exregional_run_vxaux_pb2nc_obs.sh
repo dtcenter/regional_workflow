@@ -113,9 +113,9 @@ OBS_INPUT_DIR="${OBS_DIR}"
 OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_TEMPLATE} )
 
 OBS_OUTPUT_BASE="${VX_OUTPUT_BASEDIR}"
-OBS_OUTPUT_DIR="${OBS_OUTPUT_BASE}/metprd/pb2nc_obs_cmn"
+OBS_OUTPUT_DIR="${OBS_OUTPUT_BASE}/metprd/pb2nc_obs"
 OBS_OUTPUT_FN_TEMPLATE="${OBS_INPUT_FN_TEMPLATE}.nc"
-STAGING_DIR="${OBS_OUTPUT_BASE}/stage_cmn/pb2nc_obs"
+STAGING_DIR="${OBS_OUTPUT_BASE}/stage/pb2nc_obs"
 LOG_SUFFIX="_${CDATE}"
 #
 #-----------------------------------------------------------------------

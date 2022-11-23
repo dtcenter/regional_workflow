@@ -52,8 +52,9 @@ Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs the MET/METplus point_stat
-tool to perform point-based ensemble verification of surface and upper
-air fields to generate ensemble mean statistics.
+tool to perform point-based deterministic verification of surface and
+upper air fields to generate statistics for an individual ensemble 
+member.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -105,20 +106,38 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Set paths and file templates for input to and output from point_stat
+# If performing ensemble verification, get the time lag (if any) of the
+# current ensemble forecast member.  The time lag is the duration (in 
+# seconds) by which the current forecast member was initialized before
+# the current cycle date and time (with the latter specified by CDATE).
+# For example, a time lag of 3600 means that the current member was
+# initialized 1 hour before the current CDATE, while a time lag of 0
+# means the current member was initialized on CDATE.
+# 
+# Note that if we're not running ensemble verification (i.e. if we're 
+# running verification for a single deterministic forecast), the time
+# lag gets set to 0.
+#
+#-----------------------------------------------------------------------
+#
+time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)*${secs_per_hour} ))
+#
+#-----------------------------------------------------------------------
+#
+# Set paths and file templates for input to and output from point_stat 
 # as well as other file/directory parameters.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
+OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs"
 OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE} )
-FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/${CDATE}/metprd/gen_ens_prod_cmn"
-FCST_INPUT_FN_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_ADP${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
+FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
+FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
 
-OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
-OUTPUT_DIR="${OUTPUT_BASE}/metprd/point_stat_mean_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
+OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+OUTPUT_DIR="${OUTPUT_BASE}/metprd/point_stat"
+STAGING_DIR="${OUTPUT_BASE}/stage/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -210,7 +229,7 @@ The list of forecast hours for which to run METplus is empty:
 else
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's PointStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-  metplus_config_fp="${METPLUS_CONF}/PointStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn.conf"
+  metplus_config_fp="${METPLUS_CONF}/PointStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \

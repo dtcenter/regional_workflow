@@ -37,7 +37,6 @@ RUN_TASK_RUN_POST="FALSE"
 VX_FCST_INPUT_BASEDIR="/scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/staged/fcst_ens"
 FCST_SUBDIR_TEMPLATE='{init?fmt=%Y%m%d%H?shift=-${time_lag}}${SLASH_ENSMEM_SUBDIR_OR_NULL}/postprd'
 FCST_FN_TEMPLATE='${NET}.t{init?fmt=%H?shift=-${time_lag}}z.bgdawpf{lead?fmt=%HHH?shift=${time_lag}}.tm00.grib2'
-FCST_SUBDIR_METPROC_TEMPLATE='{init?fmt=%Y%m%d%H}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn'
 FCST_FN_METPROC_TEMPLATE='${NET}.t{init?fmt=%H}z.bgdawpf{lead?fmt=%HHH}.tm00_a${ACCUM}h.nc'
 #
 # This test assumes the observation files will be fetched using the

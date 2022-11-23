@@ -51,8 +51,9 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs METplus for point-stat on
-the UPP output files by initialization time for all forecast hours.
+This is the ex-script for the task that runs the MET/METplus point_stat
+tool to perform point-based ensemble verification of surface and upper
+air fields to generate ensemble probabilistic statistics.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -104,49 +105,24 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Set paths and file templates for input to and output from gen_ens_prod
-# and ensemble_stat as well as other file/directory parameters.
+# Set paths for input to and output from point_stat.  Also, set the
+# suffix for the name of the log file that METplus will generate.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
+OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs"
 OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE} )
-FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
-#
-# Construct variable that contains a METplus template of the paths to
-# the files that the pcp_combine tool has generated (in previous workflow
-# tasks).  This will be exported to the environment and read by the
-# METplus configuration files.
-#
-FCST_INPUT_FN_TEMPLATE=""
-for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
-
-  mem_indx=$(($i+1))
-  mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
-  time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
-
-  SLASH_ENSMEM_SUBDIR_OR_NULL="/mem${mem_indx}"
-  template="${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE}"
-  if [ -z "${FCST_INPUT_FN_TEMPLATE}" ]; then
-    FCST_INPUT_FN_TEMPLATE="  $(eval echo ${template})"
-  else
-    FCST_INPUT_FN_TEMPLATE="\
-${FCST_INPUT_FN_TEMPLATE},
-  $(eval echo ${template})"
-  fi
-
-done
+FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/${CDATE}/metprd/gen_ens_prod"
+FCST_INPUT_FN_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_ADP${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc')
 
 OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
-OUTPUT_DIR_GEN_ENS_PROD="${OUTPUT_BASE}/metprd/gen_ens_prod_cmn"
-OUTPUT_DIR_ENSEMBLE_STAT="${OUTPUT_BASE}/metprd/ensemble_stat_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn_${CDATE}"
+OUTPUT_DIR="${OUTPUT_BASE}/metprd/point_stat_prob"
+STAGING_DIR="${OUTPUT_BASE}/stage/${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run gen_ens_prod and
-# ensemble_stat.
+# Set the array of forecast hours for which to run point_stat.
 #
 #-----------------------------------------------------------------------
 #
@@ -167,13 +143,7 @@ set_vx_fhr_list \
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_DIR_GEN_ENS_PROD}"
-fi
-
-if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_DIR_ENSEMBLE_STAT}"
-fi
+mkdir_vrfy -p "${OUTPUT_DIR}"
 #
 #-----------------------------------------------------------------------
 #
@@ -215,8 +185,7 @@ export OBS_INPUT_FN_TEMPLATE
 export FCST_INPUT_DIR
 export FCST_INPUT_FN_TEMPLATE
 export OUTPUT_BASE
-export OUTPUT_DIR_GEN_ENS_PROD
-export OUTPUT_DIR_ENSEMBLE_STAT
+export OUTPUT_DIR
 export STAGING_DIR
 export LOG_SUFFIX
 export VX_FCST_MODEL_NAME
@@ -227,8 +196,6 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
-
-export NUM_ENS_MEMBERS
 #
 #-----------------------------------------------------------------------
 #
@@ -241,33 +208,16 @@ if [ -z "${FHR_LIST}" ]; then
 The list of forecast hours for which to run METplus is empty:
   FHR_LIST = [${FHR_LIST}]"
 else
-
-  if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-    print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GenEnsProd tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
-    ${METPLUS_PATH}/ush/run_metplus.py \
-      -c ${METPLUS_CONF}/common.conf \
-      -c ${metplus_config_fp} || \
-    print_err_msg_exit "
+  print_info_msg "$VERBOSE" "
+Calling METplus to run MET's PointStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+  metplus_config_fp="${METPLUS_CONF}/PointStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob.conf"
+  ${METPLUS_PATH}/ush/run_metplus.py \
+    -c ${METPLUS_CONF}/common.conf \
+    -c ${metplus_config_fp} || \
+  print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
-  fi
-
-  if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-    print_info_msg "$VERBOSE" "
-Calling METplus to run MET's EnsembleStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
-    ${METPLUS_PATH}/ush/run_metplus.py \
-      -c ${METPLUS_CONF}/common.conf \
-      -c ${metplus_config_fp} || \
-    print_err_msg_exit "
-Call to METplus failed with return code: $?
-METplus configuration file used is:
-  metplus_config_fp = \"${metplus_config_fp}\""
-  fi
-
 fi
 #
 #-----------------------------------------------------------------------
@@ -278,7 +228,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-METplus gen_ens_prod and ensemble_stat tools completed successfully.
+METplus point_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

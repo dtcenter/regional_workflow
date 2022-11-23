@@ -54,7 +54,7 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs the MET/METplus grid_stat
 tool to perform gridded deterministic verification of accumulated 
 precipitation (APCP), composite reflectivity (REFC), and echo top 
-(RETOP) to generate mean ensemble statistics.
+(RETOP) to generate probabilistic ensemble statistics.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -106,49 +106,6 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Set additional field-dependent verification parameters.
-#
-#-----------------------------------------------------------------------
-#
-FIELD_THRESHOLDS=""
-
-case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
-
-  "APCP01h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge2.54"
-    ;;
-
-  "APCP03h")
-    FIELD_THRESHOLDS="gt0.0, ge0.508, ge2.54, ge6.350"
-    ;;
-
-  "APCP06h")
-    FIELD_THRESHOLDS="gt0.0, ge2.54, ge6.350, ge12.700"
-    ;;
-
-  "APCP24h")
-    FIELD_THRESHOLDS="gt0.0, ge6.350, ge12.700, ge25.400"
-    ;;
-
-  "REFC")
-    FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
-    ;;
-
-  "RETOP")
-    FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
-    ;;
-
-  *)
-    print_err_msg_exit "\
-Verification parameters have not been defined for this field
-(FIELDNAME_IN_MET_FILEDIR_NAMES):
-  FIELDNAME_IN_MET_FILEDIR_NAMES = \"${FIELDNAME_IN_MET_FILEDIR_NAMES}\""
-    ;;
-
-esac
-#
-#-----------------------------------------------------------------------
-#
 # Set paths and file templates for input to and output from grid_stat
 # as well as other file/directory parameters.
 #
@@ -156,7 +113,7 @@ esac
 #
 OBS_INPUT_FN_TEMPLATE=""
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs_cmn"
+  OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs"
   OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_CCPA_APCPgt01h_FN_TEMPLATE} )
 else
   OBS_INPUT_DIR="${OBS_DIR}"
@@ -173,13 +130,13 @@ else
   esac
   OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_INPUT_FN_TEMPLATE} )
 fi
-FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/$CDATE/metprd/gen_ens_prod_cmn"
+FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/$CDATE/metprd/gen_ens_prod"
 FCST_INPUT_FN_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc' )
 
 OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
-OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat_mean_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn_${CDATE}"
+OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat_prob"
+STAGING_DIR="${OUTPUT_BASE}/stage/${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
@@ -220,7 +177,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Set variable containing accumulation period without leading zero 
+# Set variable containing accumulation period without leading zero
 # padding.  This may be needed in the METplus configuration files.
 #
 #-----------------------------------------------------------------------
@@ -243,7 +200,7 @@ export LOGDIR
 #-----------------------------------------------------------------------
 #
 # Export variables needed in the METplus configuration file metplus_config_fp
-# later defined below.  Not all of these are necessarily used in the 
+# later defined below.  Not all of these are necessarily used in the
 # configuration file but are exported here for consistency with other
 # verification ex-scripts.
 #
@@ -267,7 +224,6 @@ export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 
-export FIELD_THRESHOLDS
 export ACCUM_NO_PAD
 #
 #-----------------------------------------------------------------------
@@ -283,11 +239,7 @@ The list of forecast hours for which to run METplus is empty:
 else
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h_mean_cmn.conf"
-  else
-    metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_mean_cmn.conf"
-  fi
+  metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob.conf"
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \

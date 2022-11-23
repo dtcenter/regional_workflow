@@ -51,10 +51,8 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus grid_stat
-tool to perform gridded deterministic verification of accumulated 
-precipitation (APCP), composite reflectivity (REFC), and echo top 
-(RETOP) to generate statistics for an individual ensemble member.
+This is the ex-script for the task that runs the MET/METplus gen_ens_prod
+and ensemble_stat tools.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -106,24 +104,6 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# If performing ensemble verification, get the time lag (if any) of the
-# current ensemble forecast member.  The time lag is the duration (in 
-# seconds) by which the current forecast member was initialized before
-# the current cycle date and time (with the latter specified by CDATE).
-# For example, a time lag of 3600 means that the current member was
-# initialized 1 hour before the current CDATE, while a time lag of 0
-# means the current member was initialized on CDATE.
-# 
-# Note that if we're not running ensemble verification (i.e. if we're 
-# running verification for a single deterministic forecast), the time
-# lag gets set to 0.
-#
-#-----------------------------------------------------------------------
-#
-time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)*${secs_per_hour} ))
-#
-#-----------------------------------------------------------------------
-#
 # Set additional field-dependent verification parameters.
 #
 #-----------------------------------------------------------------------
@@ -133,19 +113,19 @@ FIELD_THRESHOLDS=""
 case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
 
   "APCP01h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54"
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge2.54"
     ;;
 
   "APCP03h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350"
+    FIELD_THRESHOLDS="gt0.0, ge0.508, ge2.54, ge6.350"
     ;;
 
   "APCP06h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700"
+    FIELD_THRESHOLDS="gt0.0, ge2.54, ge6.350, ge12.700"
     ;;
 
   "APCP24h")
-    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700, ge25.400"
+    FIELD_THRESHOLDS="gt0.0, ge6.350, ge12.700, ge25.400"
     ;;
 
   "REFC")
@@ -166,43 +146,72 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Set paths and file templates for input to and output from grid_stat 
-# as well as other file/directory parameters.
+# Set paths and file templates for input to and output from gen_ens_prod
+# and ensemble_stat as well as other file/directory parameters.                            
 #
 #-----------------------------------------------------------------------
 #
 OBS_INPUT_FN_TEMPLATE=""
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs_cmn"
+  OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs"
   OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_CCPA_APCPgt01h_FN_TEMPLATE} )
-  FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst_cmn"
-  FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+  FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}"
 else
   OBS_INPUT_DIR="${OBS_DIR}"
   case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
-  "APCP01h")
-    OBS_INPUT_FN_TEMPLATE="${OBS_CCPA_APCP01h_FN_TEMPLATE}"
-    ;;
-  "REFC")
-    OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_REFC_FN_TEMPLATE}"
-    ;;
-  "RETOP")
-    OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_RETOP_FN_TEMPLATE}"
-    ;;
+    "APCP01h")
+      OBS_INPUT_FN_TEMPLATE="${OBS_CCPA_APCP01h_FN_TEMPLATE}"
+      ;;
+    "REFC")
+      OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_REFC_FN_TEMPLATE}"
+      ;;
+    "RETOP")
+      OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_RETOP_FN_TEMPLATE}"
+      ;;
   esac
   OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_INPUT_FN_TEMPLATE} )
   FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
-  FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
 fi
+#
+# Construct variable that contains a METplus template of the paths to
+# the files that the pcp_combine tool has generated (in previous workflow
+# tasks).  This will be exported to the environment and read by the
+# METplus configuration files.
+#
+FCST_INPUT_FN_TEMPLATE=""
+for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
 
-OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
-OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+  mem_indx=$(($i+1))
+  mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
+  time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
+
+  SLASH_ENSMEM_SUBDIR_OR_NULL="/mem${mem_indx}"
+  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+    template="${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst/${FCST_FN_METPROC_TEMPLATE}"
+  else
+    template="${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE}"
+  fi
+
+  if [ -z "${FCST_INPUT_FN_TEMPLATE}" ]; then
+    FCST_INPUT_FN_TEMPLATE="  $(eval echo ${template})"
+  else
+    FCST_INPUT_FN_TEMPLATE="\
+${FCST_INPUT_FN_TEMPLATE},
+  $(eval echo ${template})"
+  fi
+
+done
+
+OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
+OUTPUT_DIR_GEN_ENS_PROD="${OUTPUT_BASE}/metprd/gen_ens_prod"
+OUTPUT_DIR_ENSEMBLE_STAT="${OUTPUT_BASE}/metprd/ensemble_stat"
+STAGING_DIR="${OUTPUT_BASE}/stage/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_${CDATE}"
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run grid_stat.
+# Set the array of forecast hours for which to run gen_ens_prod and
+# ensemble_stat.
 #
 #-----------------------------------------------------------------------
 #
@@ -223,7 +232,13 @@ set_vx_fhr_list \
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_DIR}"
+if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
+  mkdir_vrfy -p "${OUTPUT_DIR_GEN_ENS_PROD}"
+fi
+
+if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
+  mkdir_vrfy -p "${OUTPUT_DIR_ENSEMBLE_STAT}"
+fi
 #
 #-----------------------------------------------------------------------
 #
@@ -265,7 +280,8 @@ export OBS_INPUT_FN_TEMPLATE
 export FCST_INPUT_DIR
 export FCST_INPUT_FN_TEMPLATE
 export OUTPUT_BASE
-export OUTPUT_DIR
+export OUTPUT_DIR_GEN_ENS_PROD
+export OUTPUT_DIR_ENSEMBLE_STAT
 export STAGING_DIR
 export LOG_SUFFIX
 export VX_FCST_MODEL_NAME
@@ -278,6 +294,7 @@ export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
 
 export FIELD_THRESHOLDS
+export NUM_ENS_MEMBERS
 #
 #-----------------------------------------------------------------------
 #
@@ -290,20 +307,49 @@ if [ -z "${FHR_LIST}" ]; then
 The list of forecast hours for which to run METplus is empty:
   FHR_LIST = [${FHR_LIST}]"
 else
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-    metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h_cmn.conf"
-  else
-    metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_cmn.conf"
-  fi
-  ${METPLUS_PATH}/ush/run_metplus.py \
-    -c ${METPLUS_CONF}/common.conf \
-    -c ${metplus_config_fp} || \
-  print_err_msg_exit "
+
+  if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
+
+    print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GenEnsProd tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+
+    if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+      metplus_config_fp="${METPLUS_CONF}/GenEnsProd_APCPgt01h.conf"
+    else
+      metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+    fi
+
+    ${METPLUS_PATH}/ush/run_metplus.py \
+      -c ${METPLUS_CONF}/common.conf \
+      -c ${metplus_config_fp} || \
+    print_err_msg_exit "
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+
+  fi
+
+  if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
+
+    print_info_msg "$VERBOSE" "
+Calling METplus to run MET's EnsembleStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+
+    if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+      metplus_config_fp="${METPLUS_CONF}/EnsembleStat_APCPgt01h.conf"
+    else
+      metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+    fi
+
+    ${METPLUS_PATH}/ush/run_metplus.py \
+      -c ${METPLUS_CONF}/common.conf \
+      -c ${metplus_config_fp} || \
+    print_err_msg_exit "
+Call to METplus failed with return code: $?
+METplus configuration file used is:
+  metplus_config_fp = \"${metplus_config_fp}\""
+
+  fi
+
 fi
 #
 #-----------------------------------------------------------------------
@@ -314,7 +360,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-METplus grid_stat tool completed successfully.
+METplus gen_ens_prod and ensemble_stat tools completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"

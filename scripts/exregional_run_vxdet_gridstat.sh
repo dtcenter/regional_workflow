@@ -51,9 +51,10 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the MET/METplus point_stat
-tool to perform point-based ensemble verification of surface and upper
-air fields to generate ensemble probabilistic statistics.
+This is the ex-script for the task that runs the MET/METplus grid_stat
+tool to perform gridded deterministic verification of accumulated 
+precipitation (APCP), composite reflectivity (REFC), and echo top 
+(RETOP) to generate statistics for an individual ensemble member.
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -105,29 +106,108 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-# Set paths for input to and output from point_stat.  Also, set the
-# suffix for the name of the log file that METplus will generate.
+# If performing ensemble verification, get the time lag (if any) of the
+# current ensemble forecast member.  The time lag is the duration (in 
+# seconds) by which the current forecast member was initialized before
+# the current cycle date and time (with the latter specified by CDATE).
+# For example, a time lag of 3600 means that the current member was
+# initialized 1 hour before the current CDATE, while a time lag of 0
+# means the current member was initialized on CDATE.
+# 
+# Note that if we're not running ensemble verification (i.e. if we're 
+# running verification for a single deterministic forecast), the time
+# lag gets set to 0.
 #
 #-----------------------------------------------------------------------
 #
-OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pb2nc_obs_cmn"
-OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE} )
-FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/${CDATE}/metprd/gen_ens_prod_cmn"
-FCST_INPUT_FN_TEMPLATE=$( eval echo 'gen_ens_prod_${VX_FCST_MODEL_NAME}_ADP${FIELDNAME_IN_MET_FILEDIR_NAMES}_{valid?fmt=%Y%m%d}_{valid?fmt=%H%M%S}V.nc')
+time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)*${secs_per_hour} ))
+#
+#-----------------------------------------------------------------------
+#
+# Set additional field-dependent verification parameters.
+#
+#-----------------------------------------------------------------------
+#
+FIELD_THRESHOLDS=""
 
-OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}"
-OUTPUT_DIR="${OUTPUT_BASE}/metprd/point_stat_prob_cmn"
-STAGING_DIR="${OUTPUT_BASE}/stage_cmn/${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob"
-LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn_${CDATE}"
+case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
+
+  "APCP01h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54"
+    ;;
+
+  "APCP03h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350"
+    ;;
+
+  "APCP06h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700"
+    ;;
+
+  "APCP24h")
+    FIELD_THRESHOLDS="gt0.0, ge0.254, ge0.508, ge1.27, ge2.54, ge3.810, ge6.350, ge8.890, ge12.700, ge25.400"
+    ;;
+
+  "REFC")
+    FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
+    ;;
+
+  "RETOP")
+    FIELD_THRESHOLDS="ge20, ge30, ge40, ge50"
+    ;;
+
+  *)
+    print_err_msg_exit "\
+Thresholds have not been defined for this field (FIELDNAME_IN_MET_FILEDIR_NAMES):
+  FIELDNAME_IN_MET_FILEDIR_NAMES = \"${FIELDNAME_IN_MET_FILEDIR_NAMES}\""
+    ;;
+
+esac
 #
 #-----------------------------------------------------------------------
 #
-# Set the array of forecast hours for which to run point_stat.
+# Set paths and file templates for input to and output from grid_stat 
+# as well as other file/directory parameters.
+#
+#-----------------------------------------------------------------------
+#
+OBS_INPUT_FN_TEMPLATE=""
+if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+  OBS_INPUT_DIR="${VX_OUTPUT_BASEDIR}/metprd/pcp_combine_obs"
+  OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_CCPA_APCPgt01h_FN_TEMPLATE} )
+  FCST_INPUT_DIR="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst"
+  FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_FN_METPROC_TEMPLATE} )
+else
+  OBS_INPUT_DIR="${OBS_DIR}"
+  case "${FIELDNAME_IN_MET_FILEDIR_NAMES}" in
+  "APCP01h")
+    OBS_INPUT_FN_TEMPLATE="${OBS_CCPA_APCP01h_FN_TEMPLATE}"
+    ;;
+  "REFC")
+    OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_REFC_FN_TEMPLATE}"
+    ;;
+  "RETOP")
+    OBS_INPUT_FN_TEMPLATE="${OBS_MRMS_RETOP_FN_TEMPLATE}"
+    ;;
+  esac
+  OBS_INPUT_FN_TEMPLATE=$( eval echo ${OBS_INPUT_FN_TEMPLATE} )
+  FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
+  FCST_INPUT_FN_TEMPLATE=$( eval echo ${FCST_SUBDIR_TEMPLATE}/${FCST_FN_TEMPLATE} )
+fi
+
+OUTPUT_BASE="${VX_OUTPUT_BASEDIR}/${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}"
+OUTPUT_DIR="${OUTPUT_BASE}/metprd/grid_stat"
+STAGING_DIR="${OUTPUT_BASE}/stage/${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+LOG_SUFFIX="_${FIELDNAME_IN_MET_FILEDIR_NAMES}${USCORE_ENSMEM_NAME_OR_NULL}_${CDATE}"
+#
+#-----------------------------------------------------------------------
+#
+# Set the array of forecast hours for which to run grid_stat.
 #
 #-----------------------------------------------------------------------
 #
 set_vx_fhr_list \
-  fhr_min="0" \
+  fhr_min="${ACCUM}" \
   fhr_int="${fhr_int}" \
   fhr_max="${FCST_LEN_HRS}" \
   cdate="${CDATE}" \
@@ -196,6 +276,8 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
+
+export FIELD_THRESHOLDS
 #
 #-----------------------------------------------------------------------
 #
@@ -209,8 +291,12 @@ The list of forecast hours for which to run METplus is empty:
   FHR_LIST = [${FHR_LIST}]"
 else
   print_info_msg "$VERBOSE" "
-Calling METplus to run MET's PointStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-  metplus_config_fp="${METPLUS_CONF}/PointStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}_prob_cmn.conf"
+Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+    metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h.conf"
+  else
+    metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+  fi
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \
@@ -228,7 +314,7 @@ fi
 #
 print_info_msg "
 ========================================================================
-METplus point_stat tool completed successfully.
+METplus grid_stat tool completed successfully.
 
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
