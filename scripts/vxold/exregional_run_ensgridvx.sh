@@ -138,11 +138,11 @@ OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
 #-----------------------------------------------------------------------
 #
 if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/gen_ens_prod"  # Output directory for GenEnsProd tool
+  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd_vxold/gen_ens_prod"  # Output directory for GenEnsProd tool
 fi
 
 if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
-  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/ensemble_stat" # Output directory for EnsembleStat tool
+  mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd_vxold/ensemble_stat" # Output directory for EnsembleStat tool
 fi
 #
 #-----------------------------------------------------------------------
@@ -211,8 +211,8 @@ ${fcst_postprd_output_template},
   ${template}"
   fi
 
-#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
-  template='{init?fmt=%Y%m%d%H?shift=-'${time_lag}'}/mem'${mem_indx}'/metprd/pcp_combine/'$NET'.t{init?fmt=%H?shift=-'${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${time_lag}'}.tm00_a'$acc'.nc'
+#  template='{init?fmt=%Y%m%d%H?shift='${time_lag}'}/mem'${mem_indx}'/metprd_vxold/pcp_combine/'$NET'.t{init?fmt=%H?shift='${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${mns_time_lag}'}.tm00_a'$acc'.nc'
+  template='{init?fmt=%Y%m%d%H?shift=-'${time_lag}'}/mem'${mem_indx}'/metprd_vxold/pcp_combine/'$NET'.t{init?fmt=%H?shift=-'${time_lag}'}z.bgdawpf{lead?fmt=%HHH?shift='${time_lag}'}.tm00_a'$acc'.nc'
   if [ -z "${fcst_pcp_combine_output_template}" ]; then
     fcst_pcp_combine_output_template="  ${template}"
   else

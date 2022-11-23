@@ -119,8 +119,8 @@ LOG_SUFFIX=enspoint_mean_${CDATE}
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"                         # Output directory for pb2nc tool.
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/point_stat_mean"  # Output directory for point_stat tool.
+mkdir_vrfy -p "${EXPTDIR}/metprd_vxold/pb2nc"                         # Output directory for pb2nc tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd_vxold/point_stat_mean"  # Output directory for point_stat tool.
 #
 #-----------------------------------------------------------------------
 #

@@ -139,7 +139,7 @@ OUTPUT_BASE=${VX_OUTPUT_BASEDIR}
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd/grid_stat_mean"  # Output directory for GridStat tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/${CDATE}/metprd_vxold/grid_stat_mean"  # Output directory for GridStat tool.
 #
 #-----------------------------------------------------------------------
 #

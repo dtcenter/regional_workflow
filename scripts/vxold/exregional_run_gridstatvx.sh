@@ -156,7 +156,7 @@ LOG_SUFFIX="${CDATE}${USCORE_ENSMEM_NAME_OR_NULL}_${FIELDNAME_IN_MET_FILEDIR_NAM
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${OUTPUT_BASE}/metprd/grid_stat"
+mkdir_vrfy -p "${OUTPUT_BASE}/metprd_vxold/grid_stat"
 #
 # If the variable is accumulated precipitation for a time interval 
 # (bucket) other than 1 hour, the MET/METplus tools called below will
@@ -164,8 +164,8 @@ mkdir_vrfy -p "${OUTPUT_BASE}/metprd/grid_stat"
 # needed by pcp_combine.
 #
 if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  mkdir_vrfy -p "${EXPTDIR}/metprd/pcp_combine"      # For observations
-  mkdir_vrfy -p "${OUTPUT_BASE}/metprd/pcp_combine"  # For forecast
+  mkdir_vrfy -p "${EXPTDIR}/metprd_vxold/pcp_combine"      # For observations
+  mkdir_vrfy -p "${OUTPUT_BASE}/metprd_vxold/pcp_combine"  # For forecast
 fi
 #
 #-----------------------------------------------------------------------

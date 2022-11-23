@@ -170,8 +170,8 @@ echo "VX_FCST_MODEL_NAME = |$VX_FCST_MODEL_NAME|"
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${EXPTDIR}/metprd/pb2nc"           # Output directory for pb2nc tool.
-mkdir_vrfy -p "${OUTPUT_BASE}/metprd/point_stat"  # Output directory for point_stat tool.
+mkdir_vrfy -p "${EXPTDIR}/metprd_vxold/pb2nc"           # Output directory for pb2nc tool.
+mkdir_vrfy -p "${OUTPUT_BASE}/metprd_vxold/point_stat"  # Output directory for point_stat tool.
 #
 #-----------------------------------------------------------------------
 #
