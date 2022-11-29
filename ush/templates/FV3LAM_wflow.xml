@@ -111,9 +111,9 @@ Directories and files.
 
 <!--
 Reservation types.  Reservations specify the queue/partition and account
-to use for a given task.  The "DEFAULT" reservation type is used for all 
-tasks other than GET_EXTRN_ICS_TN, GET_EXTRN_LBCS_TN, and RUN_FCST_TN; 
-the "HPSS" type is used for the GET_EXTRN_ICS_TN and GET_EXTRN_LBCS_TN 
+to use for a given task.  The "DEFAULT" reservation type is used for all
+tasks other than GET_EXTRN_ICS_TN, GET_EXTRN_LBCS_TN, and RUN_FCST_TN;
+the "HPSS" type is used for the GET_EXTRN_ICS_TN and GET_EXTRN_LBCS_TN
 tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 -->
 
@@ -150,13 +150,13 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
     <cyclestr>&LOGDIR;/FV3LAM_wflow.log</cyclestr>
   </log>
 
-<!-- 
+<!--
 The following command works to call the J-job for a given task (in this
-case the MAKE_GRID_TN task) if in the script LOAD_MODULES_RUN_TASK_FP we 
+case the MAKE_GRID_TN task) if in the script LOAD_MODULES_RUN_TASK_FP we
 do NOT call exec to run the J-job.  The command first sources the script
 LOAD_MODULES_RUN_TASK_FP and then runs the J-job, so it is simpler than
 calling exec and thus preferred if NCO accepts it.  Note that the portion
-of the command that sources LOAD_MODULES_RUN_TASK_FP also passes an 
+of the command that sources LOAD_MODULES_RUN_TASK_FP also passes an
 argument to it (the argument being the name of the task).  This works in
 bash but it probably won't work in sh.
 
@@ -303,7 +303,7 @@ forecast output hours.  Currently, FHR_LIST gets set to every hour from
 be changed from 1 to whatever the proper variable is.
 -->
     <envar><name>FHR_LIST</name><value><cyclestr>{% for h in range(0, fcst_len_hrs+1, 1) %}{{ " %02d" % h }}{% endfor %}</cyclestr></value></envar>
- 
+
   </task>
     {%- endif %}
   {%- endfor %}
@@ -534,7 +534,7 @@ this task calls).
   {%- else %}
 {#-
 We only check for the existence of the top-level CCPA observations
-directory, not the individual daily subdirectories within.  This is 
+directory, not the individual daily subdirectories within.  This is
 because this and other downstream vx tasks can complete successfully
 even when some obs files are missing (the check for individual files is
 done by the scripts that this task calls).
@@ -694,17 +694,17 @@ done by the scripts that this task calls).
 -->
   {%- if sub_hourly_post %}
 <!--
-Define the post-processing task for first model output time.  The forecast 
+Define the post-processing task for first model output time.  The forecast
 hour corresponding to this output time is zero (formatted to the appropriate
-number of digits), and the corresponding forecast minute is the first model 
-time step dt_atmos, i.e. it is not zero.  This is because FV3 is designed 
-such that its first output file contains fields at the first time step.  
-It is for this reason that this task is not rolled into the metatask(s) 
+number of digits), and the corresponding forecast minute is the first model
+time step dt_atmos, i.e. it is not zero.  This is because FV3 is designed
+such that its first output file contains fields at the first time step.
+It is for this reason that this task is not rolled into the metatask(s)
 further below.
 
 Note that we wrap this task in a metatask in order to be able to declare
 and use the variables fhr and fmn.  This allows the block of code inside
-the <task> tag (except for the dependencies) to be identical to the ones 
+the <task> tag (except for the dependencies) to be identical to the ones
 later below for other output times.
 -->
   <metatask>
@@ -736,7 +736,7 @@ later below for other output times.
 <!--
 Note that because the forecast minutes and seconds corresponding to the
 first model output time are not exactly zero, we use the jinja template
-variable first_fv3_file_tstr instead of fhr and fmn to form the file 
+variable first_fv3_file_tstr instead of fhr and fmn to form the file
 names in the dependencies.
 -->
       <dependency>
@@ -811,7 +811,7 @@ for other output times.
   {%- if sub_hourly_post %}
 <!--
 Define the post-processing tasks for the second through next-to-last model
-output hours (and all output minutes for each such hour).  
+output hours (and all output minutes for each such hour).
 -->
     <var name="fhr">{% for h in range(1, fcst_len_hrs) %}{{ " %03d" % h }}{% endfor %}</var>
     <metatask>
@@ -820,12 +820,12 @@ output hours (and all output minutes for each such hour).
   {%- else %}
 <!--
 Define the post-processing tasks for each model output hour.  Note that
-only one metatask is needed for this purpose (the inner one that loops 
-over the hours), but we use two metatasks in order to be able to use the 
-variable fmn, which here is always set to zero.  Use of this variable 
-(along with the fhr variable in the inner metatask) allows the block of 
-code inside the <task> tag to be identical to the case in which subhourly 
-post-processing is performed (i.e. the case in which the minutes are not 
+only one metatask is needed for this purpose (the inner one that loops
+over the hours), but we use two metatasks in order to be able to use the
+variable fmn, which here is always set to zero.  Use of this variable
+(along with the fhr variable in the inner metatask) allows the block of
+code inside the <task> tag to be identical to the case in which subhourly
+post-processing is performed (i.e. the case in which the minutes are not
 always zero).
 -->
     <var name="fhr">{% for h in range(0, fcst_len_hrs+1) %}{{ " %03d" % h }}{% endfor %}</var>
@@ -886,11 +886,11 @@ always zero).
 
   {%- if sub_hourly_post %}
 <!--
-Define the post-processing task for the last model output time.  The 
-forecast hour corresponding to this output time is the length of the 
-forecast (assuming it is specified in integer hours), and the corresponding 
-minute is 0.  This task cannot be included in the metatask above because 
-for a given hour, the latter loops over all the valid output minutes, 
+Define the post-processing task for the last model output time.  The
+forecast hour corresponding to this output time is the length of the
+forecast (assuming it is specified in integer hours), and the corresponding
+minute is 0.  This task cannot be included in the metatask above because
+for a given hour, the latter loops over all the valid output minutes,
 whereas for this last hour, only the first minute must be considered.
 
 Note that we wrap this task in a metatask in order to be able to declare
@@ -1192,9 +1192,9 @@ the <task> tag to be identical to the ones above for other output times.
         <streq><left>&VX_RUN_OLD_VXDET_TASKS;</left><right>TRUE</right></streq>
         <taskdep task="&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}"/>
 <!--
-The following dependency should ideally not be needed, but it is needed 
+The following dependency should ideally not be needed, but it is needed
 due to a file read bug in MET or METplus when the VX_GRIDSTAT_APCP06h_TN
-is launched at the same time as the VX_GRIDSTAT_APCP03h_TN and/or 
+is launched at the same time as the VX_GRIDSTAT_APCP03h_TN and/or
 VX_GRIDSTAT_APCP24h_TN.  Thus, here, we wait until the VX_GRIDSTAT_APCP03h_TN
 is done before launching VX_GRIDSTAT_APCP24h_TN.  This dependency should
 be removed once that bug is fixed.
@@ -1242,9 +1242,9 @@ be removed once that bug is fixed.
         <streq><left>&VX_RUN_OLD_VXDET_TASKS;</left><right>TRUE</right></streq>
         <taskdep task="&VX_GRIDSTAT_APCP01h_TN;{{ uscore_ensmem_name }}"/>
 <!--
-The following dependency should ideally not be needed, but it is needed 
+The following dependency should ideally not be needed, but it is needed
 due to a file read bug in MET or METplus when the VX_GRIDSTAT_APCP24h_TN
-is launched at the same time as the VX_GRIDSTAT_APCP03h_TN and/or 
+is launched at the same time as the VX_GRIDSTAT_APCP03h_TN and/or
 VX_GRIDSTAT_APCP06h_TN.  Thus, here, we wait until the VX_GRIDSTAT_APCP06h_TN
 is done before launching VX_GRIDSTAT_APCP24h_TN.  This dependency should
 be removed once that bug is fixed.
@@ -1264,8 +1264,8 @@ be removed once that bug is fixed.
 ************************************************************************
 -->
   <task name="&VX_POINTSTAT_TN;{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_pointstat }}">
-    &RSRV_DEFAULT;
 
+    &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/vxold/JREGIONAL_RUN_VX_POINTSTAT"</command>
     <nodes>{{ nnodes_vx_pointstat }}:ppn={{ ppn_vx_pointstat }}</nodes>
     <walltime>{{ wtime_vx_pointstat }}</walltime>
@@ -1381,8 +1381,8 @@ because it helps simplify the coding in the jinja template of this xml
         <streq><left>TRUE</left><right>TRUE</right></streq>
 {#-
 If the post-processed forecast output needed for verification is being
-generated by the RUN_FCST_TN task (by having RUN_TASK_RUN_FCST and 
-WRITE_DOPOST both set to TRUE, which causes UPP to be called inline, 
+generated by the RUN_FCST_TN task (by having RUN_TASK_RUN_FCST and
+WRITE_DOPOST both set to TRUE, which causes UPP to be called inline,
 i.e. from within the weather model), then include a dependency on the
 RUN_FCST_TN task.
 #}
@@ -1503,7 +1503,7 @@ First, generate grid-based deterministic vx tasks.
     <dependency>
       <and>
 {#-
-If the data fetching task for the current observation type is part of 
+If the data fetching task for the current observation type is part of
 the workflow, make sure it has completed.
 #}
       {%- if run_task_get_obs %}
@@ -1539,8 +1539,8 @@ Now generate point-based deterministic vx tasks.
 ************************************************************************
 -->
   <task name="&RUN_VXDET_POINTSTAT_TN;_{{fieldname}}{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_run_vxdet_pointstat }}">
-    &RSRV_DEFAULT;
 
+    &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXDET_POINTSTAT"</command>
     <nodes>{{ nnodes_run_vxdet_pointstat }}:ppn={{ ppn_run_vxdet_pointstat }}</nodes>
     <walltime>{{ wtime_run_vxdet_pointstat }}</walltime>
@@ -1630,6 +1630,7 @@ probabilistic ensemble stats.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP01h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1657,7 +1658,7 @@ probabilistic ensemble stats.
 The following dependecy isn't actually needed.  It is a way to throttle
 the number of rocoto tasks (so that the deterministic verification tasks
 in the run_ens_metatask complete before the ensemble verification tasks
-can launch.  But the taskthrottle attribute should really be used for 
+can launch.  But the taskthrottle attribute should really be used for
 this purpose.
 -->
   {%- if is_ens_fcst %}
@@ -1687,6 +1688,7 @@ this purpose.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>MRMS</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1713,7 +1715,7 @@ this purpose.
 The following dependecy isn't actually needed.  It is a way to throttle
 the number of rocoto tasks (so that the deterministic verification tasks
 in the run_ens_metatask complete before the ensemble verification tasks
-can launch.  But the taskthrottle attribute should really be used for 
+can launch.  But the taskthrottle attribute should really be used for
 this purpose.
 -->
   {%- if is_ens_fcst %}
@@ -1743,6 +1745,7 @@ this purpose.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>MRMS</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1769,7 +1772,7 @@ this purpose.
 The following dependecy isn't actually needed.  It is a way to throttle
 the number of rocoto tasks (so that the deterministic verification tasks
 in the run_ens_metatask complete before the ensemble verification tasks
-can launch.  But the taskthrottle attribute should really be used for 
+can launch.  But the taskthrottle attribute should really be used for
 this purpose.
 -->
   {%- if is_ens_fcst %}
@@ -1800,6 +1803,7 @@ this purpose.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP03h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1821,7 +1825,7 @@ this purpose.
 <!--
 The VX_ENSGRID_APCP03h_TN task depends on the presence of NetCDF files
 generated by the PcpCombine tool in the deterministic verification tasks
-for all ensemble members.  Thus, the run_ens_mems metatask (which 
+for all ensemble members.  Thus, the run_ens_mems metatask (which
 contains the deterministic vx tasks, among others) must first complete
 before this task can be launched.
 -->
@@ -1836,7 +1840,7 @@ before this task can be launched.
 
   </task>
   {%- endif %}
-  {%- if fcst_len_hrs >= 6 %}   
+  {%- if fcst_len_hrs >= 6 %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1855,11 +1859,12 @@ before this task can be launched.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP06h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar> 
+    <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
 <!--    <envar><name>FHR</name><value><cyclestr>{% for h in range(6, fcst_len_hrs+1, 6) %}{{ " %02d" % h }}{% endfor %} </cyclestr></value></envar> -->
     <envar><name>VAR</name><value>APCP</value></envar>
     <envar><name>ACCUM</name><value>06</value></envar>
@@ -1876,7 +1881,7 @@ before this task can be launched.
 <!--
 The VX_ENSGRID_APCP06h_TN task depends on the presence of NetCDF files
 generated by the PcpCombine tool in the deterministic verification tasks
-for all ensemble members.  Thus, the run_ens_mems metatask (which 
+for all ensemble members.  Thus, the run_ens_mems metatask (which
 contains the deterministic vx tasks, among others) must first complete
 before this task can be launched.
 -->
@@ -1910,6 +1915,7 @@ before this task can be launched.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP24h_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1931,7 +1937,7 @@ before this task can be launched.
 <!--
 The VX_ENSGRID_APCP24h_TN task depends on the presence of NetCDF files
 generated by the PcpCombine tool in the deterministic verification tasks
-for all ensemble members.  Thus, the run_ens_mems metatask (which 
+for all ensemble members.  Thus, the run_ens_mems metatask (which
 contains the deterministic vx tasks, among others) must first complete
 before this task can be launched.
 -->
@@ -1964,6 +1970,7 @@ before this task can be launched.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP01h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -1999,6 +2006,7 @@ before this task can be launched.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP01h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2038,6 +2046,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_REFC_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>MRMS</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2076,6 +2085,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_RETOP_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>MRMS</value></envar>
     <envar><name>OBS_DIR</name><value>&MRMS_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2111,6 +2121,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP03h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2146,6 +2157,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP03h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2183,6 +2195,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP06h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2218,6 +2231,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP06h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2255,6 +2269,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP24h_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2290,6 +2305,7 @@ the probabilistic one.
     <join><cyclestr>&LOGDIR;/&VX_ENSGRID_APCP24h_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>CCPA</value></envar>
     <envar><name>OBS_DIR</name><value>&CCPA_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2335,6 +2351,7 @@ ensemble.
     <join><cyclestr>&LOGDIR;/&VX_ENSPOINT_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>NDAS</value></envar>
     <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2360,7 +2377,7 @@ ensemble.
 The following dependecy isn't actually needed.  It is a way to throttle
 the number of rocoto tasks (so that the deterministic verification tasks
 in the run_ens_metatask complete before the ensemble verification tasks
-can launch.  But the taskthrottle attribute should really be used for 
+can launch.  But the taskthrottle attribute should really be used for
 this purpose.
 -->
   {%- if is_ens_fcst %}
@@ -2390,6 +2407,7 @@ this purpose.
     <join><cyclestr>&LOGDIR;/&VX_ENSPOINT_MEAN_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>NDAS</value></envar>
     <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2423,6 +2441,7 @@ this purpose.
     <join><cyclestr>&LOGDIR;/&VX_ENSPOINT_PROB_TN;_@Y@m@d@H.log</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
+    <envar><name>OBTYPE</name><value>NDAS</value></envar>
     <envar><name>OBS_DIR</name><value>&NDAS_OBS_DIR;</value></envar>
     <envar><name>CYCLE_DIR</name><value><cyclestr>&CYCLE_BASEDIR;/@Y@m@d@H</cyclestr></value></envar>
     <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
@@ -2537,7 +2556,7 @@ because it helps simplify the coding in the jinja template of this xml
 #}
         <streq><left>TRUE</left><right>TRUE</right></streq>
 {#-
-If the data fetching task for the current observation type is part of 
+If the data fetching task for the current observation type is part of
 the workflow, make sure it has completed.
 #}
         {%- if run_task_get_obs %}
@@ -2560,7 +2579,7 @@ member post-processing metatasks have completed.
         {%- endif %}
 {#-
 For APCP with accumulation greater than 1 hour, the pcp_combine tasks
-for both the observations and all ensemble member forecasts must be 
+for both the observations and all ensemble member forecasts must be
 complete, so we include them here as dependencies.
 #}
         {%- if (field in ["APCP"]) and (accum > 1) %}
@@ -2614,7 +2633,7 @@ fields whose observations are point-based.
 {#-
 Make sure that the NDAS observations have been converted from prepbufr
 to NetCDF format (via the RUN_VXAUX_PB2NC_OBS_TN task).  Note that there
-is no need to check that the GET_OBS_NDAS_TN has completed because 
+is no need to check that the GET_OBS_NDAS_TN has completed because
 RUN_VXAUX_PB2NC_OBS_TN already has a dependency on it.
 #}
         <taskdep task="&RUN_VXAUX_PB2NC_OBS_TN;"/>
