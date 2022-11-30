@@ -1164,35 +1164,6 @@ RUN_VXENS_GEPES_GRIDDED_TN="run_vxens_gepes_gridded"
 RUN_VXENS_GEPES_POINT_TN="run_vxens_gepes_point"
 RUN_VXENS_GRIDSTAT_TN="run_vxens_gridstat"
 RUN_VXENS_POINTSTAT_TN="run_vxens_pointstat"
-
-VX_GRIDSTAT_APCP01h_TN="run_gridstatvx_APCP01h"
-VX_GRIDSTAT_REFC_TN="run_gridstatvx_REFC"
-VX_GRIDSTAT_RETOP_TN="run_gridstatvx_RETOP"
-VX_GRIDSTAT_APCP03h_TN="run_gridstatvx_APCP03h"
-VX_GRIDSTAT_APCP06h_TN="run_gridstatvx_APCP06h"
-VX_GRIDSTAT_APCP24h_TN="run_gridstatvx_APCP24h"
-VX_POINTSTAT_TN="run_pointstatvx"
-VX_ENSGRID_TN="run_ensgridvx"
-VX_ENSGRID_APCP01h_TN="run_ensgridvx_APCP01h"
-VX_ENSGRID_APCP03h_TN="run_ensgridvx_APCP03h"
-VX_ENSGRID_APCP06h_TN="run_ensgridvx_APCP06h"
-VX_ENSGRID_APCP24h_TN="run_ensgridvx_APCP24h"
-VX_ENSGRID_REFC_TN="run_ensgridvx_REFC"
-VX_ENSGRID_RETOP_TN="run_ensgridvx_RETOP"
-VX_ENSGRID_MEAN_TN="run_ensgridvx_mean"
-VX_ENSGRID_APCP01h_MEAN_TN="run_ensgridvx_APCP01h_mean"
-VX_ENSGRID_APCP01h_PROB_TN="run_ensgridvx_APCP01h_prob"
-VX_ENSGRID_APCP03h_MEAN_TN="run_ensgridvx_APCP03h_mean"
-VX_ENSGRID_APCP03h_PROB_TN="run_ensgridvx_APCP03h_prob"
-VX_ENSGRID_APCP06h_MEAN_TN="run_ensgridvx_APCP06h_mean"
-VX_ENSGRID_APCP06h_PROB_TN="run_ensgridvx_APCP06h_prob"
-VX_ENSGRID_APCP24h_MEAN_TN="run_ensgridvx_APCP24h_mean"
-VX_ENSGRID_APCP24h_PROB_TN="run_ensgridvx_APCP24h_prob"
-VX_ENSGRID_REFC_PROB_TN="run_ensgridvx_REFC_prob"
-VX_ENSGRID_RETOP_PROB_TN="run_ensgridvx_RETOP_prob"
-VX_ENSPOINT_TN="run_enspointvx"
-VX_ENSPOINT_MEAN_TN="run_enspointvx_mean"
-VX_ENSPOINT_PROB_TN="run_enspointvx_prob"
 #
 #-----------------------------------------------------------------------
 #
@@ -1259,23 +1230,6 @@ VX_ENSPOINT_PROB_TN="run_enspointvx_prob"
 # RUN_TASK_RUN_POST:
 # Flag that determines whether the RUN_POST_TN task is to be run.
 # 
-# RUN_TASK_VX_GRIDSTAT:
-# Flag that determines whether the grid-stat verification task is to be
-# run.
-#
-# RUN_TASK_VX_POINTSTAT:
-# Flag that determines whether the point-stat verification task is to be
-# run.
-#
-# RUN_TASK_VX_ENSGRID:
-# Flag that determines whether the ensemble-stat verification for gridded
-# data task is to be run.
-#
-# RUN_TASK_VX_ENSPOINT:
-# Flag that determines whether the ensemble point verification task is
-# to be run. If this flag is set, both ensemble-stat point verification
-# and point verification of ensemble-stat output is computed.
-#
 # RUN_GEN_ENS_PROD:
 # Flag that determines whether the gen-ens-prod verification subtask is
 # to be run in the VX_ENSGRID and VX_ENSPOINT tasks.
@@ -1312,11 +1266,6 @@ RUN_TASKS_VXDET="FALSE"
 RUN_TASKS_VXENS="FALSE"
 RUN_GEN_ENS_PROD="TRUE"
 RUN_ENSEMBLE_STAT="TRUE"
-
-RUN_TASK_VX_GRIDSTAT="FALSE"
-RUN_TASK_VX_POINTSTAT="FALSE"
-RUN_TASK_VX_ENSGRID="FALSE"
-RUN_TASK_VX_ENSPOINT="FALSE"
 #
 #-----------------------------------------------------------------------
 #
@@ -1782,97 +1731,6 @@ MAXTRIES_RUN_VXENS_GRIDSTAT_MEAN="1"
 MAXTRIES_RUN_VXENS_POINTSTAT_MEAN="1"
 MAXTRIES_RUN_VXENS_GRIDSTAT_PROB="1"
 MAXTRIES_RUN_VXENS_POINTSTAT_PROB="1"
-
-
-
-
-
-
-
-
-
-
-#
-#-----------------------------------------------------------------------
-#
-########### For old versions of vx tasks; to be removed.
-#
-#-----------------------------------------------------------------------
-#
-INCLUDE_OLD_VX_TASKS_IN_XML="TRUE"
-#
-# Number of nodes.
-#
-NNODES_VX_GRIDSTAT="1"
-NNODES_VX_POINTSTAT="1"
-NNODES_VX_ENSGRID="1"
-NNODES_VX_ENSGRID_MEAN="1"
-NNODES_VX_ENSGRID_PROB="1"
-NNODES_VX_ENSPOINT="1"
-NNODES_VX_ENSPOINT_MEAN="1"
-NNODES_VX_ENSPOINT_PROB="1"
-#
-# Number of MPI processes per node.
-#
-PPN_VX_GRIDSTAT="1"
-PPN_VX_POINTSTAT="1"
-PPN_VX_ENSGRID="1"
-PPN_VX_ENSGRID_MEAN="1"
-PPN_VX_ENSGRID_PROB="1"
-PPN_VX_ENSPOINT="1"
-PPN_VX_ENSPOINT_MEAN="1"
-PPN_VX_ENSPOINT_PROB="1"
-#
-# Walltimes.
-#
-WTIME_VX_GRIDSTAT="02:00:00"
-WTIME_VX_POINTSTAT="01:00:00"
-WTIME_VX_ENSGRID="10:00:00"
-WTIME_VX_ENSGRID_MEAN="06:00:00"
-WTIME_VX_ENSGRID_PROB="06:00:00"
-WTIME_VX_ENSPOINT="10:00:00"
-WTIME_VX_ENSPOINT_MEAN="06:00:00"
-WTIME_VX_ENSPOINT_PROB="06:00:00"
-#
-# Maximum number of attempts.
-#
-MAXTRIES_VX_GRIDSTAT="1"
-MAXTRIES_VX_GRIDSTAT_REFC="1"
-MAXTRIES_VX_GRIDSTAT_RETOP="1"
-MAXTRIES_VX_GRIDSTAT_03h="1"
-MAXTRIES_VX_GRIDSTAT_06h="1"
-MAXTRIES_VX_GRIDSTAT_24h="1"
-MAXTRIES_VX_POINTSTAT="1"
-MAXTRIES_VX_ENSGRID="1"
-MAXTRIES_VX_ENSGRID_REFC="1"
-MAXTRIES_VX_ENSGRID_RETOP="1"
-MAXTRIES_VX_ENSGRID_03h="1"
-MAXTRIES_VX_ENSGRID_06h="1"
-MAXTRIES_VX_ENSGRID_24h="1"
-MAXTRIES_VX_ENSGRID_MEAN="1"
-MAXTRIES_VX_ENSGRID_PROB="1"
-MAXTRIES_VX_ENSGRID_MEAN_03h="1"
-MAXTRIES_VX_ENSGRID_PROB_03h="1"
-MAXTRIES_VX_ENSGRID_MEAN_06h="1"
-MAXTRIES_VX_ENSGRID_PROB_06h="1"
-MAXTRIES_VX_ENSGRID_MEAN_24h="1"
-MAXTRIES_VX_ENSGRID_PROB_24h="1"
-MAXTRIES_VX_ENSGRID_PROB_REFC="1"
-MAXTRIES_VX_ENSGRID_PROB_RETOP="1"
-MAXTRIES_VX_ENSPOINT="1"
-MAXTRIES_VX_ENSPOINT_MEAN="1"
-MAXTRIES_VX_ENSPOINT_PROB="1"
-
-
-
-
-
-
-
-
-
-
-
 #
 #-----------------------------------------------------------------------
 #

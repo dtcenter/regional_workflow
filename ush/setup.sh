@@ -206,20 +206,6 @@ RUN_TASKS_VXDET=$(boolify "${RUN_TASKS_VXDET}")
 
 check_var_valid_value "RUN_TASKS_VXENS" "valid_vals_BOOLEAN"
 RUN_TASKS_VXENS=$(boolify "${RUN_TASKS_VXENS}")
-
-
-# Remove the following at some point.
-check_var_valid_value "RUN_TASK_VX_GRIDSTAT" "valid_vals_BOOLEAN"
-RUN_TASK_VX_GRIDSTAT=$(boolify "${RUN_TASK_VX_GRIDSTAT}")
-
-check_var_valid_value "RUN_TASK_VX_POINTSTAT" "valid_vals_BOOLEAN"
-RUN_TASK_VX_POINTSTAT=$(boolify "${RUN_TASK_VX_POINTSTAT}")
-
-check_var_valid_value "RUN_TASK_VX_ENSGRID" "valid_vals_BOOLEAN"
-RUN_TASK_VX_ENSGRID=$(boolify "${RUN_TASK_VX_ENSGRID}")
-
-check_var_valid_value "RUN_TASK_VX_ENSPOINT" "valid_vals_BOOLEAN"
-RUN_TASK_VX_ENSPOINT=$(boolify "${RUN_TASK_VX_ENSPOINT}")
 #
 #-----------------------------------------------------------------------
 #
@@ -1413,10 +1399,6 @@ if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ] || \
    [ "${RUN_TASK_RUN_POST}" = "TRUE" ]; then
 #   [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
 #   [ "${RUN_TASKS_VXENS}" = "TRUE" ]; then
-#   [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
-#   [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ] || \
-#   [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ] || \
-#   [ "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
 
   if [ -z "${POST_OUTPUT_DOMAIN_NAME}" ]; then
     print_err_msg_exit "\
@@ -1978,41 +1960,6 @@ one above.  Reset values are:
     msg="$msg""
   RUN_TASK_MAKE_SFC_CLIMO = \"${RUN_TASK_MAKE_SFC_CLIMO}\"
   SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\"
-"
-    print_info_msg "$msg"
-
-  fi
-
-  if [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ]; then
-
-    msg="
-When RUN_ENVIR is set to \"nco\", it is assumed that the verification
-will not be run.
-  RUN_TASK_VX_GRIDSTAT = \"${RUN_TASK_VX_GRIDSTAT}\"
-Resetting RUN_TASK_VX_GRIDSTAT to \"FALSE\".  Reset value is:"
-
-    RUN_TASK_VX_GRIDSTAT="FALSE"
-
-    msg="$msg""
-  RUN_TASK_VX_GRIDSTAT = \"${RUN_TASK_VX_GRIDSTAT}\"
-"
-    print_info_msg "$msg"
-
-  fi
-
-  if [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ]; then
-
-    msg="
-When RUN_ENVIR is set to \"nco\", it is assumed that the verification
-will not be run.
-  RUN_TASK_VX_POINTSTAT = \"${RUN_TASK_VX_POINTSTAT}\"
-Resetting RUN_TASK_VX_POINTSTAT to \"FALSE\"
-Reset value is:"
-
-    RUN_TASK_VX_POINTSTAT="FALSE"
-
-    msg="$msg""
-  RUN_TASK_VX_POINTSTAT = \"${RUN_TASK_VX_POINTSTAT}\"
 "
     print_info_msg "$msg"
 
