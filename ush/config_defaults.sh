@@ -1231,12 +1231,14 @@ RUN_VXENS_POINTSTAT_TN="run_vxens_pointstat"
 # Flag that determines whether the RUN_POST_TN task is to be run.
 # 
 # RUN_GEN_ENS_PROD:
-# Flag that determines whether the gen-ens-prod verification subtask is
-# to be run in the VX_ENSGRID and VX_ENSPOINT tasks.
+# Flag that determines whether the MET tool gen_ens_prod is run as part
+# of the RUN_VXENS_GEPES_GRIDDED_TN and RUN_VXENS_GEPES_POINT_TN sets of 
+# tasks.
 #
 # RUN_ENSEMBLE_STAT:
-# Flag that determines whether the ensemble-stat verification subtask is
-# to be run in the VX_ENSGRID and VX_ENSPOINT tasks.
+# Flag that determines whether the MET tool ensemble_stat is run as part
+# of the RUN_VXENS_GEPES_GRIDDED_TN and RUN_VXENS_GEPES_POINT_TN sets of 
+# tasks.
 #
 #-----------------------------------------------------------------------
 #
