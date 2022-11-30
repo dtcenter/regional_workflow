@@ -85,16 +85,3 @@ POST_OUTPUT_DOMAIN_NAME="rrfs_conus_25km"
 #
 METPLUS_PATH="/contrib/METplus/METplus-4.1.1"
 MET_INSTALL_DIR="/contrib/met/10.1.1"
-#
-# The following are for the old versions of the vx tasks.  Should remove
-# at some point.
-#
-INCLUDE_OLD_VX_TASKS_IN_XML="FALSE"
-
-RUN_TASK_VX_GRIDSTAT="TRUE"
-RUN_TASK_VX_POINTSTAT="TRUE"
-RUN_TASK_VX_ENSGRID="TRUE"
-RUN_TASK_VX_ENSPOINT="TRUE"
-
-WTIME_VX_ENSPOINT="08:00:00"
-WTIME_VX_ENSGRID="08:00:00"
