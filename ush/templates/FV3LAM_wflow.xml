@@ -1468,7 +1468,7 @@ First, generate grid-based deterministic vx tasks.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&RUN_VXDET_GRIDSTAT_TN;_{{fieldname}}{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_vx_gridstat }}">
+  <task name="&RUN_VXDET_GRIDSTAT_TN;_{{fieldname}}{{ uscore_ensmem_name }}" cycledefs="forecast" maxtries="{{ maxtries_run_vxdet_gridstat }}">
 
     &RSRV_DEFAULT;
     <command>&LOAD_MODULES_RUN_TASK_FP; "&VX_TN;" "&JOBSDIR;/JREGIONAL_RUN_VXDET_GRIDSTAT"</command>

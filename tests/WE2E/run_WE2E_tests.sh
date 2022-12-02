@@ -1073,7 +1073,9 @@ EXTRN_MDL_DATA_STORES=\"$data_stores\""
 #
 #-----------------------------------------------------------------------
 #
-  if [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
+  if [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
+     [ "${RUN_TASKS_VXENS}" = "TRUE" ] || \
+     [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
      [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ] || \
      [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ] || \
      [ "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
@@ -1081,22 +1083,22 @@ EXTRN_MDL_DATA_STORES=\"$data_stores\""
     check=0
     if [ ! -d ${MET_INSTALL_DIR} ] ; then
       print_info_msg "\
-        The MET installation location must be set for this machine!
-          MET_INSTALL_DIR = \"${MET_INSTALL_DIR}\""
+The MET installation location must be set for this machine!
+  MET_INSTALL_DIR = \"${MET_INSTALL_DIR}\""
       check=1
     fi
 
     if [ ! -d ${METPLUS_PATH} ] ; then
       print_info_msg "\
-        The MET+ installation location must be set for this machine!
-          METPLUS_PATH = \"${METPLUS_PATH}\""
+The MET+ installation location must be set for this machine!
+  METPLUS_PATH = \"${METPLUS_PATH}\""
       check=1
     fi
 
     if [ -z ${MET_BIN_EXEC} ] ; then
       print_info_msg "\
-        The MET execution command must be set for this machine!
-          MET_BIN_EXEC = \"${MET_BIN_EXEC}\""
+The MET execution command must be set for this machine!
+  MET_BIN_EXEC = \"${MET_BIN_EXEC}\""
       check=1
     fi
 
@@ -1104,31 +1106,31 @@ EXTRN_MDL_DATA_STORES=\"$data_stores\""
 #    if [ ! -d ${CCPA_OBS_DIR} ] ; then
     if [ -z ${CCPA_OBS_DIR} ] ; then
       print_info_msg "\
-        The CCPA observation location must be set for this machine!
-          CCPA_OBS_DIR = \"${CCPA_OBS_DIR}\""
+The CCPA observation location must be set for this machine!
+  CCPA_OBS_DIR = \"${CCPA_OBS_DIR}\""
       check=1
     fi
 
 #    if [ ! -d ${MRMS_OBS_DIR} ] ; then
     if [ -z ${MRMS_OBS_DIR} ] ; then
       print_info_msg "\
-        The MRMS observation location must be set for this machine!
-          MRMS_OBS_DIR = \"${MRMS_OBS_DIR}\""
+The MRMS observation location must be set for this machine!
+  MRMS_OBS_DIR = \"${MRMS_OBS_DIR}\""
       check=1
     fi
 
 #    if [ ! -d ${NDAS_OBS_DIR} ] ; then
     if [ -z ${NDAS_OBS_DIR} ] ; then
       print_info_msg "\
-        The NDAS observation location must be set for this machine!
-          NDAS_OBS_DIR = \"${NDAS_OBS_DIR}\""
+The NDAS observation location must be set for this machine!
+  NDAS_OBS_DIR = \"${NDAS_OBS_DIR}\""
       check=1
     fi
 
     if [ ${check} = 1 ] ; then
       print_err_msg_exit "\
-        Please set MET variables in the machine file for \
-          MACHINE = \"${MACHINE}\""
+Please set MET variables in the machine file for \
+  MACHINE = \"${MACHINE}\""
     fi
 
   fi
