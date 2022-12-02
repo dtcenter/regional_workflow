@@ -1074,11 +1074,7 @@ EXTRN_MDL_DATA_STORES=\"$data_stores\""
 #-----------------------------------------------------------------------
 #
   if [ "${RUN_TASKS_VXDET}" = "TRUE" ] || \
-     [ "${RUN_TASKS_VXENS}" = "TRUE" ] || \
-     [ "${RUN_TASK_VX_GRIDSTAT}" = "TRUE" ] || \
-     [ "${RUN_TASK_VX_POINTSTAT}" = "TRUE" ] || \
-     [ "${RUN_TASK_VX_ENSGRID}" = "TRUE" ] || \
-     [ "${RUN_TASK_VX_ENSPOINT}" = "TRUE" ]; then
+     [ "${RUN_TASKS_VXENS}" = "TRUE" ]; then
 
     check=0
     if [ ! -d ${MET_INSTALL_DIR} ] ; then
