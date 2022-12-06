@@ -215,6 +215,8 @@ export FIELDNAME_IN_OBS_INPUT
 export FIELDNAME_IN_FCST_INPUT
 export FIELDNAME_IN_MET_OUTPUT
 export FIELDNAME_IN_MET_FILEDIR_NAMES
+
+export time_lag
 #
 #-----------------------------------------------------------------------
 #
