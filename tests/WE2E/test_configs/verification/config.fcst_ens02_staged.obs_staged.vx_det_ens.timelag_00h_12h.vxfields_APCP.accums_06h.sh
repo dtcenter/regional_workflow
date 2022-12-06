@@ -85,8 +85,3 @@ VX_FIELDS=( "APCP" )
 # VX_APCP_ACCUMS_HRS specifies the accumulation intervals for which to
 # perform vx on accumulated precipitation (APCP).
 VX_APCP_ACCUMS_HRS=( "06" )
-#
-# MET and METplus paths.  Move these to the machine files?
-#
-METPLUS_PATH="/contrib/METplus/METplus-4.1.1"
-MET_INSTALL_DIR="/contrib/met/10.1.1"

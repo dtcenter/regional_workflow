@@ -42,8 +42,3 @@ NDAS_OBS_DIR='$EXPTDIR/obs/ndas/proc'
 # Run deterministic vx on the forecast.
 #
 RUN_TASKS_VXDET="TRUE"
-#
-# MET and METplus paths.  Move these to the machine files?
-#
-METPLUS_PATH="/contrib/METplus/METplus-4.1.1"
-MET_INSTALL_DIR="/contrib/met/10.1.1"

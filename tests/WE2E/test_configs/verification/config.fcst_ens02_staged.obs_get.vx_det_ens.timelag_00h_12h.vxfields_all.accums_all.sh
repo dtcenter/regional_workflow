@@ -81,8 +81,3 @@ ENS_TIME_LAG_HRS=( "0" "12" )
 # case POST_OUTPUT_DOMAIN_NAME is not needed.
 NET='RRFSE_CONUS'
 POST_OUTPUT_DOMAIN_NAME="rrfs_conus_25km"
-#
-# MET and METplus paths.  Move these to the machine files?
-#
-METPLUS_PATH="/contrib/METplus/METplus-4.1.1"
-MET_INSTALL_DIR="/contrib/met/10.1.1"

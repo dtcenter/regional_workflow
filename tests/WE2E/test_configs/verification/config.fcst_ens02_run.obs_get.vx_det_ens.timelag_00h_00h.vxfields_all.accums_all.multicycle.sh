@@ -67,8 +67,3 @@ ENS_TIME_LAG_HRS=( "0" "0" )
 # a default value based on NET and POST_OUTPUT_DOMAIN_NAME (which have
 # their own default values).  Here, we explicitly specify its value.
 VX_FCST_MODEL_NAME="RRFSE_CONUS_25km"
-#
-# MET and METplus paths.  Move these to the machine files?
-#
-METPLUS_PATH="/contrib/METplus/METplus-4.1.1"
-MET_INSTALL_DIR="/contrib/met/10.1.1"
