@@ -1231,7 +1231,7 @@ initial conditions (EXTRN_MDL_NAME_ICS) combination:
       print_err_msg_exit "\
 The non-default location specified by EXTRN_MDL_SYSBASEDIR_ICS does not 
 exist or is not a directory:
-  EXTRN_MDL_NAME_ICS = \"${EXTRN_MDL_NAME_ICS}\""
+  EXTRN_MDL_SYSBASEDIR_ICS = \"${EXTRN_MDL_SYSBASEDIR_ICS}\""
     fi
 
 
