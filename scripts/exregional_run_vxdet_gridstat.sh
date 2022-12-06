@@ -291,13 +291,21 @@ if [ -z "${FHR_LIST}" ]; then
 The list of forecast hours for which to run METplus is empty:
   FHR_LIST = [${FHR_LIST}]"
 else
-  print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
+
   if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
     metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h.conf"
   else
     metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
   fi
+  if [ ! -f "${metplus_config_fp}" ]; then
+    print_err_msg_exit "\
+The METplus configuration file (metplus_config_fp) does not exist or is
+not a regular file:
+  metplus_config_fp = \"${metplus_config_fp}"
+  fi
+
+  print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
   ${METPLUS_PATH}/ush/run_metplus.py \
     -c ${METPLUS_CONF}/common.conf \
     -c ${metplus_config_fp} || \
@@ -305,6 +313,7 @@ Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILE
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+
 fi
 #
 #-----------------------------------------------------------------------

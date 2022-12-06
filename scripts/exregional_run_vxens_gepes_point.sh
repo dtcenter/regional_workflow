@@ -243,9 +243,17 @@ The list of forecast hours for which to run METplus is empty:
 else
 
   if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
+
+    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+    if [ ! -f "${metplus_config_fp}" ]; then
+      print_err_msg_exit "\
+The METplus configuration file (metplus_config_fp) does not exist or is
+not a regular file:
+  metplus_config_fp = \"${metplus_config_fp}"
+    fi
+
     print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GenEnsProd tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-    metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
     ${METPLUS_PATH}/ush/run_metplus.py \
       -c ${METPLUS_CONF}/common.conf \
       -c ${metplus_config_fp} || \
@@ -253,12 +261,21 @@ Calling METplus to run MET's GenEnsProd tool for field(s): ${FIELDNAME_IN_MET_FI
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+
   fi
 
   if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
+
+    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+    if [ ! -f "${metplus_config_fp}" ]; then
+      print_err_msg_exit "\
+The METplus configuration file (metplus_config_fp) does not exist or is
+not a regular file:
+  metplus_config_fp = \"${metplus_config_fp}"
+    fi
+
     print_info_msg "$VERBOSE" "
 Calling METplus to run MET's EnsembleStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-    metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
     ${METPLUS_PATH}/ush/run_metplus.py \
       -c ${METPLUS_CONF}/common.conf \
       -c ${metplus_config_fp} || \
@@ -266,6 +283,7 @@ Calling METplus to run MET's EnsembleStat tool for field(s): ${FIELDNAME_IN_MET_
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+
   fi
 
 fi

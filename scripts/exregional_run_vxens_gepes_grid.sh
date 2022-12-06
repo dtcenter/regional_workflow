@@ -310,15 +310,20 @@ else
 
   if [ "${RUN_GEN_ENS_PROD}" = "TRUE" ]; then
 
-    print_info_msg "$VERBOSE" "
-Calling METplus to run MET's GenEnsProd tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-
     if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
       metplus_config_fp="${METPLUS_CONF}/GenEnsProd_APCPgt01h.conf"
     else
       metplus_config_fp="${METPLUS_CONF}/GenEnsProd_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
     fi
+    if [ ! -f "${metplus_config_fp}" ]; then
+      print_err_msg_exit "\
+The METplus configuration file (metplus_config_fp) does not exist or is
+not a regular file:
+  metplus_config_fp = \"${metplus_config_fp}"
+    fi
 
+    print_info_msg "$VERBOSE" "
+Calling METplus to run MET's GenEnsProd tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
     ${METPLUS_PATH}/ush/run_metplus.py \
       -c ${METPLUS_CONF}/common.conf \
       -c ${metplus_config_fp} || \
@@ -331,15 +336,20 @@ METplus configuration file used is:
 
   if [ "${RUN_ENSEMBLE_STAT}" = "TRUE" ]; then
 
-    print_info_msg "$VERBOSE" "
-Calling METplus to run MET's EnsembleStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
-
     if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
       metplus_config_fp="${METPLUS_CONF}/EnsembleStat_APCPgt01h.conf"
     else
       metplus_config_fp="${METPLUS_CONF}/EnsembleStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
     fi
+    if [ ! -f "${metplus_config_fp}" ]; then
+      print_err_msg_exit "\
+The METplus configuration file (metplus_config_fp) does not exist or is
+not a regular file:
+  metplus_config_fp = \"${metplus_config_fp}"
+    fi
 
+    print_info_msg "$VERBOSE" "
+Calling METplus to run MET's EnsembleStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
     ${METPLUS_PATH}/ush/run_metplus.py \
       -c ${METPLUS_CONF}/common.conf \
       -c ${metplus_config_fp} || \
