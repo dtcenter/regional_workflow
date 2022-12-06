@@ -13,7 +13,11 @@ function file_location() {
   case ${external_model} in
 
     "FV3GFS")
-      location='/scratch1/NCEPDEV/rstprod/com/gfs/prod/gfs.${yyyymmdd}/${hh}/atmos'
+#      location='/scratch1/NCEPDEV/rstprod/com/gfs/prod/gfs.${yyyymmdd}/${hh}/atmos'
+# The "prod" subdirectory has been deleted.  Not sure where the new one
+# is, so for now set it to "para".  This needs to be done because the
+# run_WE2E_tests.sh script checks for the existence of this directory.
+      location='/scratch1/NCEPDEV/rstprod/com/gfs/para/gfs.${yyyymmdd}/${hh}/atmos'
       ;;
 
   esac
