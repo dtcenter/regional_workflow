@@ -310,33 +310,41 @@ settings="\
 #
 # Parameters needed by the job scheduler.
 #
-  'cdate': $CDATE
-  'obs_input_dir': ${OBS_INPUT_DIR}
-  'obs_input_fn_template': ${OBS_INPUT_FN_TEMPLATE}
-  'fcst_input_dir': ${FCST_INPUT_DIR}
-  'fcst_input_fn_template': ${FCST_INPUT_FN_TEMPLATE}
-  'output_base': ${OUTPUT_BASE}
-  'output_dir': ${OUTPUT_DIR}
-  'staging_dir': ${STAGING_DIR}
-  'log_suffix': ${LOG_SUFFIX}
-  'vx_fcst_model_name': ${VX_FCST_MODEL_NAME}
-  'net': ${NET}
-  'fhr_list': ${FHR_LIST}
-  'fieldname_in_obs_input': ${FIELDNAME_IN_OBS_INPUT}
-  'fieldname_in_fcst_input': ${FIELDNAME_IN_FCST_INPUT}
-  'fieldname_in_met_output': ${FIELDNAME_IN_MET_OUTPUT}
-  'fieldname_in_met_filedir_names': ${FIELDNAME_IN_MET_FILEDIR_NAMES}
-  'time_lag': ${time_lag}
-  'field_thresholds': ${FIELD_THRESHOLDS}
-  'accum': ${ACCUM}
-  'obtype': ${OBTYPE}
-  'uscore_ensmem_name_or_null': ${USCORE_ENSMEM_NAME_OR_NULL}
-  'obs_input_fn_template': ${OBS_INPUT_FN_TEMPLATE}
+  'cdate': '$CDATE'
+  'obs_input_dir': '${OBS_INPUT_DIR}'
+  'obs_input_fn_template': '${OBS_INPUT_FN_TEMPLATE}'
+  'fcst_input_dir': '${FCST_INPUT_DIR}'
+  'fcst_input_fn_template': '${FCST_INPUT_FN_TEMPLATE}'
+  'output_base': '${OUTPUT_BASE}'
+  'output_dir': '${OUTPUT_DIR}'
+  'staging_dir': '${STAGING_DIR}'
+  'log_suffix': '${LOG_SUFFIX}'
+  'vx_fcst_model_name': '${VX_FCST_MODEL_NAME}'
+  'net': '${NET}'
+  'fhr_list': '${FHR_LIST}'
+  'fieldname_in_obs_input': '${FIELDNAME_IN_OBS_INPUT}'
+  'fieldname_in_fcst_input': '${FIELDNAME_IN_FCST_INPUT}'
+  'fieldname_in_met_output': '${FIELDNAME_IN_MET_OUTPUT}'
+  'fieldname_in_met_filedir_names': '${FIELDNAME_IN_MET_FILEDIR_NAMES}'
+  'time_lag': '${time_lag}'
+  'field_thresholds': '${FIELD_THRESHOLDS}'
+  'accum': '${ACCUM}'
+  'obtype': '${OBTYPE}'
+  'uscore_ensmem_name_or_null': '${USCORE_ENSMEM_NAME_OR_NULL}'
+  'obs_input_fn_template': '${OBS_INPUT_FN_TEMPLATE}'
 " # End of "settings" variable.
 #
 # Call the python script to generate the METplus configuration file from
 # a jinja template.
 #
+echo
+echo "BBBBBBBBBBBBBBBBBBBBBBBBBBB"
+$USHDIR/test_python.py
+echo
+echo "CCCCCCCCCCCCCCCCCCCCCCCCCCC"
+#module use /scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/ufs-srweather-app/modulefiles
+#module load wflow_hera
+#conda activate regional_workflow
 $USHDIR/fill_jinja_template.py -q \
                                -u "${settings}" \
                                -t ${metplus_config_tmpl_fp} \
@@ -353,7 +361,12 @@ to this script are:
     settings =
 $settings"
 
-
+#echo
+#echo "BBBBBBBBBBBBBBBBBBB"
+##conda deactivate regional_workflow
+#conda deactivate
+#echo
+#echo "CCCCCCCCCCCCCCCCCCC"
 #  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
 #    metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h.conf"
 #  else
@@ -368,7 +381,8 @@ $settings"
 
 echo
 echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-echo "Bye!!!"
+#echo "Bye!!!"
+#exit 1
 
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
