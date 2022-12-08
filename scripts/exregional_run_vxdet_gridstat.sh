@@ -290,99 +290,19 @@ if [ -z "${FHR_LIST}" ]; then
   print_err_msg_exit "\
 The list of forecast hours for which to run METplus is empty:
   FHR_LIST = [${FHR_LIST}]"
-fi
-#
-#-----------------------------------------------------------------------
-#
-#
-#
-#-----------------------------------------------------------------------
-#
-if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-  metplus_config_fn="GridStat_APCPgt01h.conf"
 else
-  metplus_config_fn="GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
-fi
-metplus_config_tmpl_fp="${METPLUS_CONF}/${metplus_config_fn}.tmpl"
-metplus_config_fp="${OUTPUT_DIR}/${metplus_config_fn}"
 
-settings="\
-#
-# Parameters needed by the job scheduler.
-#
-  'cdate': '$CDATE'
-  'obs_input_dir': '${OBS_INPUT_DIR}'
-  'obs_input_fn_template': '${OBS_INPUT_FN_TEMPLATE}'
-  'fcst_input_dir': '${FCST_INPUT_DIR}'
-  'fcst_input_fn_template': '${FCST_INPUT_FN_TEMPLATE}'
-  'output_base': '${OUTPUT_BASE}'
-  'output_dir': '${OUTPUT_DIR}'
-  'staging_dir': '${STAGING_DIR}'
-  'log_suffix': '${LOG_SUFFIX}'
-  'vx_fcst_model_name': '${VX_FCST_MODEL_NAME}'
-  'net': '${NET}'
-  'fhr_list': '${FHR_LIST}'
-  'fieldname_in_obs_input': '${FIELDNAME_IN_OBS_INPUT}'
-  'fieldname_in_fcst_input': '${FIELDNAME_IN_FCST_INPUT}'
-  'fieldname_in_met_output': '${FIELDNAME_IN_MET_OUTPUT}'
-  'fieldname_in_met_filedir_names': '${FIELDNAME_IN_MET_FILEDIR_NAMES}'
-  'time_lag': '${time_lag}'
-  'field_thresholds': '${FIELD_THRESHOLDS}'
-  'accum': '${ACCUM}'
-  'obtype': '${OBTYPE}'
-  'uscore_ensmem_name_or_null': '${USCORE_ENSMEM_NAME_OR_NULL}'
-  'obs_input_fn_template': '${OBS_INPUT_FN_TEMPLATE}'
-" # End of "settings" variable.
-#
-# Call the python script to generate the METplus configuration file from
-# a jinja template.
-#
-echo
-echo "BBBBBBBBBBBBBBBBBBBBBBBBBBB"
-$USHDIR/test_python.py
-echo
-echo "CCCCCCCCCCCCCCCCCCCCCCCCCCC"
-#module use /scratch2/BMC/det/Gerard.Ketefian/UFS_CAM/DTC_ensemble_task/ufs-srweather-app/modulefiles
-#module load wflow_hera
-#conda activate regional_workflow
-$USHDIR/fill_jinja_template.py -q \
-                               -u "${settings}" \
-                               -t ${metplus_config_tmpl_fp} \
-                               -o ${metplus_config_fp} || \
-  print_err_msg_exit "\
-Call to python script fill_jinja_template.py to generate a METplus 
-configuration file from a jinja template failed.  Parameters passed
-to this script are:
-  Full path to template METplus configuration file:
-    metplus_config_tmpl_fp = \"${metplus_config_tmpl_fp}\"
-  Full path to output METplus configuration file:
-    metplus_config_fp = \"${metplus_config_fp}\"
-  Namelist settings specified on command line:
-    settings =
-$settings"
-
-#echo
-#echo "BBBBBBBBBBBBBBBBBBB"
-##conda deactivate regional_workflow
-#conda deactivate
-#echo
-#echo "CCCCCCCCCCCCCCCCCCC"
-#  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
-#    metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h.conf"
-#  else
-#    metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
-#  fi
-#  if [ ! -f "${metplus_config_fp}" ]; then
-#    print_err_msg_exit "\
-#The METplus configuration file (metplus_config_fp) does not exist or is
-#not a regular file:
-#  metplus_config_fp = \"${metplus_config_fp}"
-#  fi
-
-echo
-echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-#echo "Bye!!!"
-#exit 1
+  if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
+    metplus_config_fp="${METPLUS_CONF}/GridStat_APCPgt01h.conf"
+  else
+    metplus_config_fp="${METPLUS_CONF}/GridStat_${FIELDNAME_IN_MET_FILEDIR_NAMES}.conf"
+  fi
+  if [ ! -f "${metplus_config_fp}" ]; then
+    print_err_msg_exit "\
+The METplus configuration file (metplus_config_fp) does not exist or is
+not a regular file:
+  metplus_config_fp = \"${metplus_config_fp}"
+  fi
 
   print_info_msg "$VERBOSE" "
 Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILEDIR_NAMES}"
@@ -393,6 +313,8 @@ Calling METplus to run MET's GridStat tool for field(s): ${FIELDNAME_IN_MET_FILE
 Call to METplus failed with return code: $?
 METplus configuration file used is:
   metplus_config_fp = \"${metplus_config_fp}\""
+
+fi
 #
 #-----------------------------------------------------------------------
 #

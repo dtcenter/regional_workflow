@@ -49,6 +49,10 @@ NDAS_OBS_DIR='$EXPTDIR/obs/ndas/proc'
 IS_ENS_FCST="TRUE"
 NUM_ENS_MEMBERS="2"
 #
+# Turn on stochastic physics so that the members are not identical.
+#
+DO_SPPT="TRUE"
+#
 # Run deterministic vx on each member of the forecast ensemble.
 #
 RUN_TASKS_VXDET="TRUE"
