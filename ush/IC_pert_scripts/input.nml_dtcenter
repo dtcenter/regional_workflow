@@ -8,10 +8,12 @@
 /
 
 &atmos_model_nml
+    avg_max_length = 3600.0
     blocksize = 32
     ccpp_suite = 'FV3_HRRR'
     chksum_debug = .false.
     dycore_only = .false.
+    ignore_rst_cksum = .true.
 /
 
 &cires_ugwp_nml
@@ -64,7 +66,7 @@
     d2_bg_k1 = 0.2
     d2_bg_k2 = 0.04
     d4_bg = 0.12
-    d_con = 1.0
+    d_con = 0.5
     d_ext = 0.0
     dddmp = 0.1
     delt_max = 0.008
@@ -73,7 +75,7 @@
     do_schmidt = .true.
     do_vort_damp = .true.
     dwind_2d = .false.
-    dz_min = 2
+    dz_min = 2.0
     external_eta = .true.
     external_ic = .true.
     fill = .true.
@@ -81,14 +83,14 @@
     fv_debug = .false.
     fv_sg_adj = 300
     gfs_phil = .false.
-    hord_dp = -5
-    hord_mt = 5
-    hord_tm = 5
+    hord_dp = 6
+    hord_mt = 6
+    hord_tm = 6
     hord_tr = 10
-    hord_vt = 5
+    hord_vt = 6
     hydrostatic = .false.
     io_layout = 1, 1
-    k_split = 2
+    k_split = 6
     ke_bg = 0.0
     kord_mt = 9
     kord_tm = -9
@@ -97,19 +99,19 @@
     layout = 30, 16
     make_nh = .true.
     mountain = .false.
-    n_split = 5
-    n_sponge = 24
+    n_split = 3
+    n_sponge = 9
     n_zs_filter = 0
     na_init = 1
     ncep_ic = .false.
     nggps_ic = .true.
     no_dycore = .false.
     nord = 3
-    nord_tr = 2
+    nord_tr = 0
     npx = 1749
     npy = 1039
     npz = 64
-    nrows_blend = 10
+    nrows_blend = 20
     ntiles = 1
     nudge_qv = .false.
     nwat = 6
@@ -124,6 +126,7 @@
     res_latlon_dynamics = 'fv3_increment.nc'
     reset_eta = .false.
     rf_cutoff = 2000.0
+    sg_cutoff = 10000.0
     stretch_fac = 0.999
     target_lat = 38.5
     target_lon = -97.5
@@ -140,6 +143,9 @@
 /
 
 &gfs_physics_nml
+    addsmoke_flag = 1
+    aero_dir_fdb = .false.
+    aero_ind_fdb = .false.
     bl_mynn_edmf = 1
     bl_mynn_edmf_mom = 1
     bl_mynn_tkeadvect = .true.
@@ -149,6 +155,7 @@
     cnvgwd = .false.
     cplflx = .false.
     debug = .false.
+    diag_flux = .false.
     do_deep = .false.
     do_gsl_drag_ls_bl = .true.
     do_gsl_drag_ss = .true.
@@ -159,24 +166,37 @@
     do_skeb = .false.
     do_spp = .false.
     do_sppt = .false.
+    do_plumerise = .true.
+    do_tofd = .false.
+    do_ugwp = .false.
+    do_ugwp_v0 = .false.
+    do_ugwp_v0_nst_only = .false.
+    do_ugwp_v0_orog_only = .false.
+    drydep_opt = 1
     dspheat = .true.
+    dt_inner = 20
+    dust_alpha = 0.05
+    dust_gamma = 1.3
+    dust_opt = 5
     effr_in = .true.
-    fhcyc = 0
-    fhlwr = 1200.0
-    fhswr = 1200.0
+    enh_mix = .true.
+    fhcyc = 0.0
+    fhlwr = 900.0
+    fhswr = 900.0
     fhzero = 1.0
     gwd_opt = 3
     h2o_phys = .true.
     hybedmf = .false.
-    iaer = 5111
-    ialb = 1
+    iaer = 1011
+    ialb = 2
     iau_delthrs = 6
     iau_inc_files = ''
     iaufhrs = 30
+    iccn = 2
     icliq_sw = 2
     icloud_bl = 1
     ico2 = 2
-    iems = 1
+    iems = 2
     imfdeepcnv = -1
     imfshalcnv = -1
     imp_physics = 8
@@ -200,34 +220,43 @@
     ivegsrc = 1
     kice = 9
     ldiag3d = .false.
+    ldiag_ugwp = .false.
+    lgfdlmprad = .false.
     lheatstrg = .false.
-    lndp_each_step = .true.
-    lndp_type = 0
     lradar = .true.
+    lrefres = .true.
     lsm = 3
     lsoil = 9
     lsoil_lsm = 9
     ltaerosol = .true.
     lwhtr = .true.
+    mix_chem = .true.
     n_var_lndp = 0
     n_var_spp = 0
     nsradar_reset = 3600
-    nst_anl = .true.
-    nstf_name = 2, 1, 0, 0, 0
     oz_phys = .false.
     oz_phys_2015 = .true.
     pdfcld = .false.
+    plumerisefire_frq = 60
     pre_rad = .false.
-    print_diff_pgr = .false.
+    print_diff_pgr = .true.
     prslrd0 = 0.0
     random_clds = .false.
     redrag = .true.
+    rrfs_sd = .false.
+    rrfs_smoke_debug = .false.
     satmedmf = .false.
+    seas_opt = 0
+    sfclay_compute_flux = .true.
     shal_cnv = .false.
+    smoke_forecast = 0
     swhtr = .true.
+    thsfc_loc = .false.
     trans_trac = .true.
     ttendlim = -999
     use_ufo = .true.
+    wetdep_ls_alpha = 0.5
+    wetdep_ls_opt = 1
 /
 
 &interpolator_nml
