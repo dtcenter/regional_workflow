@@ -1,0 +1,21 @@
+Steps for running the SRW app workflow to add 30h GEFS forecast derived perturbations to an RRFS-like ensemble
+
+1*. Generate the 10-member ensemble workflow with HRRR ICs, which is the RRFS analog
+    -can be run through make_ics
+
+1. generate workflow x9 with GFS IC, otherwise same as HRRR IC run
+    -run only get_extrn_ics
+
+2. use cp_gefs_ics.sh to replace the GFS IC files with staged GEFS 30h forecasts
+    -run through make_ics
+
+3. Calculate the gefs IC perturbations with calc_perts.sh
+    -applies to gfs_data, gfs_bndy (f000), and sfc_data
+
+4. Use add_soil_layers.sh to interpolate the 4 layer NOAH LSM (GFS) soil variables in sfc_data to 9 levels as in RUC LSM (HRRR)
+
+5. use apply_perts.sh to add the perturbations to the HRRR_ICs
+
+6. continue running the "RRFS" ensemble workflow
+
+
