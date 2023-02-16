@@ -1,0 +1,624 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>diff</title>
+<meta name="Generator" content="Vim/7.4">
+<meta name="plugin-version" content="vim7.4_v1">
+<meta name="settings" content="number_lines,whole_filler,use_css,no_foldcolumn,expand_tabs,line_ids,prevent_copy=">
+<meta name="colorscheme" content="none">
+<style type="text/css">
+<!--
+pre { font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+* { font-size: 1em; }
+.LineNr { color: #af5f00; }
+.Folded { color: #0000c0; background-color: #a8a8a8; padding-bottom: 1px; }
+.DiffAdd { background-color: #ffd7d7; padding-bottom: 1px; }
+.DiffChange { background-color: #ffd7ff; padding-bottom: 1px; }
+.DiffDelete { color: #8080ff; background-color: #afffff; padding-bottom: 1px; }
+.DiffText { background-color: #ff6060; padding-bottom: 1px; font-weight: bold; }
+-->
+<!--
+table { table-layout: fixed; }
+html, body, table, tbody { width: 100%; margin: 0; padding: 0; }
+th, td { width: 50.0%; }
+td div { overflow: auto; }
+-->
+</style>
+<script type='text/javascript'>
+<!--
+
+/* function to open any folds containing a jumped-to line before jumping to it */
+function JumpToLine()
+{
+  var lineNum;
+  lineNum = window.location.hash;
+  lineNum = lineNum.substr(1); /* strip off '#' */
+
+  if (lineNum.indexOf('L') == -1) {
+    lineNum = 'L'+lineNum;
+  }
+  if (lineNum.indexOf('W') == -1) {
+    lineNum = 'W1'+lineNum;
+  }
+  lineElem = document.getElementById(lineNum);
+  /* Always jump to new location even if the line was hidden inside a fold, or
+   * we corrected the raw number to a line ID.
+   */
+  if (lineElem) {
+    lineElem.scrollIntoView(true);
+  }
+  return true;
+}
+if ('onhashchange' in window) {
+  window.onhashchange = JumpToLine;
+}
+
+-->
+</script>
+</head>
+<body onload='JumpToLine();'>
+<table border='1' width='100%' id='vimCodeElement'>
+<tr>
+<th>input.nml_BaselineE</th>
+<th>input.nml_dtcenter</th>
+</tr><tr>
+<td valign="top"><div>
+<pre>
+<span id="W1L1" class="Folded">  1 </span><span class="Folded">+--  4 lines: &amp;amip_interp_nml-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L5" class="LineNr">  5 </span>    no_anom_sst = .false.
+<span id="W1L6" class="LineNr">  6 </span>    use_ncep_ice = .false.
+<span id="W1L7" class="LineNr">  7 </span>    use_ncep_sst = .true.
+<span id="W1L8" class="LineNr">  8 </span>/
+<span id="W1L9" class="LineNr">  9 </span>
+<span id="W1L10" class="LineNr"> 10 </span>&amp;atmos_model_nml
+<span id="W1L11" class="LineNr"> 11 </span><span class="DiffAdd">    avg_max_length = 3600.0</span><span class="DiffAdd">                                                                                                                                                                                                                </span>
+<span id="W1L12" class="LineNr"> 12 </span>    blocksize = 32
+<span id="W1L13" class="LineNr"> 13 </span>    ccpp_suite = 'FV3_HRRR'
+<span id="W1L14" class="LineNr"> 14 </span>    chksum_debug = .false.
+<span id="W1L15" class="LineNr"> 15 </span>    dycore_only = .false.
+<span id="W1L16" class="LineNr"> 16 </span><span class="DiffAdd">    ignore_rst_cksum = .true.</span><span class="DiffAdd">                                                                                                                                                                                                              </span>
+<span id="W1L17" class="LineNr"> 17 </span>/
+<span id="W1L18" class="LineNr"> 18 </span>
+<span id="W1L19" class="LineNr"> 19 </span>&amp;cires_ugwp_nml
+<span id="W1L20" class="LineNr"> 20 </span>    knob_ugwp_azdir = 2, 4, 4, 4
+<span id="W1L21" class="LineNr"> 21 </span>    knob_ugwp_doaxyz = 1
+<span id="W1L22" class="LineNr"> 22 </span>    knob_ugwp_doheat = 1
+<span id="W1L23" class="Folded"> 23 </span><span class="Folded">+-- 13 lines: knob_ugwp_dokdis = 1-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L36" class="LineNr"> 36 </span>/
+<span id="W1L37" class="LineNr"> 37 </span>
+<span id="W1L38" class="LineNr"> 38 </span>&amp;external_ic_nml
+<span id="W1L39" class="LineNr"> 39 </span>    checker_tr = .false.
+<span id="W1L40" class="LineNr"> 40 </span>    filtered_terrain = .true.
+<span id="W1L41" class="LineNr"> 41 </span>    gfs_dwinds = .true.
+<span id="W1L42" class="LineNr"> 42 </span><span class="DiffChange">    levp = 6</span><span class="DiffText">6</span><span class="DiffChange">                                                                                                                                                                                                                              </span>
+<span id="W1L43" class="LineNr"> 43 </span>    nt_checker = 0
+<span id="W1L44" class="LineNr"> 44 </span>/
+<span id="W1L45" class="LineNr"> 45 </span>
+<span id="W1L46" class="LineNr"> 46 </span><span class="DiffAdd">&amp;fms2_io_nml</span><span class="DiffAdd">                                                                                                                                                                                                                               </span>
+<span id="W1L47" class="LineNr"> 47 </span><span class="DiffAdd">    netcdf_default_format = 'netcdf4'</span><span class="DiffAdd">                                                                                                                                                                                                      </span>
+<span id="W1L48" class="LineNr"> 48 </span><span class="DiffAdd">/</span><span class="DiffAdd">                                                                                                                                                                                                                                          </span>
+<span id="W1L49" class="LineNr"> 49 </span><span class="DiffAdd"> </span><span class="DiffAdd">                                                                                                                                                                                                                                          </span>
+<span id="W1L50" class="LineNr"> 50 </span>&amp;fms_io_nml
+<span id="W1L51" class="LineNr"> 51 </span>    checksum_required = .false.
+<span id="W1L52" class="LineNr"> 52 </span>    max_files_r = 100
+<span id="W1L53" class="LineNr"> 53 </span>    max_files_w = 100
+<span id="W1L54" class="LineNr"> 54 </span>/
+<span id="W1L55" class="LineNr"> 55 </span>
+<span id="W1L56" class="Folded"> 56 </span><span class="Folded">+--  3 lines: &amp;fms_nml-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L59" class="LineNr"> 59 </span>    print_memory_usage = .false.
+<span id="W1L60" class="LineNr"> 60 </span>/
+<span id="W1L61" class="LineNr"> 61 </span>
+<span id="W1L62" class="LineNr"> 62 </span>&amp;fv_core_nml
+<span id="W1L63" class="LineNr"> 63 </span>    a_imp = 1.0
+<span id="W1L64" class="LineNr"> 64 </span>    adjust_dry_mass = .false.
+<span id="W1L65" class="LineNr"> 65 </span><span class="DiffChange">    bc_update_interval = </span><span class="DiffText">1</span><span class="DiffChange">                                                                                                                                                                                                                 </span>
+<span id="W1L66" class="LineNr"> 66 </span>    beta = 0.0
+<span id="W1L67" class="LineNr"> 67 </span>    consv_am = .false.
+<span id="W1L68" class="LineNr"> 68 </span>    consv_te = 0.0
+<span id="W1L69" class="LineNr"> 69 </span>    d2_bg = 0.0
+<span id="W1L70" class="LineNr"> 70 </span>    d2_bg_k1 = 0.2
+<span id="W1L71" class="LineNr"> 71 </span>    d2_bg_k2 = 0.04
+<span id="W1L72" class="LineNr"> 72 </span>    d4_bg = 0.12
+<span id="W1L73" class="LineNr"> 73 </span><span class="DiffChange">    d_con = </span><span class="DiffText">0.5</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L74" class="LineNr"> 74 </span>    d_ext = 0.0
+<span id="W1L75" class="LineNr"> 75 </span>    dddmp = 0.1
+<span id="W1L76" class="LineNr"> 76 </span>    delt_max = 0.008
+<span id="W1L77" class="LineNr"> 77 </span>    dnats = 0
+<span id="W1L78" class="LineNr"> 78 </span>    do_sat_adj = .false.
+<span id="W1L79" class="LineNr"> 79 </span>    do_schmidt = .true.
+<span id="W1L80" class="LineNr"> 80 </span>    do_vort_damp = .true.
+<span id="W1L81" class="LineNr"> 81 </span>    dwind_2d = .false.
+<span id="W1L82" class="LineNr"> 82 </span><span class="DiffChange">    dz_min = 2</span><span class="DiffText">.0</span><span class="DiffChange">                                                                                                                                                                                                                           </span>
+<span id="W1L83" class="LineNr"> 83 </span>    external_eta = .true.
+<span id="W1L84" class="LineNr"> 84 </span>    external_ic = .true.
+<span id="W1L85" class="LineNr"> 85 </span>    fill = .true.
+<span id="W1L86" class="LineNr"> 86 </span>    full_zs_filter = .false.
+<span id="W1L87" class="LineNr"> 87 </span>    fv_debug = .false.
+<span id="W1L88" class="LineNr"> 88 </span>    fv_sg_adj = 300
+<span id="W1L89" class="LineNr"> 89 </span>    gfs_phil = .false.
+<span id="W1L90" class="LineNr"> 90 </span><span class="DiffChange">    hord_dp = </span><span class="DiffText">6</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L91" class="LineNr"> 91 </span><span class="DiffChange">    hord_mt = </span><span class="DiffText">6</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L92" class="LineNr"> 92 </span><span class="DiffChange">    hord_tm = </span><span class="DiffText">6</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L93" class="LineNr"> 93 </span>    hord_tr = 10
+<span id="W1L94" class="LineNr"> 94 </span><span class="DiffChange">    hord_vt = </span><span class="DiffText">6</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L95" class="LineNr"> 95 </span>    hydrostatic = .false.
+<span id="W1L96" class="LineNr"> 96 </span>    io_layout = 1, 1
+<span id="W1L97" class="LineNr"> 97 </span><span class="DiffChange">    k_split = </span><span class="DiffText">6</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L98" class="LineNr"> 98 </span>    ke_bg = 0.0
+<span id="W1L99" class="LineNr"> 99 </span>    kord_mt = 9
+<span id="W1L100" class="LineNr">100 </span>    kord_tm = -9
+<span id="W1L101" class="LineNr">101 </span>    kord_tr = 9
+<span id="W1L102" class="LineNr">102 </span>    kord_wz = 9
+<span id="W1L103" class="LineNr">103 </span>    layout = 30, 16
+<span id="W1L104" class="LineNr">104 </span>    make_nh = .true.
+<span id="W1L105" class="LineNr">105 </span>    mountain = .false.
+<span id="W1L106" class="LineNr">106 </span><span class="DiffChange">    n_split = </span><span class="DiffText">3</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L107" class="LineNr">107 </span><span class="DiffChange">    n_sponge = </span><span class="DiffText">9</span><span class="DiffChange">                                                                                                                                                                                                                           </span>
+<span id="W1L108" class="LineNr">108 </span>    n_zs_filter = 0
+<span id="W1L109" class="LineNr">109 </span>    na_init = 1
+<span id="W1L110" class="LineNr">110 </span>    ncep_ic = .false.
+<span id="W1L111" class="LineNr">111 </span>    nggps_ic = .true.
+<span id="W1L112" class="LineNr">112 </span>    no_dycore = .false.
+<span id="W1L113" class="LineNr">113 </span>    nord = 3
+<span id="W1L114" class="LineNr">114 </span><span class="DiffChange">    nord_tr = </span><span class="DiffText">0</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W1L115" class="LineNr">115 </span><span class="DiffChange">    npx = 1</span><span class="DiffText">821</span><span class="DiffChange">                                                                                                                                                                                                                             </span>
+<span id="W1L116" class="LineNr">116 </span><span class="DiffChange">    npy = 10</span><span class="DiffText">93</span><span class="DiffChange">                                                                                                                                                                                                                             </span>
+<span id="W1L117" class="LineNr">117 </span><span class="DiffChange">    npz = 6</span><span class="DiffText">5</span><span class="DiffChange">                                                                                                                                                                                                                               </span>
+<span id="W1L118" class="LineNr">118 </span><span class="DiffChange">    nrows_blend = </span><span class="DiffText">2</span><span class="DiffChange">0                                                                                                                                                                                                                       </span>
+<span id="W1L119" class="LineNr">119 </span>    ntiles = 1
+<span id="W1L120" class="LineNr">120 </span>    nudge_qv = .false.
+<span id="W1L121" class="LineNr">121 </span>    nwat = 6
+<span id="W1L122" class="LineNr">122 </span>    p_fac = 0.1
+<span id="W1L123" class="LineNr">123 </span>    phys_hydrostatic = .false.
+<span id="W1L124" class="LineNr">124 </span>    print_freq = 6
+<span id="W1L125" class="LineNr">125 </span>    psm_bc = 1
+<span id="W1L126" class="LineNr">126 </span><span class="DiffChange">    range_warn = .</span><span class="DiffText">fals</span><span class="DiffChange">e.                                                                                                                                                                                                                   </span>
+<span id="W1L127" class="LineNr">127 </span>    read_increment = .false.
+<span id="W1L128" class="LineNr">128 </span>    regional = .true.
+<span id="W1L129" class="LineNr">129 </span>    regional_bcs_from_gsi = .false.
+<span id="W1L130" class="LineNr">130 </span>    res_latlon_dynamics = 'fv3_increment.nc'
+<span id="W1L131" class="LineNr">131 </span>    reset_eta = .false.
+<span id="W1L132" class="LineNr">132 </span>    rf_cutoff = 2000.0
+<span id="W1L133" class="LineNr">133 </span><span class="DiffAdd">    sg_cutoff = 10000.0</span><span class="DiffAdd">                                                                                                                                                                                                                    </span>
+<span id="W1L134" class="LineNr">134 </span>    stretch_fac = 0.999
+<span id="W1L135" class="LineNr">135 </span>    target_lat = 38.5
+<span id="W1L136" class="LineNr">136 </span>    target_lon = -97.5
+<span id="W1L137" class="LineNr">137 </span>    tau = 5.0
+<span id="W1L138" class="LineNr">138 </span>    use_hydro_pressure = .false.
+<span id="W1L139" class="LineNr">139 </span>    vtdm4 = 0.02
+<span id="W1L140" class="Folded">140 </span><span class="Folded">+--  4 lines: warm_start = .false.-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L144" class="LineNr">144 </span>
+<span id="W1L145" class="LineNr">145 </span>&amp;fv_grid_nml
+<span id="W1L146" class="LineNr">146 </span>    grid_file = 'INPUT/grid_spec.nc'
+<span id="W1L147" class="LineNr">147 </span>/
+<span id="W1L148" class="LineNr">148 </span>
+<span id="W1L149" class="LineNr">149 </span>&amp;gfs_physics_nml
+<span id="W1L150" class="LineNr">150 </span><span class="DiffAdd">    addsmoke_flag = 1</span><span class="DiffAdd">                                                                                                                                                                                                                      </span>
+<span id="W1L151" class="LineNr">151 </span><span class="DiffAdd">    aero_dir_fdb = .false.</span><span class="DiffAdd">                                                                                                                                                                                                                 </span>
+<span id="W1L152" class="LineNr">152 </span><span class="DiffAdd">    aero_ind_fdb = .false.</span><span class="DiffAdd">                                                                                                                                                                                                                 </span>
+<span id="W1L153" class="LineNr">153 </span>    bl_mynn_edmf = 1
+<span id="W1L154" class="LineNr">154 </span>    bl_mynn_edmf_mom = 1
+<span id="W1L155" class="LineNr">155 </span>    bl_mynn_tkeadvect = .true.
+<span id="W1L156" class="LineNr">156 </span>    cal_pre = .false.
+<span id="W1L157" class="LineNr">157 </span>    cdmbgwd = 3.5, 1.0
+<span id="W1L158" class="LineNr">158 </span>    cnvcld = .false.
+<span id="W1L159" class="LineNr">159 </span>    cnvgwd = .false.
+<span id="W1L160" class="LineNr">160 </span>    cplflx = .false.
+<span id="W1L161" class="LineNr">161 </span>    debug = .false.
+<span id="W1L162" class="LineNr">162 </span><span class="DiffAdd">    diag_flux = .false.</span><span class="DiffAdd">                                                                                                                                                                                                                    </span>
+<span id="W1L163" class="LineNr">163 </span>    do_deep = .false.
+<span id="W1L164" class="LineNr">164 </span>    do_gsl_drag_ls_bl = .true.
+<span id="W1L165" class="LineNr">165 </span>    do_gsl_drag_ss = .true.
+<span id="W1L166" class="LineNr">166 </span>    do_gsl_drag_tofd = .true.
+<span id="W1L167" class="LineNr">167 </span>    do_mynnedmf = .true.
+<span id="W1L168" class="LineNr">168 </span>    do_mynnsfclay = .true.
+<span id="W1L169" class="LineNr">169 </span><span class="DiffChange">    do_</span><span class="DiffText">plumerise = .tru</span><span class="DiffChange">e.                                                                                                                                                                                                                  </span>
+<span id="W1L170" class="LineNr">170 </span><span class="DiffChange">    do_</span><span class="DiffText">tofd</span><span class="DiffChange"> = .false.                                                                                                                                                                                                                      </span>
+<span id="W1L171" class="LineNr">171 </span><span class="DiffChange">    do_</span><span class="DiffText">ugw</span><span class="DiffChange">p = .false.                                                                                                                                                                                                                      </span>
+<span id="W1L172" class="LineNr">172 </span><span class="DiffChange">    do_</span><span class="DiffText">ugwp_v0</span><span class="DiffChange"> = .false.                                                                                                                                                                                                                   </span>
+<span id="W1L173" class="LineNr">173 </span><span class="DiffAdd">    do_ugwp_v0_nst_only = .false.</span><span class="DiffAdd">                                                                                                                                                                                                          </span>
+<span id="W1L174" class="LineNr">174 </span><span class="DiffAdd">    do_ugwp_v0_orog_only = .false.</span><span class="DiffAdd">                                                                                                                                                                                                         </span>
+<span id="W1L175" class="LineNr">175 </span><span class="DiffAdd">    drydep_opt = 1</span><span class="DiffAdd">                                                                                                                                                                                                                         </span>
+<span id="W1L176" class="LineNr">176 </span>    dspheat = .true.
+<span id="W1L177" class="LineNr">177 </span><span class="DiffAdd">    dt_inner = 20</span><span class="DiffAdd">                                                                                                                                                                                                                          </span>
+<span id="W1L178" class="LineNr">178 </span><span class="DiffAdd">    dust_alpha = 0.05</span><span class="DiffAdd">                                                                                                                                                                                                                      </span>
+<span id="W1L179" class="LineNr">179 </span><span class="DiffAdd">    dust_gamma = 1.3</span><span class="DiffAdd">                                                                                                                                                                                                                       </span>
+<span id="W1L180" class="LineNr">180 </span><span class="DiffAdd">    dust_opt = 5</span><span class="DiffAdd">                                                                                                                                                                                                                           </span>
+<span id="W1L181" class="LineNr">181 </span>    effr_in = .true.
+<span id="W1L182" class="LineNr">182 </span><span class="DiffChange">    </span><span class="DiffText">enh_mix = .true.</span><span class="DiffChange">                                                                                                                                                                                                                       </span>
+<span id="W1L183" class="LineNr">183 </span><span class="DiffChange">    fh</span><span class="DiffText">cyc = </span><span class="DiffChange">0.0                                                                                                                                                                                                                            </span>
+<span id="W1L184" class="LineNr">184 </span><span class="DiffChange">    fh</span><span class="DiffText">lwr = 9</span><span class="DiffChange">00.0                                                                                                                                                                                                                          </span>
+<span id="W1L185" class="LineNr">185 </span><span class="DiffAdd">    fhswr = 900.0</span><span class="DiffAdd">                                                                                                                                                                                                                          </span>
+<span id="W1L186" class="LineNr">186 </span>    fhzero = 1.0
+<span id="W1L187" class="LineNr">187 </span>    gwd_opt = 3
+<span id="W1L188" class="LineNr">188 </span>    h2o_phys = .true.
+<span id="W1L189" class="LineNr">189 </span>    hybedmf = .false.
+<span id="W1L190" class="LineNr">190 </span><span class="DiffChange">    iaer = </span><span class="DiffText">10</span><span class="DiffChange">11                                                                                                                                                                                                                            </span>
+<span id="W1L191" class="LineNr">191 </span><span class="DiffChange">    ialb = </span><span class="DiffText">2</span><span class="DiffChange">                                                                                                                                                                                                                               </span>
+<span id="W1L192" class="LineNr">192 </span>    iau_delthrs = 6
+<span id="W1L193" class="LineNr">193 </span>    iau_inc_files = ''
+<span id="W1L194" class="LineNr">194 </span>    iaufhrs = 30
+<span id="W1L195" class="LineNr">195 </span><span class="DiffAdd">    iccn = 2</span><span class="DiffAdd">                                                                                                                                                                                                                               </span>
+<span id="W1L196" class="LineNr">196 </span>    icliq_sw = 2
+<span id="W1L197" class="LineNr">197 </span>    icloud_bl = 1
+<span id="W1L198" class="LineNr">198 </span>    ico2 = 2
+<span id="W1L199" class="LineNr">199 </span><span class="DiffChange">    iems = </span><span class="DiffText">2</span><span class="DiffChange">                                                                                                                                                                                                                               </span>
+<span id="W1L200" class="LineNr">200 </span>    imfdeepcnv = -1
+<span id="W1L201" class="LineNr">201 </span>    imfshalcnv = -1
+<span id="W1L202" class="LineNr">202 </span>    imp_physics = 8
+<span id="W1L203" class="LineNr">203 </span>    iopt_alb = 2
+<span id="W1L204" class="LineNr">204 </span>    iopt_btr = 1
+<span id="W1L205" class="LineNr">205 </span>    iopt_crs = 1
+<span id="W1L206" class="Folded">206 </span><span class="Folded">+-- 11 lines: iopt_dveg = 2--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L217" class="LineNr">217 </span>    isot = 1
+<span id="W1L218" class="LineNr">218 </span>    isubc_lw = 2
+<span id="W1L219" class="LineNr">219 </span>    isubc_sw = 2
+<span id="W1L220" class="LineNr">220 </span>    ivegsrc = 1
+<span id="W1L221" class="LineNr">221 </span>    kice = 9
+<span id="W1L222" class="LineNr">222 </span>    ldiag3d = .false.
+<span id="W1L223" class="LineNr">223 </span><span class="DiffAdd">    ldiag_ugwp = .false.</span><span class="DiffAdd">                                                                                                                                                                                                                   </span>
+<span id="W1L224" class="LineNr">224 </span><span class="DiffAdd">    lgfdlmprad = .false.</span><span class="DiffAdd">                                                                                                                                                                                                                   </span>
+<span id="W1L225" class="LineNr">225 </span>    lheatstrg = .false.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L226" class="LineNr">226 </span>    lradar = .true.
+<span id="W1L227" class="LineNr">227 </span><span class="DiffAdd">    lrefres = .true.</span><span class="DiffAdd">                                                                                                                                                                                                                       </span>
+<span id="W1L228" class="LineNr">228 </span>    lsm = 3
+<span id="W1L229" class="LineNr">229 </span><span class="DiffChange">    lsoil = </span><span class="DiffText">4</span><span class="DiffChange">                                                                                                                                                                                                                              </span>
+<span id="W1L230" class="LineNr">230 </span>    lsoil_lsm = 9
+<span id="W1L231" class="LineNr">231 </span>    ltaerosol = .true.
+<span id="W1L232" class="LineNr">232 </span>    lwhtr = .true.
+<span id="W1L233" class="LineNr">233 </span><span class="DiffChange">    </span><span class="DiffText">mix_chem = .true.</span><span class="DiffChange">                                                                                                                                                                                                                      </span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L234" class="LineNr">234 </span>    nsradar_reset = 3600
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L235" class="LineNr">235 </span>    oz_phys = .false.
+<span id="W1L236" class="LineNr">236 </span>    oz_phys_2015 = .true.
+<span id="W1L237" class="LineNr">237 </span>    pdfcld = .false.
+<span id="W1L238" class="LineNr">238 </span><span class="DiffAdd">    plumerisefire_frq = 60</span><span class="DiffAdd">                                                                                                                                                                                                                 </span>
+<span id="W1L239" class="LineNr">239 </span>    pre_rad = .false.
+<span id="W1L240" class="LineNr">240 </span><span class="DiffChange">    print_diff_pgr = .</span><span class="DiffText">tru</span><span class="DiffChange">e.                                                                                                                                                                                                                </span>
+<span id="W1L241" class="LineNr">241 </span>    prslrd0 = 0.0
+<span id="W1L242" class="LineNr">242 </span>    random_clds = .false.
+<span id="W1L243" class="LineNr">243 </span>    redrag = .true.
+<span id="W1L244" class="LineNr">244 </span><span class="DiffAdd">    rrfs_sd = .false.</span><span class="DiffAdd">                                                                                                                                                                                                                      </span>
+<span id="W1L245" class="LineNr">245 </span><span class="DiffAdd">    rrfs_smoke_debug = .false.</span><span class="DiffAdd">                                                                                                                                                                                                             </span>
+<span id="W1L246" class="LineNr">246 </span>    satmedmf = .false.
+<span id="W1L247" class="LineNr">247 </span><span class="DiffAdd">    seas_opt = 0</span><span class="DiffAdd">                                                                                                                                                                                                                           </span>
+<span id="W1L248" class="LineNr">248 </span><span class="DiffAdd">    sfclay_compute_flux = .true.</span><span class="DiffAdd">                                                                                                                                                                                                           </span>
+<span id="W1L249" class="LineNr">249 </span>    shal_cnv = .false.
+<span id="W1L250" class="LineNr">250 </span><span class="DiffAdd">    smoke_forecast = 0</span><span class="DiffAdd">                                                                                                                                                                                                                     </span>
+<span id="W1L251" class="LineNr">251 </span>    swhtr = .true.
+<span id="W1L252" class="LineNr">252 </span><span class="DiffAdd">    thsfc_loc = .false.</span><span class="DiffAdd">                                                                                                                                                                                                                    </span>
+<span id="W1L253" class="LineNr">253 </span>    trans_trac = .true.
+<span id="W1L254" class="LineNr">254 </span>    ttendlim = -999
+<span id="W1L255" class="LineNr">255 </span>    use_ufo = .true.
+<span id="W1L256" class="LineNr">256 </span><span class="DiffAdd">    wetdep_ls_alpha = 0.5</span><span class="DiffAdd">                                                                                                                                                                                                                  </span>
+<span id="W1L257" class="LineNr">257 </span><span class="DiffAdd">    wetdep_ls_opt = 1</span><span class="DiffAdd">                                                                                                                                                                                                                      </span>
+<span id="W1L258" class="LineNr">258 </span>/
+<span id="W1L259" class="LineNr">259 </span>
+<span id="W1L260" class="LineNr">260 </span>&amp;interpolator_nml
+<span id="W1L261" class="LineNr">261 </span>    interp_method = 'conserve_great_circle'
+<span id="W1L262" class="LineNr">262 </span>/
+<span id="W1L263" class="LineNr">263 </span>
+<span id="W1L264" class="Folded">264 </span><span class="Folded">+--  7 lines: &amp;nam_sfcperts--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W1L271" class="LineNr">271 </span>/
+<span id="W1L272" class="LineNr">272 </span>
+<span id="W1L273" class="LineNr">273 </span>&amp;namsfc
+<span id="W1L274" class="LineNr">274 </span>    fabsl = 99999
+<span id="W1L275" class="LineNr">275 </span>    faisl = 99999
+<span id="W1L276" class="LineNr">276 </span>    faiss = 99999
+<span id="W1L277" class="LineNr">277 </span><span class="DiffChange">    fnabsc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.maximum_snow_albedo.tileX.nc'                                                                                                           </span>
+<span id="W1L278" class="LineNr">278 </span>    fnacna = ''
+<span id="W1L279" class="LineNr">279 </span><span class="DiffChange">    fnaisc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens</span><span class="DiffChange">/fix_am/CFSR.SEAICE.1982.2012.monthly.clim.grb'                                                                                                        </span>
+<span id="W1L280" class="LineNr">280 </span><span class="DiffChange">    fnalbc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.snowfree_albedo.tileX.nc'                                                                                                               </span>
+<span id="W1L281" class="LineNr">281 </span><span class="DiffChange">    fnalbc2 = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.facsf.tileX.nc'                                                                                                                        </span>
+<span id="W1L282" class="LineNr">282 </span><span class="DiffChange">    fnglac = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens</span><span class="DiffChange">/fix_am/global_glacier.2x2.grb'                                                                                                                        </span>
+<span id="W1L283" class="LineNr">283 </span><span class="DiffChange">    fnmskh = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens</span><span class="DiffChange">/fix_am/seaice_newland.grb'                                                                                                                            </span>
+<span id="W1L284" class="LineNr">284 </span><span class="DiffChange">    fnmxic = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens</span><span class="DiffChange">/fix_am/global_maxice.2x2.grb'                                                                                                                         </span>
+<span id="W1L285" class="LineNr">285 </span><span class="DiffChange">    fnslpc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.slope_type.tileX.nc'                                                                                                                    </span>
+<span id="W1L286" class="LineNr">286 </span><span class="DiffChange">    fnsmcc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens</span><span class="DiffChange">/fix_am/global_soilmgldas.t126.384.190.grb'                                                                                                            </span>
+<span id="W1L287" class="LineNr">287 </span>    fnsnoa = ''
+<span id="W1L288" class="LineNr">288 </span><span class="DiffChange">    fnsnoc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens</span><span class="DiffChange">/fix_am/global_snoclim.1.875.grb'                                                                                                                      </span>
+<span id="W1L289" class="LineNr">289 </span><span class="DiffChange">    fnsotc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.soil_type.tileX.nc'                                                                                                                     </span>
+<span id="W1L290" class="LineNr">290 </span><span class="DiffChange">    fntg3c = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.substrate_temperature.tileX.nc'                                                                                                         </span>
+<span id="W1L291" class="LineNr">291 </span>    fntsfa = ''
+<span id="W1L292" class="LineNr">292 </span><span class="DiffChange">    fntsfc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens</span><span class="DiffChange">/fix_am/RTGSST.1982.2012.monthly.clim.grb'                                                                                                             </span>
+<span id="W1L293" class="LineNr">293 </span><span class="DiffChange">    fnvegc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.vegetation_greenness.tileX.nc'                                                                                                          </span>
+<span id="W1L294" class="LineNr">294 </span><span class="DiffChange">    fnvetc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.vegetation_type.tileX.nc'                                                                                                               </span>
+<span id="W1L295" class="LineNr">295 </span><span class="DiffChange">    fnvmnc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.vegetation_greenness.tileX.nc'                                                                                                          </span>
+<span id="W1L296" class="LineNr">296 </span><span class="DiffChange">    fnvmxc = '</span><span class="DiffText">/mnt/lfs1/BMC/wrfruc/chunhua/May2022_retro/Ens_Ctrl/RRFS_CONUS_3km_ens/fix_lam/C3359</span><span class="DiffChange">.vegetation_greenness.tileX.nc'                                                                                                          </span>
+<span id="W1L297" class="LineNr">297 </span>    fnzorc = 'igbp'
+<span id="W1L298" class="LineNr">298 </span>    fsicl = 99999
+<span id="W1L299" class="LineNr">299 </span>    fsics = 99999
+<span id="W1L300" class="LineNr">300 </span>    fslpl = 99999
+<span id="W1L301" class="LineNr">301 </span>    fsmcl = 99999, 99999, 99999
+<span id="W1L302" class="LineNr">302 </span>    fsnol = 99999
+<span id="W1L303" class="Folded">303 </span><span class="Folded">+-- 20 lines: fsnos = 99999--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+</pre>
+</div></td>
+<td valign="top"><div>
+<pre>
+<span id="W2L1" class="Folded">  1 </span><span class="Folded">+--  4 lines: &amp;amip_interp_nml-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L5" class="LineNr">  5 </span>    no_anom_sst = .false.
+<span id="W2L6" class="LineNr">  6 </span>    use_ncep_ice = .false.
+<span id="W2L7" class="LineNr">  7 </span>    use_ncep_sst = .true.
+<span id="W2L8" class="LineNr">  8 </span>/
+<span id="W2L9" class="LineNr">  9 </span>
+<span id="W2L10" class="LineNr"> 10 </span>&amp;atmos_model_nml
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L11" class="LineNr"> 11 </span>    blocksize = 32
+<span id="W2L12" class="LineNr"> 12 </span>    ccpp_suite = 'FV3_HRRR'
+<span id="W2L13" class="LineNr"> 13 </span>    chksum_debug = .false.
+<span id="W2L14" class="LineNr"> 14 </span>    dycore_only = .false.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L15" class="LineNr"> 15 </span>/
+<span id="W2L16" class="LineNr"> 16 </span>
+<span id="W2L17" class="LineNr"> 17 </span>&amp;cires_ugwp_nml
+<span id="W2L18" class="LineNr"> 18 </span>    knob_ugwp_azdir = 2, 4, 4, 4
+<span id="W2L19" class="LineNr"> 19 </span>    knob_ugwp_doaxyz = 1
+<span id="W2L20" class="LineNr"> 20 </span>    knob_ugwp_doheat = 1
+<span id="W2L21" class="Folded"> 21 </span><span class="Folded">+-- 13 lines: knob_ugwp_dokdis = 1-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L34" class="LineNr"> 34 </span>/
+<span id="W2L35" class="LineNr"> 35 </span>
+<span id="W2L36" class="LineNr"> 36 </span>&amp;external_ic_nml
+<span id="W2L37" class="LineNr"> 37 </span>    checker_tr = .false.
+<span id="W2L38" class="LineNr"> 38 </span>    filtered_terrain = .true.
+<span id="W2L39" class="LineNr"> 39 </span>    gfs_dwinds = .true.
+<span id="W2L40" class="LineNr"> 40 </span><span class="DiffChange">    levp = 6</span><span class="DiffText">5</span><span class="DiffChange">                                                                                                                                                                                                                              </span>
+<span id="W2L41" class="LineNr"> 41 </span>    nt_checker = 0
+<span id="W2L42" class="LineNr"> 42 </span>/
+<span id="W2L43" class="LineNr"> 43 </span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L44" class="LineNr"> 44 </span>&amp;fms_io_nml
+<span id="W2L45" class="LineNr"> 45 </span>    checksum_required = .false.
+<span id="W2L46" class="LineNr"> 46 </span>    max_files_r = 100
+<span id="W2L47" class="LineNr"> 47 </span>    max_files_w = 100
+<span id="W2L48" class="LineNr"> 48 </span>/
+<span id="W2L49" class="LineNr"> 49 </span>
+<span id="W2L50" class="Folded"> 50 </span><span class="Folded">+--  3 lines: &amp;fms_nml-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L53" class="LineNr"> 53 </span>    print_memory_usage = .false.
+<span id="W2L54" class="LineNr"> 54 </span>/
+<span id="W2L55" class="LineNr"> 55 </span>
+<span id="W2L56" class="LineNr"> 56 </span>&amp;fv_core_nml
+<span id="W2L57" class="LineNr"> 57 </span>    a_imp = 1.0
+<span id="W2L58" class="LineNr"> 58 </span>    adjust_dry_mass = .false.
+<span id="W2L59" class="LineNr"> 59 </span><span class="DiffChange">    bc_update_interval = </span><span class="DiffText">6</span><span class="DiffChange">                                                                                                                                                                                                                 </span>
+<span id="W2L60" class="LineNr"> 60 </span>    beta = 0.0
+<span id="W2L61" class="LineNr"> 61 </span>    consv_am = .false.
+<span id="W2L62" class="LineNr"> 62 </span>    consv_te = 0.0
+<span id="W2L63" class="LineNr"> 63 </span>    d2_bg = 0.0
+<span id="W2L64" class="LineNr"> 64 </span>    d2_bg_k1 = 0.2
+<span id="W2L65" class="LineNr"> 65 </span>    d2_bg_k2 = 0.04
+<span id="W2L66" class="LineNr"> 66 </span>    d4_bg = 0.12
+<span id="W2L67" class="LineNr"> 67 </span><span class="DiffChange">    d_con = </span><span class="DiffText">1.0</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W2L68" class="LineNr"> 68 </span>    d_ext = 0.0
+<span id="W2L69" class="LineNr"> 69 </span>    dddmp = 0.1
+<span id="W2L70" class="LineNr"> 70 </span>    delt_max = 0.008
+<span id="W2L71" class="LineNr"> 71 </span>    dnats = 0
+<span id="W2L72" class="LineNr"> 72 </span>    do_sat_adj = .false.
+<span id="W2L73" class="LineNr"> 73 </span>    do_schmidt = .true.
+<span id="W2L74" class="LineNr"> 74 </span>    do_vort_damp = .true.
+<span id="W2L75" class="LineNr"> 75 </span>    dwind_2d = .false.
+<span id="W2L76" class="LineNr"> 76 </span><span class="DiffChange">    dz_min = 2</span><span class="DiffChange">                                                                                                                                                                                                                             </span>
+<span id="W2L77" class="LineNr"> 77 </span>    external_eta = .true.
+<span id="W2L78" class="LineNr"> 78 </span>    external_ic = .true.
+<span id="W2L79" class="LineNr"> 79 </span>    fill = .true.
+<span id="W2L80" class="LineNr"> 80 </span>    full_zs_filter = .false.
+<span id="W2L81" class="LineNr"> 81 </span>    fv_debug = .false.
+<span id="W2L82" class="LineNr"> 82 </span>    fv_sg_adj = 300
+<span id="W2L83" class="LineNr"> 83 </span>    gfs_phil = .false.
+<span id="W2L84" class="LineNr"> 84 </span><span class="DiffChange">    hord_dp = </span><span class="DiffText">-5</span><span class="DiffChange">                                                                                                                                                                                                                           </span>
+<span id="W2L85" class="LineNr"> 85 </span><span class="DiffChange">    hord_mt = </span><span class="DiffText">5</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W2L86" class="LineNr"> 86 </span><span class="DiffChange">    hord_tm = </span><span class="DiffText">5</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W2L87" class="LineNr"> 87 </span>    hord_tr = 10
+<span id="W2L88" class="LineNr"> 88 </span><span class="DiffChange">    hord_vt = </span><span class="DiffText">5</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W2L89" class="LineNr"> 89 </span>    hydrostatic = .false.
+<span id="W2L90" class="LineNr"> 90 </span>    io_layout = 1, 1
+<span id="W2L91" class="LineNr"> 91 </span><span class="DiffChange">    k_split = </span><span class="DiffText">2</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W2L92" class="LineNr"> 92 </span>    ke_bg = 0.0
+<span id="W2L93" class="LineNr"> 93 </span>    kord_mt = 9
+<span id="W2L94" class="LineNr"> 94 </span>    kord_tm = -9
+<span id="W2L95" class="LineNr"> 95 </span>    kord_tr = 9
+<span id="W2L96" class="LineNr"> 96 </span>    kord_wz = 9
+<span id="W2L97" class="LineNr"> 97 </span>    layout = 30, 16
+<span id="W2L98" class="LineNr"> 98 </span>    make_nh = .true.
+<span id="W2L99" class="LineNr"> 99 </span>    mountain = .false.
+<span id="W2L100" class="LineNr">100 </span><span class="DiffChange">    n_split = </span><span class="DiffText">5</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W2L101" class="LineNr">101 </span><span class="DiffChange">    n_sponge = </span><span class="DiffText">24</span><span class="DiffChange">                                                                                                                                                                                                                          </span>
+<span id="W2L102" class="LineNr">102 </span>    n_zs_filter = 0
+<span id="W2L103" class="LineNr">103 </span>    na_init = 1
+<span id="W2L104" class="LineNr">104 </span>    ncep_ic = .false.
+<span id="W2L105" class="LineNr">105 </span>    nggps_ic = .true.
+<span id="W2L106" class="LineNr">106 </span>    no_dycore = .false.
+<span id="W2L107" class="LineNr">107 </span>    nord = 3
+<span id="W2L108" class="LineNr">108 </span><span class="DiffChange">    nord_tr = </span><span class="DiffText">2</span><span class="DiffChange">                                                                                                                                                                                                                            </span>
+<span id="W2L109" class="LineNr">109 </span><span class="DiffChange">    npx = 1</span><span class="DiffText">749</span><span class="DiffChange">                                                                                                                                                                                                                             </span>
+<span id="W2L110" class="LineNr">110 </span><span class="DiffChange">    npy = 10</span><span class="DiffText">39</span><span class="DiffChange">                                                                                                                                                                                                                             </span>
+<span id="W2L111" class="LineNr">111 </span><span class="DiffChange">    npz = 6</span><span class="DiffText">4</span><span class="DiffChange">                                                                                                                                                                                                                               </span>
+<span id="W2L112" class="LineNr">112 </span><span class="DiffChange">    nrows_blend = </span><span class="DiffText">1</span><span class="DiffChange">0                                                                                                                                                                                                                       </span>
+<span id="W2L113" class="LineNr">113 </span>    ntiles = 1
+<span id="W2L114" class="LineNr">114 </span>    nudge_qv = .false.
+<span id="W2L115" class="LineNr">115 </span>    nwat = 6
+<span id="W2L116" class="LineNr">116 </span>    p_fac = 0.1
+<span id="W2L117" class="LineNr">117 </span>    phys_hydrostatic = .false.
+<span id="W2L118" class="LineNr">118 </span>    print_freq = 6
+<span id="W2L119" class="LineNr">119 </span>    psm_bc = 1
+<span id="W2L120" class="LineNr">120 </span><span class="DiffChange">    range_warn = .</span><span class="DiffText">tru</span><span class="DiffChange">e.                                                                                                                                                                                                                    </span>
+<span id="W2L121" class="LineNr">121 </span>    read_increment = .false.
+<span id="W2L122" class="LineNr">122 </span>    regional = .true.
+<span id="W2L123" class="LineNr">123 </span>    regional_bcs_from_gsi = .false.
+<span id="W2L124" class="LineNr">124 </span>    res_latlon_dynamics = 'fv3_increment.nc'
+<span id="W2L125" class="LineNr">125 </span>    reset_eta = .false.
+<span id="W2L126" class="LineNr">126 </span>    rf_cutoff = 2000.0
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L127" class="LineNr">127 </span>    stretch_fac = 0.999
+<span id="W2L128" class="LineNr">128 </span>    target_lat = 38.5
+<span id="W2L129" class="LineNr">129 </span>    target_lon = -97.5
+<span id="W2L130" class="LineNr">130 </span>    tau = 5.0
+<span id="W2L131" class="LineNr">131 </span>    use_hydro_pressure = .false.
+<span id="W2L132" class="LineNr">132 </span>    vtdm4 = 0.02
+<span id="W2L133" class="Folded">133 </span><span class="Folded">+--  4 lines: warm_start = .false.-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L137" class="LineNr">137 </span>
+<span id="W2L138" class="LineNr">138 </span>&amp;fv_grid_nml
+<span id="W2L139" class="LineNr">139 </span>    grid_file = 'INPUT/grid_spec.nc'
+<span id="W2L140" class="LineNr">140 </span>/
+<span id="W2L141" class="LineNr">141 </span>
+<span id="W2L142" class="LineNr">142 </span>&amp;gfs_physics_nml
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L143" class="LineNr">143 </span>    bl_mynn_edmf = 1
+<span id="W2L144" class="LineNr">144 </span>    bl_mynn_edmf_mom = 1
+<span id="W2L145" class="LineNr">145 </span>    bl_mynn_tkeadvect = .true.
+<span id="W2L146" class="LineNr">146 </span>    cal_pre = .false.
+<span id="W2L147" class="LineNr">147 </span>    cdmbgwd = 3.5, 1.0
+<span id="W2L148" class="LineNr">148 </span>    cnvcld = .false.
+<span id="W2L149" class="LineNr">149 </span>    cnvgwd = .false.
+<span id="W2L150" class="LineNr">150 </span>    cplflx = .false.
+<span id="W2L151" class="LineNr">151 </span>    debug = .false.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L152" class="LineNr">152 </span>    do_deep = .false.
+<span id="W2L153" class="LineNr">153 </span>    do_gsl_drag_ls_bl = .true.
+<span id="W2L154" class="LineNr">154 </span>    do_gsl_drag_ss = .true.
+<span id="W2L155" class="LineNr">155 </span>    do_gsl_drag_tofd = .true.
+<span id="W2L156" class="LineNr">156 </span>    do_mynnedmf = .true.
+<span id="W2L157" class="LineNr">157 </span>    do_mynnsfclay = .true.
+<span id="W2L158" class="LineNr">158 </span><span class="DiffChange">    do_</span><span class="DiffText">shum = .fals</span><span class="DiffChange">e.                                                                                                                                                                                                                      </span>
+<span id="W2L159" class="LineNr">159 </span><span class="DiffChange">    do_</span><span class="DiffText">skeb</span><span class="DiffChange"> = .false.                                                                                                                                                                                                                      </span>
+<span id="W2L160" class="LineNr">160 </span><span class="DiffChange">    do_</span><span class="DiffText">sp</span><span class="DiffChange">p = .false.                                                                                                                                                                                                                       </span>
+<span id="W2L161" class="LineNr">161 </span><span class="DiffChange">    do_</span><span class="DiffText">sppt</span><span class="DiffChange"> = .false.                                                                                                                                                                                                                      </span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L162" class="LineNr">162 </span>    dspheat = .true.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L163" class="LineNr">163 </span>    effr_in = .true.
+<span id="W2L164" class="LineNr">164 </span><span class="DiffChange">    </span><span class="DiffText">fhcyc = 0</span><span class="DiffChange">                                                                                                                                                                                                                              </span>
+<span id="W2L165" class="LineNr">165 </span><span class="DiffChange">    fh</span><span class="DiffText">lwr = 120</span><span class="DiffChange">0.0                                                                                                                                                                                                                         </span>
+<span id="W2L166" class="LineNr">166 </span><span class="DiffChange">    fh</span><span class="DiffText">swr = 12</span><span class="DiffChange">00.0                                                                                                                                                                                                                         </span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L167" class="LineNr">167 </span>    fhzero = 1.0
+<span id="W2L168" class="LineNr">168 </span>    gwd_opt = 3
+<span id="W2L169" class="LineNr">169 </span>    h2o_phys = .true.
+<span id="W2L170" class="LineNr">170 </span>    hybedmf = .false.
+<span id="W2L171" class="LineNr">171 </span><span class="DiffChange">    iaer = </span><span class="DiffText">51</span><span class="DiffChange">11                                                                                                                                                                                                                            </span>
+<span id="W2L172" class="LineNr">172 </span><span class="DiffChange">    ialb = </span><span class="DiffText">1</span><span class="DiffChange">                                                                                                                                                                                                                               </span>
+<span id="W2L173" class="LineNr">173 </span>    iau_delthrs = 6
+<span id="W2L174" class="LineNr">174 </span>    iau_inc_files = ''
+<span id="W2L175" class="LineNr">175 </span>    iaufhrs = 30
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L176" class="LineNr">176 </span>    icliq_sw = 2
+<span id="W2L177" class="LineNr">177 </span>    icloud_bl = 1
+<span id="W2L178" class="LineNr">178 </span>    ico2 = 2
+<span id="W2L179" class="LineNr">179 </span><span class="DiffChange">    iems = </span><span class="DiffText">1</span><span class="DiffChange">                                                                                                                                                                                                                               </span>
+<span id="W2L180" class="LineNr">180 </span>    imfdeepcnv = -1
+<span id="W2L181" class="LineNr">181 </span>    imfshalcnv = -1
+<span id="W2L182" class="LineNr">182 </span>    imp_physics = 8
+<span id="W2L183" class="LineNr">183 </span>    iopt_alb = 2
+<span id="W2L184" class="LineNr">184 </span>    iopt_btr = 1
+<span id="W2L185" class="LineNr">185 </span>    iopt_crs = 1
+<span id="W2L186" class="Folded">186 </span><span class="Folded">+-- 11 lines: iopt_dveg = 2--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L197" class="LineNr">197 </span>    isot = 1
+<span id="W2L198" class="LineNr">198 </span>    isubc_lw = 2
+<span id="W2L199" class="LineNr">199 </span>    isubc_sw = 2
+<span id="W2L200" class="LineNr">200 </span>    ivegsrc = 1
+<span id="W2L201" class="LineNr">201 </span>    kice = 9
+<span id="W2L202" class="LineNr">202 </span>    ldiag3d = .false.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L203" class="LineNr">203 </span>    lheatstrg = .false.
+<span id="W2L204" class="LineNr">204 </span><span class="DiffAdd">    lndp_each_step = .true.</span><span class="DiffAdd">                                                                                                                                                                                                                </span>
+<span id="W2L205" class="LineNr">205 </span><span class="DiffAdd">    lndp_type = 0</span><span class="DiffAdd">                                                                                                                                                                                                                          </span>
+<span id="W2L206" class="LineNr">206 </span>    lradar = .true.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L207" class="LineNr">207 </span>    lsm = 3
+<span id="W2L208" class="LineNr">208 </span><span class="DiffChange">    lsoil = </span><span class="DiffText">9</span><span class="DiffChange">                                                                                                                                                                                                                              </span>
+<span id="W2L209" class="LineNr">209 </span>    lsoil_lsm = 9
+<span id="W2L210" class="LineNr">210 </span>    ltaerosol = .true.
+<span id="W2L211" class="LineNr">211 </span>    lwhtr = .true.
+<span id="W2L212" class="LineNr">212 </span><span class="DiffChange">    </span><span class="DiffText">n_var_lndp = 0</span><span class="DiffChange">                                                                                                                                                                                                                         </span>
+<span id="W2L213" class="LineNr">213 </span><span class="DiffAdd">    n_var_spp = 0</span><span class="DiffAdd">                                                                                                                                                                                                                          </span>
+<span id="W2L214" class="LineNr">214 </span>    nsradar_reset = 3600
+<span id="W2L215" class="LineNr">215 </span><span class="DiffAdd">    nst_anl = .true.</span><span class="DiffAdd">                                                                                                                                                                                                                       </span>
+<span id="W2L216" class="LineNr">216 </span><span class="DiffAdd">    nstf_name = 2, 1, 0, 0, 0</span><span class="DiffAdd">                                                                                                                                                                                                              </span>
+<span id="W2L217" class="LineNr">217 </span>    oz_phys = .false.
+<span id="W2L218" class="LineNr">218 </span>    oz_phys_2015 = .true.
+<span id="W2L219" class="LineNr">219 </span>    pdfcld = .false.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L220" class="LineNr">220 </span>    pre_rad = .false.
+<span id="W2L221" class="LineNr">221 </span><span class="DiffChange">    print_diff_pgr = .</span><span class="DiffText">fals</span><span class="DiffChange">e.                                                                                                                                                                                                               </span>
+<span id="W2L222" class="LineNr">222 </span>    prslrd0 = 0.0
+<span id="W2L223" class="LineNr">223 </span>    random_clds = .false.
+<span id="W2L224" class="LineNr">224 </span>    redrag = .true.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L225" class="LineNr">225 </span>    satmedmf = .false.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L226" class="LineNr">226 </span>    shal_cnv = .false.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L227" class="LineNr">227 </span>    swhtr = .true.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L228" class="LineNr">228 </span>    trans_trac = .true.
+<span id="W2L229" class="LineNr">229 </span>    ttendlim = -999
+<span id="W2L230" class="LineNr">230 </span>    use_ufo = .true.
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span class="LineNr">    </span><span class="DiffDelete">-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L231" class="LineNr">231 </span>/
+<span id="W2L232" class="LineNr">232 </span>
+<span id="W2L233" class="LineNr">233 </span>&amp;interpolator_nml
+<span id="W2L234" class="LineNr">234 </span>    interp_method = 'conserve_great_circle'
+<span id="W2L235" class="LineNr">235 </span>/
+<span id="W2L236" class="LineNr">236 </span>
+<span id="W2L237" class="Folded">237 </span><span class="Folded">+--  7 lines: &amp;nam_sfcperts--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="W2L244" class="LineNr">244 </span>/
+<span id="W2L245" class="LineNr">245 </span>
+<span id="W2L246" class="LineNr">246 </span>&amp;namsfc
+<span id="W2L247" class="LineNr">247 </span>    fabsl = 99999
+<span id="W2L248" class="LineNr">248 </span>    faisl = 99999
+<span id="W2L249" class="LineNr">249 </span>    faiss = 99999
+<span id="W2L250" class="LineNr">250 </span><span class="DiffChange">    fnabsc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.maximum_snow_albedo.tileX.nc'                                                                                                                                                                            </span>
+<span id="W2L251" class="LineNr">251 </span>    fnacna = ''
+<span id="W2L252" class="LineNr">252 </span><span class="DiffChange">    fnaisc = '</span><span class="DiffText">../..</span><span class="DiffChange">/fix_am/CFSR.SEAICE.1982.2012.monthly.clim.grb'                                                                                                                                                                         </span>
+<span id="W2L253" class="LineNr">253 </span><span class="DiffChange">    fnalbc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.snowfree_albedo.tileX.nc'                                                                                                                                                                                </span>
+<span id="W2L254" class="LineNr">254 </span><span class="DiffChange">    fnalbc2 = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.facsf.tileX.nc'                                                                                                                                                                                         </span>
+<span id="W2L255" class="LineNr">255 </span><span class="DiffChange">    fnglac = '</span><span class="DiffText">../..</span><span class="DiffChange">/fix_am/global_glacier.2x2.grb'                                                                                                                                                                                         </span>
+<span id="W2L256" class="LineNr">256 </span><span class="DiffChange">    fnmskh = '</span><span class="DiffText">../..</span><span class="DiffChange">/fix_am/seaice_newland.grb'                                                                                                                                                                                             </span>
+<span id="W2L257" class="LineNr">257 </span><span class="DiffChange">    fnmxic = '</span><span class="DiffText">../..</span><span class="DiffChange">/fix_am/global_maxice.2x2.grb'                                                                                                                                                                                          </span>
+<span id="W2L258" class="LineNr">258 </span><span class="DiffChange">    fnslpc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.slope_type.tileX.nc'                                                                                                                                                                                     </span>
+<span id="W2L259" class="LineNr">259 </span><span class="DiffChange">    fnsmcc = '</span><span class="DiffText">../..</span><span class="DiffChange">/fix_am/global_soilmgldas.t126.384.190.grb'                                                                                                                                                                             </span>
+<span id="W2L260" class="LineNr">260 </span>    fnsnoa = ''
+<span id="W2L261" class="LineNr">261 </span><span class="DiffChange">    fnsnoc = '</span><span class="DiffText">../..</span><span class="DiffChange">/fix_am/global_snoclim.1.875.grb'                                                                                                                                                                                       </span>
+<span id="W2L262" class="LineNr">262 </span><span class="DiffChange">    fnsotc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.soil_type.tileX.nc'                                                                                                                                                                                      </span>
+<span id="W2L263" class="LineNr">263 </span><span class="DiffChange">    fntg3c = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.substrate_temperature.tileX.nc'                                                                                                                                                                          </span>
+<span id="W2L264" class="LineNr">264 </span>    fntsfa = ''
+<span id="W2L265" class="LineNr">265 </span><span class="DiffChange">    fntsfc = '</span><span class="DiffText">../..</span><span class="DiffChange">/fix_am/RTGSST.1982.2012.monthly.clim.grb'                                                                                                                                                                              </span>
+<span id="W2L266" class="LineNr">266 </span><span class="DiffChange">    fnvegc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.vegetation_greenness.tileX.nc'                                                                                                                                                                           </span>
+<span id="W2L267" class="LineNr">267 </span><span class="DiffChange">    fnvetc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.vegetation_type.tileX.nc'                                                                                                                                                                                </span>
+<span id="W2L268" class="LineNr">268 </span><span class="DiffChange">    fnvmnc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.vegetation_greenness.tileX.nc'                                                                                                                                                                           </span>
+<span id="W2L269" class="LineNr">269 </span><span class="DiffChange">    fnvmxc = '</span><span class="DiffText">../../fix_lam/C3357</span><span class="DiffChange">.vegetation_greenness.tileX.nc'                                                                                                                                                                           </span>
+<span id="W2L270" class="LineNr">270 </span>    fnzorc = 'igbp'
+<span id="W2L271" class="LineNr">271 </span>    fsicl = 99999
+<span id="W2L272" class="LineNr">272 </span>    fsics = 99999
+<span id="W2L273" class="LineNr">273 </span>    fslpl = 99999
+<span id="W2L274" class="LineNr">274 </span>    fsmcl = 99999, 99999, 99999
+<span id="W2L275" class="LineNr">275 </span>    fsnol = 99999
+<span id="W2L276" class="Folded">276 </span><span class="Folded">+-- 20 lines: fsnos = 99999--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+</pre>
+</div></td>
+</tr>
+</table>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->
+
