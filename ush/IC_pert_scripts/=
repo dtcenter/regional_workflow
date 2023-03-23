@@ -188,7 +188,7 @@
     h2o_phys = .true.
     hybedmf = .false.
     !iaer = 1011
-    iaer = 5111
+    !iaer = 5111
     ialb = 2
     iau_delthrs = 6
     iau_inc_files = ''
