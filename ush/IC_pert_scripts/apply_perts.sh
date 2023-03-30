@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash --login
 
 #SBATCH --account=comgsi
 #SBATCH --partition=service
@@ -19,22 +19,35 @@ module load nco
 
 perts_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_IC_perts/ens_perts
 
-for cyc in 202205{27..31} 202206{01..09} ; do
+#for cyc in 202205{27..31} 202206{01..09} ; do
+for cyc in 20220527 ; do
+
+    RRFS_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs/IC_perts/${cyc}18
+
     for mem in {1..9} ; do
 
-        # Add GEFS perturbations 01 through 09 to RRFS members 02 through 10.
+        # Add GEFS perturbations 01 through 09 to RRFS members 02 through 10, respectively.
         mem_GEFS=$(printf "%02d" $mem)
         mem_RRFS=$(printf "%02d" $((mem + 1)))
 
-        RRFS_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs/IC_perts/${cyc}18
+        #store old files
+        mv ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_data.tile7.halo0.nc_orig
+        mv ${RRFS_dir}/mem${mem_RRFS}/INPUT/sfc_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/sfc_data.tile7.halo0.nc_orig
+        mv ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_bndy.tile7.000.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_bndy.tile7.000.nc_orig
 
+        python add_ic_pert.py ${perts_dir}/${cyc}18_GEFS_pert_mem${mem_GEFS}_gfs_data.tile7.halo0.nc ${RRFS_dir}/mem01/INPUT/gfs_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_data.tile7.halo0.nc 
+        python add_ic_pert.py ${perts_dir}/${cyc}18_GEFS_pert_mem${mem_GEFS}_sfc_data.tile7.halo0.nc_soil_9_layers ${RRFS_dir}/mem01/INPUT/sfc_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/sfc_data.tile7.halo0.nc
+        python add_ic_pert.py ${perts_dir}/${cyc}18_GEFS_pert_mem${mem_GEFS}_gfs_bndy.tile7.000.nc ${RRFS_dir}/mem01/INPUT/gfs_bndy.tile7.000.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_bndy.tile7.000.nc
+
+        
         # use the RRFS mem01 ICs as the base and add the pert from GEFS members, place result into RRFS mem02..10 directories
         #ncbo -O --op_typ=add ${perts_dir}/${cyc}18_GEFS_pert_mem${mem_GEFS}_gfs_data.tile7.halo0.nc ${RRFS_dir}/mem01/INPUT/gfs_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_data.tile7.halo0.nc
         # use the modified surface file with 9 soil layers to match RRFS ICs (HRRR)
-        ncbo -O --op_typ=add ${perts_dir}/${cyc}18_GEFS_pert_mem${mem_GEFS}_sfc_data.tile7.halo0.nc_soil_9_layers ${RRFS_dir}/mem01/INPUT/sfc_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/sfc_data.tile7.halo0.nc
+        #ncbo -O --op_typ=add ${perts_dir}/${cyc}18_GEFS_pert_mem${mem_GEFS}_sfc_data.tile7.halo0.nc_soil_9_layers ${RRFS_dir}/mem01/INPUT/sfc_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/sfc_data.tile7.halo0.nc
         #ncbo -O --op_typ=add ${perts_dir}/${cyc}18_GEFS_pert_mem${mem_GEFS}_gfs_bndy.tile7.000.nc ${RRFS_dir}/mem01/INPUT/gfs_bndy.tile7.000.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_bndy.tile7.000.nc
 
-        #try restoring non-perturbed sfc/bndy files
+        #restore non-perturbed files
+        #cp ${RRFS_dir}/mem01/INPUT/gfs_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_data.tile7.halo0.nc
         #cp ${RRFS_dir}/mem01/INPUT/gfs_bndy.tile7.000.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/gfs_bndy.tile7.000.nc
         #cp ${RRFS_dir}/mem01/INPUT/sfc_data.tile7.halo0.nc ${RRFS_dir}/mem${mem_RRFS}/INPUT/sfc_data.tile7.halo0.nc
     done
