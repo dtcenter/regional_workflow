@@ -344,6 +344,9 @@ for (( i=0; i<${num_symlinks}; i++ )); do
                          relative="${relative_link_flag}"
 
 done
+
+ln_vrfy -sf ${relative_link_flag} ${FIXam}/optics_??.dat ${run_dir}
+ln_vrfy -sf ${relative_link_flag} ${FIXam}/aeroclim.m??.nc ${run_dir}
 #
 #-----------------------------------------------------------------------
 #

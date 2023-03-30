@@ -56,12 +56,9 @@ QUEUE_FCST=${QUEUE_FCST:-"batch"}
 
 # UFS SRW App specific paths
 staged_data_dir="/scratch2/BMC/det/UFS_SRW_App/develop"
-#FIXgsm=${FIXgsm:-"${staged_data_dir}/fix/fix_am"}
-FIXgsm=${FIXgsm:-"/scratch2/BMC/fv3lam/ens_design_RRFS/FIX_RRFS/am"}
-#FIXaer=${FIXaer:-"${staged_data_dir}/fix/fix_aer"}
-FIXaer=${FIXaer:-"/scratch2/BMC/fv3lam/ens_design_RRFS/FIX_RRFS/am"}
-#FIXlut=${FIXlut:-"${staged_data_dir}/fix/fix_lut"}
-FIXlut=${FIXlut:-"/scratch2/BMC/fv3lam/ens_design_RRFS/FIX_RRFS/am"}
+FIXgsm=${FIXgsm:-"${staged_data_dir}/fix/fix_am"}
+FIXaer=${FIXaer:-"${staged_data_dir}/fix/fix_aer"}
+FIXlut=${FIXlut:-"${staged_data_dir}/fix/fix_lut"}
 TOPO_DIR=${TOPO_DIR:-"${staged_data_dir}/fix/fix_orog"}
 SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"${staged_data_dir}/fix/fix_sfc_climo"}
 DOMAIN_PREGEN_BASEDIR=${DOMAIN_PREGEN_BASEDIR:-"${staged_data_dir}/FV3LAM_pregen"}
