@@ -47,11 +47,6 @@ with nc.Dataset(filename) as gefs, nc.Dataset(
             gefs_rrfs[name].setncatts(gefs[name].__dict__)
             gefs_rrfs.variables[name][:] = np.arange(1, 10)
 
-        #if name in ["t2m", "q2m"]:
-        #    gefs_rrfs.createVariable(name, variable.datatype, variable.dimensions)
-        #    gefs_rrfs[name].setncatts(gefs[name].__dict__)
-        #    gefs_rrfs.variables[name][:] = gefs.variables[name][:]
-
         if name in ["smc", "slc", "stc"]:
             gefs_rrfs.createVariable(name, variable.datatype, variable.dimensions)
             gefs_rrfs[name].setncatts(gefs[name].__dict__)

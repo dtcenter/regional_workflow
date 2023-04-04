@@ -11,9 +11,9 @@ VERBOSE="TRUE"
 RUN_ENVIR="community"
 PREEXISTING_DIR_METHOD="rename"
 
-DATE_FIRST_CYCL="20220527"
-DATE_LAST_CYCL="20220609"
-CYCL_HRS=( "18" )
+DATE_FIRST_CYCL="20220430"
+DATE_LAST_CYCL="20220430"
+CYCL_HRS=( "00" )
 
 FCST_LEN_HRS="36"
 LBC_SPEC_INTVL_HRS="6"
@@ -30,6 +30,26 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
+
+#Turn on stochastic physics
+DO_SPPT="TRUE"
+ISEED_SPPT="1"
+SPPT_MAG="0.7" #Variable "sppt" in input.nml     
+SPPT_LOGIT="TRUE"     
+SPPT_LSCALE="150000"     
+SPPT_TSCALE="21600" #Variable "sppt_tau" in input.nml     
+SPPT_INT="3600" #Variable "spptint" in input.nml     
+SPPT_SFCLIMIT="TRUE" 
+
+DO_SPP="TRUE"     
+SPP_VAR_LIST=( "pbl" "sfc" "mp" "rad" "gwd" )     
+SPP_MAG_LIST=( "0.2" "0.2" "0.75" "0.2" "0.2" ) #Variable "spp_prt_list" in input.nml     
+SPP_LSCALE=( "150000.0" "150000.0" "150000.0" "150000.0" "150000.0" )     
+SPP_TSCALE=( "21600.0" "21600.0" "21600.0" "21600.0" "21600.0" ) #Variable "spp_tau" in input.nml     
+SPP_SIGTOP1=( "0.1" "0.1" "0.1" "0.1" "0.1")     
+SPP_SIGTOP2=( "0.025" "0.025" "0.025" "0.025" "0.025" )     
+SPP_STDDEV_CUTOFF=( "1.5" "1.5" "2.5" "1.5" "1.5" )     
+ISEED_SPP=( "4" "5" "6" "7" "8" ) 
 
 #
 # Since the forecast files are staged, turn off the forecast, post-

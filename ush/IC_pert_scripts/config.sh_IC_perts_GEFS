@@ -1,7 +1,7 @@
 MACHINE="hera"
 ACCOUNT="fv3lam"
 EXPT_SUBDIR="GEFS_mem01"
-EXPT_BASEDIR=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_IC_perts
+EXPT_BASEDIR=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_GEFS_perts
 
 USE_CRON_TO_RELAUNCH="FALSE"
 CRON_RELAUNCH_INTVL_MNTS="03"
@@ -12,9 +12,9 @@ VERBOSE="TRUE"
 RUN_ENVIR="community"
 PREEXISTING_DIR_METHOD="rename"
 
-DATE_FIRST_CYCL="20220527"
-DATE_LAST_CYCL="20220609"
-CYCL_HRS=( "18" )
+DATE_FIRST_CYCL="20220430"
+DATE_LAST_CYCL="20220430"
+CYCL_HRS=( "00" )
 
 FCST_LEN_HRS="6"
 LBC_SPEC_INTVL_HRS="6"
@@ -54,7 +54,7 @@ RUN_TASK_GET_OBS_NDAS="FALSE"
 NDAS_OBS_DIR="/scratch2/BMC/fv3lam/ens_design_RRFS/obs_data_IC_perts/ndas/proc"
 
 IS_ENS_FCST="FALSE"
-NUM_ENS_MEMBERS="10"
+#NUM_ENS_MEMBERS="10"
 #
 # Run deterministic vx on each member of the forecast ensemble.
 #
@@ -69,7 +69,7 @@ RUN_TASKS_VXENS="FALSE"
 # ENS_TIME_LAG_HRS is the time-lagging that the vx tasks should assume
 # for each ensemble member (in units of hours).
 #
-ENS_TIME_LAG_HRS=( "0" "0" "0" "0" "0" "0" "0" "0" "0" "0" )
+#ENS_TIME_LAG_HRS=( "0" "0" "0" "0" "0" "0" "0" "0" "0" "0" )
 
 NET="RRFSE_CONUS_IC_perts_GEFS"
 
