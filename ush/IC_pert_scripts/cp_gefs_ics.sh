@@ -4,11 +4,13 @@
 # replacing the default 00z GFS analysis
 #run this AFTER get_extrn_ics and BEFORE make_ics
 
-expt_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_GEFS_perts
+#expt_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_GEFS_perts
+expt_dir=/scratch2/BMC/fv3lam/mayfield/ens_IC_pert_test/expt_dirs_GEFS_perts
 gefs_data_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/data/GEFS/pgrb2_combined_bn
 
 #for cyc in 202205{27..31} 202206{01..09} ; do
-for cyc in 20220430 202205{01..12} ; do
+#for cyc in 20220430 202205{01..12} ; do
+for cyc in 20220430 ; do
     gefs_cyc=$(date -d "$cyc -2 day" +%Y%m%d)
 
     for mem in {01..09} ; do

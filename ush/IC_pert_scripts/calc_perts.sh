@@ -6,7 +6,8 @@ module load intel/2022.1.2
 module load nco
 
 #match this to the expt subdir in config.sh_IC_perts_GEFS
-GEFS_expt_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_GEFS_perts
+#GEFS_expt_dir=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_GEFS_perts
+GEFS_expt_dir=/scratch2/BMC/fv3lam/mayfield/ens_IC_pert_test/expt_dirs_GEFS_perts
 
 cd $GEFS_expt_dir
 
