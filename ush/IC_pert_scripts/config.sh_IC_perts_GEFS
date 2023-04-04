@@ -1,7 +1,9 @@
 MACHINE="hera"
 ACCOUNT="fv3lam"
 EXPT_SUBDIR="GEFS_mem01"
-EXPT_BASEDIR=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_GEFS_perts
+
+#set this?
+#EXPT_BASEDIR=/scratch2/BMC/fv3lam/ens_design_RRFS/expt_dirs_GEFS_perts
 
 USE_CRON_TO_RELAUNCH="FALSE"
 CRON_RELAUNCH_INTVL_MNTS="03"
@@ -21,7 +23,7 @@ LBC_SPEC_INTVL_HRS="6"
 
 PREDEF_GRID_NAME="RRFS_CONUScompact_3km"
 QUILTING="TRUE"
-HALO_BLEND="220"
+HALO_BLEND="20"
 
 CCPP_PHYS_SUITE="FV3_HRRR"
 
