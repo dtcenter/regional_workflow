@@ -5,8 +5,9 @@ Steps for running the SRW app workflow to add 30h GEFS forecast derived perturba
     - checkout externals and build with devbuild.sh
 
 1a. Generate the 10-member ensemble workflow with HRRR ICs, which is the "RRFS analog"
-    - use config.sh_IC_perts
-    - copy input.nml_IC_pert_merra2 to the experiment directory and replace input.nml with it
+    - use config.sh_IC_perts_[stoch/nostoch]
+    - copy input.nml_IC_pert_[stoch/nostoch] to the experiment directory and replace input.nml with it
+    - ***FOR STOCH RUN ONLY*** need to find a way to make mem01 turn off stochastic physics! 
     - can be run through make_ics but stop booting tasks before run_fcst
 
 1b. Generate "GEFS" workflow 9 separate times with GFS ICs

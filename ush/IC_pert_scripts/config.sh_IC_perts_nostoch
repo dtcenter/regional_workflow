@@ -1,6 +1,6 @@
 MACHINE="hera"
 ACCOUNT="fv3lam"
-EXPT_SUBDIR="IC_perts"
+EXPT_SUBDIR="IC_perts_nostoch"
 
 USE_CRON_TO_RELAUNCH="FALSE"
 CRON_RELAUNCH_INTVL_MNTS="03"
@@ -30,26 +30,6 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
-
-#Turn on stochastic physics
-DO_SPPT="TRUE"
-ISEED_SPPT="1"
-SPPT_MAG="0.7" #Variable "sppt" in input.nml     
-SPPT_LOGIT="TRUE"     
-SPPT_LSCALE="150000"     
-SPPT_TSCALE="21600" #Variable "sppt_tau" in input.nml     
-SPPT_INT="3600" #Variable "spptint" in input.nml     
-SPPT_SFCLIMIT="TRUE" 
-
-DO_SPP="TRUE"     
-SPP_VAR_LIST=( "pbl" "sfc" "mp" "rad" "gwd" )     
-SPP_MAG_LIST=( "0.2" "0.2" "0.75" "0.2" "0.2" ) #Variable "spp_prt_list" in input.nml     
-SPP_LSCALE=( "150000.0" "150000.0" "150000.0" "150000.0" "150000.0" )     
-SPP_TSCALE=( "21600.0" "21600.0" "21600.0" "21600.0" "21600.0" ) #Variable "spp_tau" in input.nml     
-SPP_SIGTOP1=( "0.1" "0.1" "0.1" "0.1" "0.1")     
-SPP_SIGTOP2=( "0.025" "0.025" "0.025" "0.025" "0.025" )     
-SPP_STDDEV_CUTOFF=( "1.5" "1.5" "2.5" "1.5" "1.5" )     
-ISEED_SPP=( "4" "5" "6" "7" "8" ) 
 
 #
 # Since the forecast files are staged, turn off the forecast, post-
@@ -91,7 +71,7 @@ RUN_TASKS_VXENS="TRUE"
 #
 ENS_TIME_LAG_HRS=( "0" "0" "0" "0" "0" "0" "0" "0" "0" "0" )
 
-NET="RRFSE_CONUS_IC_perts"
+NET="RRFSE_CONUS_IC_perts_nostoch"
 
 MAXTRIES_RUN_VXAUX_PB2NC_OBS="2"
 MAXTRIES_RUN_VXAUX_PCPCOMBINE_OBS="2"
