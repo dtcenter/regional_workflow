@@ -1399,15 +1399,15 @@ VX_APCP_ACCUMS_HRS=( "01" "03" "06" "24" )
 # These templates are used in the verification tasks, but they should 
 # also be used in the GET_OBS_... tasks.
 #
-CCPA_OBS_DIR=""
+CCPA_OBS_DIR='${EXPTDIR}/obs/ccpa/proc'
 OBS_CCPA_APCP01h_FN_TEMPLATE='{valid?fmt=%Y%m%d}/ccpa.t{valid?fmt=%H}z.01h.hrap.conus.gb2'
 OBS_CCPA_APCPgt01h_FN_TEMPLATE='${OBS_CCPA_APCP01h_FN_TEMPLATE}_a${ACCUM}h.nc'
 
-MRMS_OBS_DIR=""
+MRMS_OBS_DIR='${EXPTDIR}/obs/mrms/proc'
 OBS_MRMS_REFC_FN_TEMPLATE='{valid?fmt=%Y%m%d}/MergedReflectivityQCComposite_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
 OBS_MRMS_RETOP_FN_TEMPLATE='{valid?fmt=%Y%m%d}/EchoTop_18_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
 
-NDAS_OBS_DIR=""
+NDAS_OBS_DIR='${EXPTDIR}/obs/ndas/proc'
 OBS_NDAS_SFCorUPA_FN_TEMPLATE='prepbufr.ndas.{valid?fmt=%Y%m%d%H}'
 OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE='${OBS_NDAS_SFCorUPA_FN_TEMPLATE}.nc'
 #
