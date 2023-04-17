@@ -31,6 +31,7 @@ EXTRN_MDL_NAME_LBCS="FV3GFS"
 FV3GFS_FILE_FMT_ICS="grib2"
 FV3GFS_FILE_FMT_LBCS="grib2"
 
+USE_MERRA_CLIMO="TRUE"
 #
 # Since the forecast files are staged, turn off the forecast, post-
 # processing, and other tasks that are not needed for generation of

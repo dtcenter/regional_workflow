@@ -1956,7 +1956,7 @@ USE_ZMTNBLCK="FALSE"
 #
 #-----------------------------------------------------------------------
 #
-DO_SPP="false"
+DO_SPP="FALSE"
 SPP_VAR_LIST=( "pbl" "sfc" "mp" "rad" "gwd" )
 SPP_MAG_LIST=( "0.2" "0.2" "0.75" "0.2" "0.2" ) #Variable "spp_prt_list" in input.nml
 SPP_LSCALE=( "150000.0" "150000.0" "150000.0" "150000.0" "150000.0" )
