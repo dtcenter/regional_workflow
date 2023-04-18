@@ -177,7 +177,7 @@ FIXgsm_FILES_TO_COPY_TO_FIXam[$i]="${fixgsm_ozone_fn}"
 # Set the element in the array CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING that
 # specifies the mapping between the symlink for the ozone production/loss
 # file that must be created in each cycle directory and its target in the 
-# FIXam directory.  The name of the symlink is alrady in the array, but
+# FIXam directory.  The name of the symlink is already in the array, but
 # the target is not because it depends on the ozone parameterization that 
 # the physics suite uses.  Since we determined the ozone parameterization
 # above, we now set the target of the symlink accordingly.

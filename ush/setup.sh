@@ -1328,11 +1328,9 @@ exist in the local clone of the ufs-weather-model:
 # Call the function that sets the ozone parameterization being used in
 # the physics suite and modifies associated parameters accordingly. 
 #
-    if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
-      set_ozone_param \
-        ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
-        output_varname_ozone_param="OZONE_PARAM"
-    fi
+    set_ozone_param \
+      ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
+      output_varname_ozone_param="OZONE_PARAM"
 
   fi
 #
