@@ -864,7 +864,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-LBC_SPEC_FCST_HRS=()
+LBC_SPEC_FCST_HRS=""
 
 if [ "${RUN_TASK_GET_EXTRN_LBCS}" = "TRUE" ] || \
    [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
