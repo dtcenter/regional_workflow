@@ -1285,9 +1285,11 @@ The CCPP physics suite specified in CCPP_PHYS_SUITE is not supported:
   check_var_valid_value \
     "CCPP_PHYS_SUITE" "valid_vals_CCPP_PHYS_SUITE" "${err_msg}"
 #
-# If running the RUN_FCST_TN task...
+# If running the MAKE_ICS_TN, MAKE_LBCS_TN, or RUN_FCST_TN task...
 #
-  if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+  if [ "${RUN_TASK_MAKE_ICS}" = "TRUE" ] || \
+     [ "${RUN_TASK_MAKE_LBCS}" = "TRUE" ] || \
+     [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
 #
 # Make sure that USE_MERRA_CLIMO is set to a valid value.  Then ensure
 # that this flag is set to "TRUE" if the physics suite is set to
@@ -1377,7 +1379,7 @@ exist in the local clone of the ufs-weather-model:
       ccpp_phys_suite_fp="${CCPP_PHYS_SUITE_IN_CCPP_FP}" \
       thompson_mp_climo_fn="${THOMPSON_MP_CLIMO_FN}" \
       output_varname_sdf_uses_thompson_mp="SDF_USES_THOMPSON_MP"
-  
+
   fi
 
 fi
