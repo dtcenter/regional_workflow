@@ -568,7 +568,8 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] || \
+   [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
 #
 # Create the FIXam directory under the experiment directory.  In NCO mode, 
 # this will be a symlink to the directory specified in FIXgsm, while in 
