@@ -2104,3 +2104,12 @@ OMP_STACKSIZE_RUN_FCST="1024m"
 KMP_AFFINITY_RUN_POST="scatter"
 OMP_NUM_THREADS_RUN_POST="1"
 OMP_STACKSIZE_RUN_POST="1024m"
+#
+#-----------------------------------------------------------------------
+#
+# For the DTC Ensemble task, this specifies the directory in which the
+# GEFS external model files are staged.
+#
+#-----------------------------------------------------------------------
+#
+GEFS_STAGING_DIR=""
