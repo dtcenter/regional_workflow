@@ -72,6 +72,77 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
+# Specific to DTC Ensemble Task.
+# 
+# Replace external model files obtained by the GET_EXTRN_ICS task (which
+# are the 00Z GFS analysis) with GEFS 30h forecasts (initialized at 18Z
+# 2 days before).  In the DTC Ensemble Task, we use these GEFS files
+# (instead of the GFS ones) with perturbations added (later below) to
+# calculate the initial conditions.
+#
+#-----------------------------------------------------------------------
+#
+# Try to obtain the GEFS member number from the name of the experiment.
+# This is just the two digits within the experiment name.
+#
+gefs_mem=""
+gefs_mem=$( printf "%s" "${EXPT_SUBDIR}" | $SED -n -r -e "s/^GEFS_mem([0-9]{2}).*$/\1/p" )
+
+if [ ! -z "${gefs_mem}" ] && [[ ! "${gefs_mem}" =~ ^[0-9]{2}$ ]]; then
+  print_err_msg_exit "\
+The variable \"gefs\"_mem must either be a 2-digit string representing the 
+GEFS member number or an empty string; otherwise, something is wrong:
+  gefs_mem = \"${gefs_mem}\""
+fi
+#
+# If gefs_mem is not empty, it means the current workflow is for a GEFS
+# individual member (as opposed to being the RRFS analog).  In that case,
+# perform the external model file replacement (replace GFS files with 
+# GEFS files).
+#
+if [ ! -z "${gefs_mem}" ]; then
+
+  print_info_msg "
+Replacing GFS external model files with GEFS external model files for
+GEFS member:
+  gefs_mem = \"${gefs_mem}\""
+
+  gfs_fp="${EXPTDIR}/${CDATE}/FV3GFS/for_ICS/gfs.t00z.pgrb2.0p25.f000"
+  gfs_fp_orig="${gfs_fp}.orig"
+#
+# At least one of the GFS file (gfs_fp) and the renamed ("orig") version
+# of it (gfs_fp_orig) must exist.  If not, print out an error message
+# and exit.
+#
+  if [ ! -f "${gfs_fp}" ] && [ ! -f "${gfs_fp_orig}" ]; then
+    print_err_msg_exit "\
+The GFS external model file (gfs_fp) or its renamed version (gfs_fp_orig)
+must exist, but neither do:
+  gfs_fp = \"${gfs_fp}\"
+  gfs_fp_orig = \"${gfs_fp_orig}\""
+  fi
+#
+# If a renamed ("orig") GFS file already exists (e.g. due to a previous
+# call to this script), move it so it doesn't get overwritten in the
+# next step.
+#
+  check_for_preexist_dir_file "${gfs_fp_orig}" "rename"
+#
+# If the GFS file exists, rename it.  Note that it may not exist due to
+# a previous call to this script.
+#
+  if [ -f "${gfs_fp}" ]; then
+    mv_vrfy "${gfs_fp}" "${gfs_fp_orig}"
+  fi
+
+  gefs_cyc=$(date -d "${CDATE:0:8} -2 day" +%Y%m%d)
+  gefs_fn="${gefs_cyc}.gep${gefs_mem}.t18z.pgrb2.0p50.f030"
+  cp_vrfy ${GEFS_STAGING_DIR}/${gefs_fn} ${gfs_fp}
+
+fi
+#
+#-----------------------------------------------------------------------
+#
 # Set OpenMP variables.
 #
 #-----------------------------------------------------------------------
