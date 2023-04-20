@@ -1,49 +1,160 @@
-Steps for running the SRW app workflow to add 30h GEFS forecast derived perturbations to an RRFS-like ensemble
 
-0. Check out and build the app:
-    - git clone -b rrfs_ens_design https://github.com/dtcenter/ufs-srweather-app.git
-    - checkout externals and build with devbuild.sh
+1) Check out and build the following version of the SRW App on Hera:
 
-1a. Generate the 10-member ensemble workflow with HRRR ICs, which is the "RRFS analog"
-    - use config.sh_IC_perts_[stoch/nostoch]
-    - copy input.nml_IC_pert_[stoch/nostoch] to the experiment directory and replace input.nml with it
-    - ***FOR STOCH RUN ONLY*** need to find a way to make mem01 turn off stochastic physics! 
-    - can be run through make_ics but stop booting tasks before run_fcst
+   > git clone -b rrfs_ens_design https://github.com/dtcenter/ufs-srweather-app.git
+   > cd ufs-srweather-app
+   > ./manage_externals/checkout_externals
+   > ./devbuild --machine=hera
 
-1b. Generate "GEFS" workflow 9 separate times with GFS ICs
-    - use config.sh_IC_perts_GEFS
-    - run *only* get_extrn_ics to start
+   In the following, we let SRW_HOMEDIR denote the directory in which the
+   SRW App gets cloned (i.e. "/../ ... /ufs-srweather-app").
 
-2*. pull GEFS 30h forecasts (or whatever forecast length we decide on) from AWS or HPSS
-    - use get_gefs_rrfs.sh to pull data and cat the "a" and "b" files 
-    - potential duplicate grib2 entries can cause a problem?
-    - NOTE: this should already be done and staged in this path: /scratch2/BMC/fv3lam/ens_design_RRFS/data/GEFS/pgrb2_combined_bn
+2) Generate the 10-member RRFS analog workflow for an ensemble forecast
+   WITHOUT stochastic physics and run it up to the "make_ics_..." tasks:
 
-2. use cp_gefs_ics.sh to replace the GFS IC files with staged GEFS 30h forecasts
-    - edit paths
-    - then, launch all 9 GEFS workflows through make_ics
+   a) Change location to the directory containing the scripts specific 
+      to the DTC Ensemble Design task:
 
-3. Calculate the GEFS IC perturbations with calc_perts.sh
-    - edit path to GEFS experiment dir area
-    - applies to gfs_data, gfs_bndy (f000 only), and sfc_data
-    * TODO: it might be best to submit this as a batch job but I suspect it will need extra memory!
+      > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
 
-4. Use add_soil_layers.sh (runs soil_regrid.py) to interpolate the 4 layer NOAH LSM (GFS) soil variables in sfc_data to 9 levels as in RUC LSM (HRRR)
-    - edit path to the GEFS perts area
-    - this will create new "_soil_9_layers" surface perturbation files
+   b) In a text editor, open the file "DTC_ensemble_config.sh".  Then
+        i) Make sure that "RRFS_do_stoch" is set to "FALSE".  This will
+           cause stochastic physics to be turned off in the RRFS analog
+           experiment.
+       ii) If making a full run (i.e. with all 9 GEFS members and 10 RRFS
+           members (where member 01 will be the unperturbed "control"
+           member); using the 3km CONUS grid; running for all 13 00Z cycles
+           from 20220430 to 20220512; and running all forecasts out to
+           the full 36 hours), set "do_test_run" to "FALSE".  If making a
+           test run (i.e. with fewer members, on a coarser grid, for fewer
+           cycles, and/or with a shorter forecast length), set "do_test_run"
+           to "TRUE".
+      iii) Set "GEFS_staging_dir" to the directory in which the GEFS
+           output (external model) files are staged.
 
-5. use apply_perts.sh to add the perturbations to the HRRR_ICs
-    - edit paths to GEFS perts AND RRFS ensemble experiments
-    - it uses add_ic_pert.py
+   b) Generate the RRFS workflow:
 
-6. continue running the "RRFS analog" ensemble workflow
-    make sure no members are failing!
+      > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+      > ./generate_RRFS_analog_wflow.sh
 
+      This will create an experiment named "RRFS_analog_ICperts_nostoch"
+      if "do_test_run" is set to "FALSE", and it will create an experiment
+      named "RRFS_analog_ICperts_nostoch_test" if "do_test_run" is set
+      to "TRUE".
 
-NOTES: 
+   c) Change location to the experiment base directory and run the workflow
+      up to and including the "make_ics_mem##" and "make_lbcs_mem##" tasks:
 
-*do you have access to hpss rstprod? If so, you can set config.sh to pull the obs to be used in vx. if not, that will need to be done first by someone with accesss and then change the config files to used staged obs! Currently it is set to use staged obs.
+      > cd ${SRW_HOMEDIR}/../expt_dirs
+      > cd RRFS_analog_ICperts_nostoch[_test]
+      > ./launch_FV3LAM_wflow.sh
 
-*the RRFS fix files "merra2.aerclim*.nc" and "optics*.dat" are in /scratch2/BMC/fv3lam/ens_design_RRFS/FIX_RRFS/am. You may need to copy optics* and aero* from that area into the experiment directory's fix_am directory befroe running the forecast task! 
-  * There's no longer a need to copy these files manually since USE_MERRA_CLIMO is now set to "TRUE", which will copy the RRFS fix files "merra2.aerclim*.nc" and "optics*.dat" automatically into $EXPTDIR/fix_clim and then link to these files from the CDATE and/or ensemble member run subdirectory (e.g. "$EXPTDIR/2022043000/mem1").
+      Continue issuing the "launch_FV3LAM_wflow.sh" command until the 
+      "make_ics_mem${mem}" and "make_lbcs_mem${mem}" tasks are launched,
+      where ${mem} is the two-digit index of the member (starting with
+      "01").  You can check the status of the workflow by viewing the
+      workflow log file "log.launch_FV3LAM_wflow".  In this log file,
+      once the status of these tasks turn to "SUBMITTING" or "QUEUED",
+      stop calling the workflow launch script.
+
+3) Generate the experiment directories for GEFS members and run their
+   workflows.  These are inidividual (non-ensemble) workflows generated
+   for each member starting with member 02.  Note that we ignore GEFS
+   member 01 because in the RRFS analog, member 01 is a control that will
+   remain unperturbed.  The resulting experiments are named "GEFS_mem${mem}"
+   (starting with mem="02").  The commands are:
+
+   > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+   > ./generate_GEFS_member_wflows.sh
+
+   This command will not only generate the GEFS individual member workflows
+   but it will also (re)launch them using cron jobs until they complete.
+   These workfows include only up to the "make_ics" task and thus should
+   complete fairly quickly.  Monitor the status of these workflows until
+   they all complete by monitoring the workflow log file.  For example,
+   for member 03:
+
+   > cd ${SRW_HOMEDIR}/../expt_dirs
+   > cd GEFS_mem03[_test]
+   > tail -n 40 log.launch_FV3LAM_wflow
+
+4) Calculate the GEFS ensemble means and perturbations as follows (do
+   this only after all the GEFS individual member experiments have
+   completed):
+
+   > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+   > ./calc_add_GEFS_perts_to_RRFS_analog.sh "calc"
+
+   The script "calc_add_GEFS_perts_to_RRFS_analog.sh" can calculate the
+   GEFS means and perturbations AND add them to the RRFS analog.  With
+   the "calc" argument, it only calculates these (but does not add them
+   to the RRFS analog).  Here, we perform the add step separately because
+   we only need to perform the calculate step once whereas we have to
+   perform the add step twice -- once for the RRFS analog without stochastic
+   physics and another with.
+
+5) Add the GEFS perturbations to the RRFS analog (without stochastic
+   physics):
+
+   > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+   > ./calc_add_GEFS_perts_to_RRFS_analog.sh "add"
+
+   This will modify the IC files in the RRFS analog so that they now
+   include the GEFS perturbations.
+
+6) Return to the RRFS analog experiment (without stochastic physics) and
+   continue by runnning the "run_fcst_mem${mem}" and following tasks:
+ 
+   > cd ${SRW_HOMEDIR}/../expt_dirs
+   > cd RRFS_analog_ICperts_nostoch[_test]
+   > ./launch_FV3LAM_wflow.sh
+
+   Continue relaunching the workflow until the "run_post_..." tasks are
+   launched.
+
+7) Generate the 10-member RRFS analog workflow for an ensemble forecast
+   WITH stochastic physics and run it up to the "make_ics_..." tasks.
+   These steps are identical to those without stochastic physics except 
+   that we now set "RRFS_do_stoch" to "TRUE".  The steps are:
+
+   > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+
+   > vi DTC_ensemble_config.sh
+     Edit this so that RRFS_do_stoch="TRUE"
+
+   > ./generate_RRFS_analog_wflow.sh
+
+     This will create an experiment named "RRFS_analog_ICperts_stoch" if
+     "do_test_run" is set to "FALSE", and it will create an experiment
+     named "RRFS_analog_ICperts_stoch_test" if "do_test_run" is set to
+     "TRUE".
+
+   > cd ${SRW_HOMEDIR}/../expt_dirs
+   > cd RRFS_analog_ICperts_stoch[_test]
+   > ./launch_FV3LAM_wflow.sh
+
+     Continue issuing the "launch_FV3LAM_wflow.sh" command until the 
+     "make_ics_mem${mem}" and "make_lbcs_mem${mem}" tasks are launched,
+     but do not launch the "run_fcst${mem}" tasks.
+
+8) Add the GEFS perturbations to the RRFS analog (with stochastic physics):
+
+   > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+   > ./calc_add_GEFS_perts_to_RRFS_analog.sh "add"
+
+   This will modify the IC files in the RRFS analog so that they now
+   include the GEFS perturbations.  Note that whether these perturbations
+   are applied the RRFS analog without stochastic physics or the one with
+   is determined by the setting of "RRFS_do_stoch" in the settings file
+   "DTC_ensemble_config.sh".  Thus, make sure this remains set to "TRUE".
+
+9) Return to the RRFS analog experiment (with stochastic physics) and
+   continue by runnning the "run_fcst_mem${mem}" and following tasks:
+ 
+   > cd ${SRW_HOMEDIR}/../expt_dirs
+   > cd RRFS_analog_ICperts_stoch[_test]
+   > ./launch_FV3LAM_wflow.sh
+
+   Continue relaunching the workflow until the "run_post_..." tasks are
+   launched.
 
