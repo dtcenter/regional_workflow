@@ -240,7 +240,11 @@ must exist, but neither do:
 
   gefs_cyc=$(date -d "${CDATE:0:8} -2 day" +%Y%m%d)
   gefs_fn="${gefs_cyc}.gep${gefs_mem}.t18z.pgrb2.0p50.f030"
-  cp_vrfy ${GEFS_STAGING_DIR}/${gefs_fn} ${gfs_fp}
+  gefs_fp="${GEFS_STAGING_DIR}/${gefs_fn}"
+  print_info_msg "
+Copying GEFS file (gefs_fp) into GFS file (gfs_fp):
+  gefs_fp = \"${gefs_fp}\"
+  gfs_fp = \"${gfs_fp}\""
 
 fi
 #

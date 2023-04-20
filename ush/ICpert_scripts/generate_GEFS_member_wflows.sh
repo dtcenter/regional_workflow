@@ -36,4 +36,3 @@ Experiment name is:
   ${ushdir}/generate_FV3LAM_wflow.sh
 
 done
-
