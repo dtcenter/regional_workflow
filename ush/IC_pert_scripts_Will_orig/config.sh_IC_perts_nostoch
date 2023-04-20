@@ -1,0 +1,86 @@
+MACHINE="hera"
+ACCOUNT="fv3lam"
+EXPT_SUBDIR="IC_perts_nostoch"
+
+USE_CRON_TO_RELAUNCH="FALSE"
+CRON_RELAUNCH_INTVL_MNTS="03"
+
+COMPILER="intel"
+VERBOSE="TRUE"
+
+RUN_ENVIR="community"
+PREEXISTING_DIR_METHOD="rename"
+
+DATE_FIRST_CYCL="20220430"
+DATE_LAST_CYCL="20220430"
+CYCL_HRS=( "00" )
+
+FCST_LEN_HRS="36"
+LBC_SPEC_INTVL_HRS="6"
+
+PREDEF_GRID_NAME="RRFS_CONUScompact_3km"
+QUILTING="TRUE"
+HALO_BLEND="20"
+
+
+CCPP_PHYS_SUITE="FV3_HRRR"
+
+EXTRN_MDL_NAME_ICS="HRRR"
+EXTRN_MDL_NAME_LBCS="FV3GFS"
+
+FV3GFS_FILE_FMT_ICS="grib2"
+FV3GFS_FILE_FMT_LBCS="grib2"
+
+#
+# Since the forecast files are staged, turn off the forecast, post-
+# processing, and other tasks that are not needed for generation of
+# post-processed forecast files.
+#
+RUN_TASK_MAKE_GRID="TRUE"
+RUN_TASK_MAKE_OROG="TRUE"
+RUN_TASK_MAKE_SFC_CLIMO="TRUE"
+RUN_TASK_GET_EXTRN_ICS="TRUE"
+RUN_TASK_GET_EXTRN_LBCS="TRUE"
+RUN_TASK_MAKE_ICS="TRUE"
+RUN_TASK_MAKE_LBCS="TRUE"
+RUN_TASK_RUN_FCST="TRUE"
+RUN_TASK_RUN_POST="TRUE"
+
+RUN_TASK_GET_OBS_CCPA="FALSE"
+CCPA_OBS_DIR="/scratch2/BMC/fv3lam/ens_design_RRFS/obs_data_IC_perts/ccpa/proc"
+RUN_TASK_GET_OBS_MRMS="FALSE"
+MRMS_OBS_DIR="/scratch2/BMC/fv3lam/ens_design_RRFS/obs_data_IC_perts/mrms/proc"
+RUN_TASK_GET_OBS_NDAS="FALSE"
+NDAS_OBS_DIR="/scratch2/BMC/fv3lam/ens_design_RRFS/obs_data_IC_perts/ndas/proc"
+
+IS_ENS_FCST="TRUE"
+NUM_ENS_MEMBERS="10"
+#
+# Run deterministic vx on each member of the forecast ensemble.
+#
+RUN_TASKS_VXDET="TRUE"
+#
+# Run vx on the ensemble as a whole.
+#
+RUN_TASKS_VXENS="TRUE"
+#
+# Specify other vx parameters.
+#
+# ENS_TIME_LAG_HRS is the time-lagging that the vx tasks should assume
+# for each ensemble member (in units of hours).
+#
+ENS_TIME_LAG_HRS=( "0" "0" "0" "0" "0" "0" "0" "0" "0" "0" )
+
+NET="RRFSE_CONUS_IC_perts_nostoch"
+
+MAXTRIES_RUN_VXAUX_PB2NC_OBS="2"
+MAXTRIES_RUN_VXAUX_PCPCOMBINE_OBS="2"
+MAXTRIES_RUN_VXAUX_PCPCOMBINE_FCST="2"
+MAXTRIES_RUN_VXDET_GRIDSTAT="2"
+MAXTRIES_RUN_VXDET_POINTSTAT="2"
+MAXTRIES_RUN_VXENS_GEPES_GRIDDED="2"
+MAXTRIES_RUN_VXENS_GEPES_POINT="2"
+MAXTRIES_RUN_VXENS_GRIDSTAT_MEAN="2"
+MAXTRIES_RUN_VXENS_POINTSTAT_MEAN="2"
+MAXTRIES_RUN_VXENS_GRIDSTAT_PROB="2"
+MAXTRIES_RUN_VXENS_POINTSTAT_PROB="2"
