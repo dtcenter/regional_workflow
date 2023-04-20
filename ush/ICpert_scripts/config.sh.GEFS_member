@@ -1,0 +1,55 @@
+MACHINE="hera"
+ACCOUNT="fv3lam"
+EXPT_SUBDIR="${GEFS_expt_subdir}"
+
+USE_CRON_TO_RELAUNCH="TRUE"
+CRON_RELAUNCH_INTVL_MNTS="01"
+
+COMPILER="intel"
+VERBOSE="TRUE"
+
+RUN_ENVIR="community"
+PREEXISTING_DIR_METHOD="rename"
+
+DATE_FIRST_CYCL="20220430"
+DATE_LAST_CYCL="${date_last_cycl}"
+CYCL_HRS=( "00" )
+
+FCST_LEN_HRS="${fcst_len_hrs}"
+LBC_SPEC_INTVL_HRS="6"
+
+PREDEF_GRID_NAME="${predef_grid_name}"
+QUILTING="TRUE"
+HALO_BLEND="20"
+
+CCPP_PHYS_SUITE="FV3_HRRR"
+
+EXTRN_MDL_NAME_ICS="FV3GFS"
+EXTRN_MDL_NAME_LBCS="FV3GFS"
+
+FV3GFS_FILE_FMT_ICS="grib2"
+FV3GFS_FILE_FMT_LBCS="grib2"
+
+GEFS_STAGING_DIR="${GEFS_staging_dir}"
+#
+# Since the forecast files are staged, turn off the forecast, post-
+# processing, and other tasks that are not needed for generation of
+# post-processed forecast files.
+#
+RUN_TASK_GET_OBS_CCPA="FALSE"
+RUN_TASK_GET_OBS_MRMS="FALSE"
+RUN_TASK_GET_OBS_NDAS="FALSE"
+RUN_TASK_MAKE_GRID="TRUE"
+RUN_TASK_MAKE_OROG="TRUE"
+RUN_TASK_MAKE_SFC_CLIMO="TRUE"
+RUN_TASK_GET_EXTRN_ICS="TRUE"
+RUN_TASK_GET_EXTRN_LBCS="FALSE"
+RUN_TASK_MAKE_ICS="TRUE"
+RUN_TASK_MAKE_LBCS="FALSE"
+RUN_TASK_RUN_FCST="FALSE"
+RUN_TASK_RUN_POST="FALSE"
+#
+# We're creating a workflow for each individual member, so turn off 
+# ensemble forecasts.
+#
+IS_ENS_FCST="FALSE"
