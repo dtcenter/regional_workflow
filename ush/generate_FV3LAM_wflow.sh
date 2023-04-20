@@ -993,8 +993,8 @@ fi
 #
 check_for_preexist_dir_file "${EXPTDIR}/${FV3_NML_FN}" "rename"
 
-DTC_ens_fv3_nml_fn="${FV3_NML_FN}_IC_pert_${no_or_null}stoch"
-DTC_ens_fv3_nml_fp="${USHDIR}/IC_pert_scripts/${DTC_ens_fv3_nml_fn}"
+DTC_ens_fv3_nml_fn="${FV3_NML_FN}_ICpert_${RRFS_no_or_null}stoch"
+DTC_ens_fv3_nml_fp="${USHDIR}/ICpert_scripts/${DTC_ens_fv3_nml_fn}"
 print_info_msg "
 For the DTC Ensmeble Task, copying prepared namelist file (DTC_ens_fv3_nml_fp)
 to the experiment directory (EXPTDIR):
