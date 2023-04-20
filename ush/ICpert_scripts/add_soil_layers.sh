@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Is this step necessary??  Can we instead call the script with an absolute path?
-cp_vrfy "${icpert_scripts_dir}/soil_regrid.py" "${GEFS_expt_basedir}"
-
 print_info_msg "
 Interpolating soil variables from the 4 layers in NOAH LSM (in GFS output)
 to the 9 layers in RUC LSM (in HRRR output)..."
@@ -26,7 +23,7 @@ must exist, but neither do:
     elif [ -f "${fp}" ] && [ ! -f "${fp_4layers}" ]; then
       mv_vrfy "${fp}" "${fp_4layers}"
     fi
-    python "${GEFS_expt_basedir}/soil_regrid.py" "${fp_4layers}" "${fp_9layers}" && { \
+    python "${icpert_scripts_dir}/soil_regrid.py" "${fp_4layers}" "${fp_9layers}" && { \
       mv_vrfy "${fp_9layers}" "${fp}";
     }
   done
