@@ -83,16 +83,17 @@ fi
 # Predefined grid, range of cycles, forecast length, and number of (RRFS)
 # ensemble members.
 #
-predef_grid_name="RRFS_CONUScompact_3km"
 date_first_cycl="20220430"
-date_last_cycl="20220512"
-fcst_len_hrs="36"
-num_RRFS_ens_members="10"
 if [ "${do_test_run}" = "TRUE" ]; then
-  predef_grid_name="RRFS_CONUScompact_25km"
-  date_last_cycl="20220430"
-  fcst_len_hrs="6"
-  num_RRFS_ens_members="03"
+  predef_grid_name=${predef_grid_name:-"RRFS_CONUScompact_25km"}
+  date_last_cycl=${date_last_cycl:-"20220430"}
+  fcst_len_hrs=${fcst_len_hrs:-"6"}
+  num_RRFS_ens_members=${num_RRFS_ens_members:-"03"}
+else
+  predef_grid_name=${predef_grid_name:-"RRFS_CONUScompact_3km"}
+  date_last_cycl=${date_last_cycl:-"20220512"}
+  fcst_len_hrs=${fcst_len_hrs:-"36"}
+  num_RRFS_ens_members=${num_RRFS_ens_members:-"10"}
 fi
 #
 # Array containing all the cycles for which the RRFS analog experiment
