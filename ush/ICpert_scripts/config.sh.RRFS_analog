@@ -1,9 +1,9 @@
 MACHINE="hera"
-ACCOUNT="fv3lam"
+ACCOUNT="$account"
 EXPT_SUBDIR="${RRFS_analog_expt_subdir}"
 
 USE_CRON_TO_RELAUNCH="FALSE"
-CRON_RELAUNCH_INTVL_MNTS="03"
+CRON_RELAUNCH_INTVL_MNTS="01"
 
 COMPILER="intel"
 VERBOSE="TRUE"
@@ -85,8 +85,8 @@ if [ "${RRFS_do_get_obs}" = "TRUE" ]; then
   RUN_TASK_GET_OBS_MRMS="TRUE"
   RUN_TASK_GET_OBS_NDAS="TRUE"
 #
-# Custom locations for staging obs.  If not specified, obs will be staged
-# under the experiment directory.
+# Custom locations where to stage the obs.  If not specified, the obs
+# will be staged under the experiment directory.
 #
 #  obs_basedir="/scratch2/BMC/fv3lam/ens_design_RRFS/obs_data_IC_perts"
 #  CCPA_OBS_DIR="${obs_basedir}/ccpa/proc"
@@ -105,6 +105,20 @@ if [ "${RRFS_do_get_obs}" = "TRUE" ]; then
   RUN_TASK_RUN_FCST="FALSE"
   RUN_TASK_RUN_POST="FALSE"
 
+else
+#
+# Turn off GET_OBS tasks.
+#
+  RUN_TASK_GET_OBS_CCPA="FALSE"
+  RUN_TASK_GET_OBS_MRMS="FALSE"
+  RUN_TASK_GET_OBS_NDAS="FALSE"
+#
+# Custom locations where obs are already staged.
+#
+  CCPA_OBS_DIR="${obs_basedir}/ccpa/proc"
+  MRMS_OBS_DIR="${obs_basedir}/mrms/proc"
+  NDAS_OBS_DIR="${obs_basedir}/ndas/proc"
+
 fi
 #
 # Whether to run an ensemble forecast (with or without ensemble vx).
@@ -118,8 +132,8 @@ IS_ENS_FCST="TRUE"
 NUM_ENS_MEMBERS="${num_RRFS_ens_members}"
 ENS_TIME_LAG_HRS=( $( for (( i=0; i<${num_RRFS_ens_members}; i++ )); do echo "0"; done ) )
 #
-# Whether to run deterministic vx.  If running ensemble an forecast, this
-# will cause a deterministic vx to be run on each member.
+# Whether to run deterministic vx.  If running an ensemble forecast, this
+# will cause deterministic verification to be run on each member.
 #
 RUN_TASKS_VXDET="TRUE"
 #

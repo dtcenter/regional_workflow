@@ -53,10 +53,11 @@ echo "do_test_run = \"${do_test_run}\""
 echo "RRFS_do_stoch = \"${RRFS_do_stoch}\""
 echo "RRFS_do_get_obs = \"${RRFS_do_get_obs}\""
 echo "GEFS_staging_dir = \"${GEFS_staging_dir}\""
+echo "obs_basedir = \"${obs_basedir}\""
 #
 #-----------------------------------------------------------------------
 #
-# Make sure that required environment variables are defind and, if 
+# Make sure that required environment variables are defined and, if 
 # applicable, have valid values.
 #
 #-----------------------------------------------------------------------
@@ -190,9 +191,12 @@ export srwapp_homedir \
        ushdir \
        icpert_scripts_dir \
        expt_basedir \
+       GEFS_staging_dir \
+       obs_basedir \
 \
        do_test_run \
        uscore_test_or_null \
+       account \
        date_first_cycl \
        date_last_cycl \
        fcst_len_hrs \
@@ -206,7 +210,6 @@ export srwapp_homedir \
        RRFS_analog_expt_subdir \
        RRFS_analog_exptdir \
 \
-       GEFS_staging_dir \
        GEFS_all_mems \
        GEFS_expt_basedir
 

@@ -1,5 +1,5 @@
 MACHINE="hera"
-ACCOUNT="fv3lam"
+ACCOUNT="$account"
 EXPT_SUBDIR="${GEFS_expt_subdir}"
 
 USE_CRON_TO_RELAUNCH="TRUE"

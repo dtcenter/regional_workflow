@@ -8,6 +8,10 @@
 #
 #-----------------------------------------------------------------------
 #
+# Account to which to charge compute usage.
+#
+account="fv3lam"
+#
 # Flag for running the RRFS analog workflow with stochastic physics.
 #
 #RRFS_do_stoch="FALSE"
@@ -22,7 +26,11 @@ RRFS_do_get_obs="FALSE"
 # is output from the ensemble forecast that starts at 18Z two days prior
 # to the start day of the forecasts in the RRFS analog workflow.
 #
-GEFS_staging_dir=${GEFS_staging_dir:-"/scratch2/BMC/fv3lam/ens_design_RRFS/data/GEFS/pgrb2_combined_bn"}
+GEFS_staging_dir="/scratch2/BMC/fv3lam/ens_design_RRFS/data/GEFS/pgrb2_combined_bn"
+#
+# Directory in which the obs are staged.
+#
+obs_basedir="/scratch2/BMC/fv3lam/HIWT/obs_data"
 #
 # Flag for performing a test run.  Relative to the full 10 RRFS member
 # (9 GEFS member) ensemble on the 3km CONUS grid for 13 cycles with a
