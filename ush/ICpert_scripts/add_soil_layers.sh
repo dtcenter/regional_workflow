@@ -1,8 +1,9 @@
 #!/bin/bash
 
 print_info_msg "
-Interpolating soil variables from the 4 layers in NOAH LSM (in GFS output)
-to the 9 layers in RUC LSM (in HRRR output)..."
+Interpolating soil variables from the 4 layers in the GEFS output (which
+uses the NOAH LSM) to the 9 layers in the HRRR output (which uses the 
+RUC LSM)..."
 
 for cyc in ${all_cycles[@]}; do
 
