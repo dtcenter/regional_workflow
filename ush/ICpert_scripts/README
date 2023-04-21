@@ -7,41 +7,51 @@ forecast.
 The main files (setup files and driver scripts) and their descriptions
 are as follows:
 
+* DTC_ensemble_config_defaults.sh
+  This is the configuration file that defines default values for various
+  user-specifiable configuration variables for generating and running
+  the SRW App workflows that run analogs of the RRFS with IC perturbations
+  from the GEFS and with or without stochastic physics perturbations.
+  This file gets sourced by the setup script DTC_ensemble_setup.sh (see
+  below), which is in turn sourced by the driver scripts described below.
+  This file also includes descriptions of the configuration variables.
+
 * DTC_ensemble_config.sh
-  This is the configuration file for generating and running the SRW App
-  workflows for the DTC Ensemble Task.  This is the file to which a user
-  will make changes before running the driver scripts below.  It is also
-  the file that gets indirectly sourced by the driver scripts below (the
-  driver scripts source DTC_ensemble_setup.sh, which in turn sources this
-  script).
+  This is the user configuration file used to specify values of the 
+  configuration variables that override the ones in the default values
+  file DTC_ensemble_config_defaults.sh.  Note that this file is NOT
+  under version control.  If this file exists, it is sourced by the
+  setup script DTC_ensemble_setup.sh (after the latter sources the
+  default configuration file).
 
 * DTC_ensemble_setup.sh
   This script sets up various secondary variables based on the values of
-  the configuration variables in DTC_ensemble_config.sh.  A user will
-  usually not need to make any changes to this file.
+  the DTC Ensemble Design task's configuration variables in the default
+  configuration file DTC_ensemble_config_defaults.sh and, if it exists,
+  the user-created configuration file DTC_ensemble_config.sh.
 
 * generate_RRFS_analog_wflow.sh
   This is the driver script that generates an RRFS analog ensemble
-  workflow.  Depending on the settings in DTC_ensemble_config.sh at the
-  time this script is called, the resulting workflow can be for an
-  ensemble with or without stochastic physics and for a full run or a
-  test run (see variable descriptions in DTC_ensemble_config.sh for more
-  details).
+  workflow.  Depending on the settings in the configuration files 
+  DTC_ensemble_config[_defaults].sh at the time this script is called,
+  the resulting workflow can be for an ensemble with or without stochastic
+  physics and for a full run or a test run (see variable descriptions in
+  DTC_ensemble_config_defaults.sh for more details).
 
 * generate_GEFS_member_wflows.sh
   This is the driver script that generates the workflows for each of the
   GEFS members, starting with member 02.  Note that there is one workflow
-  per member; there is no single ensemble workflow for the GEFS members
-  as a whole.
+  per member, i.e. there is no single ensemble workflow for the GEFS
+  members as a whole.
 
 * calc_add_GEFS_perts_to_RRFS_analog.sh
   This is the driver script that calculates the GEFS perturbations and/or
   adds them to an RRFS analog.  If called with the "calc" argument, it
   calculates the GEFS perturbations but does not add them to any RRFS
-  analog.  In this case, the setting of "RRFS_do_stoch" in DTC_ensemble_config.sh
-  doesn't matter.  If called with the "add" argument, it adds previously
-  calculated GEFS perturbations to the RRFS analog specified by the 
-  settings in DTC_ensemble_config.sh.
+  analog.  In this case, the setting of "RRFS_do_stoch" in the configuration
+  files DTC_ensemble_config[_defaults].sh doesn't matter.  If called
+  with the "add" argument, it adds previously calculated GEFS perturbations
+  to the RRFS analog specified by the settings in DTC_ensemble_config[_defaults].sh.
 
 The steps to running a full set of RRFS analog workflows (using GEFS
 ensemble output to generate IC perturbations) and both without and with
@@ -73,20 +83,37 @@ stochastic physics perturbations are as follows:
 
        > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
 
-    b) In a text editor, open the file "DTC_ensemble_config.sh".  Then
-         i) Make sure that "RRFS_do_stoch" is set to "FALSE".  This will
-            cause stochastic physics to be turned off in the RRFS analog
-            experiment.
+    b) In a text editor, open the (possibly new) user configuration file
+       DTC_ensemble_config.sh.  Then:
+
+         i) Type in the line
+
+              RRFS_do_stoch="FALSE"
+
+            This will cause stochastic physics to be turned off in the
+            RRFS analog experiment.
+
         ii) If making a full run (i.e. with all 9 GEFS members and 10 RRFS
             members (where member 01 will be the unperturbed "control"
             member); using the 3km CONUS grid; running for all 13 00Z cycles
             from 20220430 to 20220512; and running all forecasts out to
-            the full 36 hours), set "do_test_run" to "FALSE".  If making a
-            test run (i.e. with fewer members, on a coarser grid, for fewer
-            cycles, and/or with a shorter forecast length), set "do_test_run"
-            to "TRUE".
+            the full 36 hours), set "do_test_run" to "FALSE", i.e. include
+            the line
+
+              do_test_run="FALSE"
+
+            If making a test run (i.e. with fewer members, on a coarser
+            grid, for fewer cycles, and/or with a shorter forecast length),
+            set "do_test_run" to "TRUE" instead.
+
        iii) Set "GEFS_staging_dir" to the directory in which the GEFS
             output (external model) files are staged.
+
+       Note that these three parameters already have default values in
+       DTC_ensemble_config_defaults.sh, so if those values are already
+       identical to the ones above, they do not need to be included in
+       DTC_ensemble_config.sh.  In particular, note that the defaults
+       file already contains a value (path) for "GEFS_staging_dir".
 
     b) Generate the RRFS workflow:
 
@@ -105,11 +132,11 @@ stochastic physics perturbations are as follows:
        > cd RRFS_analog_ICperts_nostoch[_test]
        > ./launch_FV3LAM_wflow.sh
 
-       Continue issuing the "launch_FV3LAM_wflow.sh" command until the
+       Continue issuing the launch_FV3LAM_wflow.sh command until the
        "make_ics_mem${mem}" and "make_lbcs_mem${mem}" tasks are launched,
        where ${mem} is the two-digit index of the member (starting with
        "01").  You can check the status of the workflow by viewing the
-       workflow log file "log.launch_FV3LAM_wflow".  In this log file,
+       workflow log file log.launch_FV3LAM_wflow.  In this log file,
        once the status of these tasks turn to "SUBMITTING" or "QUEUED",
        stop calling the workflow launch script.
 
@@ -168,10 +195,10 @@ stochastic physics perturbations are as follows:
     Continue relaunching the workflow until the "run_post_..." tasks are
     launched.
 
- 8) Generate the 10-member RRFS analog workflow for an ensemble forecast
-    WITH stochastic physics and run it up to the "make_ics_..." tasks.
-    These steps are identical to those without stochastic physics except
-    that we now set "RRFS_do_stoch" to "TRUE".  The steps are:
+ 8) Generate the RRFS analog workflow for an ensemble forecast WITH
+    stochastic physics and run it up to the "make_ics_..." tasks.  These
+    steps are identical to those without stochastic physics except that
+    we now set "RRFS_do_stoch" to "TRUE".  The steps are:
 
     > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
 
@@ -179,7 +206,6 @@ stochastic physics perturbations are as follows:
       Edit this so that RRFS_do_stoch="TRUE"
 
     > ./generate_RRFS_analog_wflow.sh
-
       This will create an experiment named "RRFS_analog_ICperts_stoch" if
       "do_test_run" is set to "FALSE", and it will create an experiment
       named "RRFS_analog_ICperts_stoch_test" if "do_test_run" is set to
@@ -189,7 +215,7 @@ stochastic physics perturbations are as follows:
     > cd RRFS_analog_ICperts_stoch[_test]
     > ./launch_FV3LAM_wflow.sh
 
-      Continue issuing the "launch_FV3LAM_wflow.sh" command until the
+      Continue issuing the launch_FV3LAM_wflow.sh command until the
       "make_ics_mem${mem}" and "make_lbcs_mem${mem}" tasks are launched,
       but do not launch the "run_fcst${mem}" tasks.
 
@@ -213,4 +239,3 @@ stochastic physics perturbations are as follows:
 
     Continue relaunching the workflow until the "run_post_..." tasks are
     launched.
-

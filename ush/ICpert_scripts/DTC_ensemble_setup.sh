@@ -36,12 +36,16 @@ echo "expt_basedir = \"${expt_basedir}\""
 #
 #-----------------------------------------------------------------------
 #
-# Source the DTC Ensemble Design configuration file and the file that
-# in turn sources bash utilities.
+# Source the DTC Ensemble Design default configuration file.  If a custom
+# configuration file exists, source that as well.  Finally, source the
+# bash utilities.
 #
 #-----------------------------------------------------------------------
 #
-source "${ushdir}/ICpert_scripts/DTC_ensemble_config.sh"
+source "${icpert_scripts_dir}/DTC_ensemble_config_defaults.sh"
+if [ -f "${icpert_scripts_dir}/DTC_ensemble_config.sh" ]; then
+  source "${icpert_scripts_dir}/DTC_ensemble_config.sh"
+fi
 source "${ushdir}/source_util_funcs.sh"
 #
 #-----------------------------------------------------------------------
