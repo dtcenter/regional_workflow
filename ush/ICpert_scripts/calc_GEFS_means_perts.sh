@@ -31,17 +31,17 @@ Calculating GEFS ensemble perturbations and placing result in directory:
 for cyc in ${all_cycles[@]}; do
   echo
   echo "cyc = \"${cyc}\""
-  for mem in ${GEFS_all_mems[@]}; do
-    echo "  mem = \"${mem}\""
+  for mem_GEFS in ${GEFS_all_mems[@]}; do
+    echo "  mem_GEFS = \"${mem_GEFS}\""
     for (( i=0; i<${#file_groups[@]}; i++ )); do
       file_group="${file_groups[$i]}"
       halo0_or_000="${halo0_or_000_array[$i]}"
       echo "    file_group = \"${file_group}\""
       fn="${file_group}.tile7.${halo0_or_000}.nc"
       rel_fp="${cyc}/INPUT/${fn}"
-      ncdiff "${dir_prefix}${mem}${uscore_test_or_null}/${rel_fp}" \
+      ncdiff "${dir_prefix}${mem_GEFS}${uscore_test_or_null}/${rel_fp}" \
              "${ens_means_dir}/${cyc}_ens_mean_${fn}" \
-             "${ens_perts_dir}/${cyc}_GEFS_pert_mem${mem}_${fn}"
+             "${ens_perts_dir}/${cyc}_GEFS_pert_mem${mem_GEFS}_${fn}"
     done
   done
 done

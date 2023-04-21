@@ -9,10 +9,10 @@ for cyc in ${all_cycles[@]}; do
   echo
   echo "cyc = \"${cyc}\""
 
-  for mem in ${GEFS_all_mems[@]}; do
+  for mem_GEFS in ${GEFS_all_mems[@]}; do
 
-    echo "  mem = \"${mem}\""
-    fp="${ens_perts_dir}/${cyc}_GEFS_pert_mem${mem}_sfc_data.tile7.halo0.nc" 
+    echo "  mem_GEFS = \"${mem_GEFS}\""
+    fp="${ens_perts_dir}/${cyc}_GEFS_pert_mem${mem_GEFS}_sfc_data.tile7.halo0.nc" 
     fp_4layers="${fp}.4_soil_layers"
     fp_9layers="${fp}.9_soil_layers"
 
@@ -35,9 +35,10 @@ must exist, but neither do:
     python "${icpert_scripts_dir}/soil_regrid.py" \
            "${fp_4layers}" "${fp_9layers}" || { \
     print_err_msg_exit "
-Call to python script \"soil_regrid.py\" failed for:
+Call to python script \"soil_regrid.py\" failed for the following cycle
+(cyc) and GEFS member (mem_GEFS):
   cyc = \"${cyc}\"
-  mem = \"${mem}\""
+  mem_GEFS = \"${mem_GEFS}\""
       }
 
     ln_vrfy -fs --relative "${fp_9layers}" "${fp}"

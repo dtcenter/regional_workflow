@@ -82,7 +82,6 @@ print_input_args valid_args
 #
 #-----------------------------------------------------------------------
 #
-set -x
 if [ "${ICS_OR_LBCS}" = "ICS" ]; then
   if [ ${time_offset_hrs} -eq 0 ] ; then
     anl_or_fcst="anl"
@@ -180,8 +179,8 @@ ${cmd}
 # Replace external model files obtained by the GET_EXTRN_ICS task (which
 # are the 00Z GFS analysis) with GEFS 30h forecasts (initialized at 18Z
 # 2 days before).  In the DTC Ensemble Task, we use these GEFS files
-# (instead of the GFS ones) with perturbations added (later below) to
-# calculate the initial conditions.
+# (instead of the GFS ones) with perturbations added (in another script)
+# to calculate the initial conditions.
 #
 #-----------------------------------------------------------------------
 #
@@ -210,7 +209,9 @@ Replacing GFS external model IC files with GEFS external model IC files
 for GEFS member:
   gefs_mem = \"${gefs_mem}\""
 
-  gfs_fp="${EXPTDIR}/${CDATE}/FV3GFS/for_ICS/gfs.t00z.pgrb2.0p25.f000"
+  gfs_dir="${EXPTDIR}/${CDATE}/FV3GFS/for_ICS"
+  gfs_fn="gfs.t00z.pgrb2.0p25.f000"
+  gfs_fp="${gfs_dir}/${gfs_fn}"
   gfs_fp_orig="${gfs_fp}.orig"
 #
 # At least one of the GFS file (gfs_fp) and the renamed ("orig") version
@@ -241,11 +242,20 @@ must exist, but neither do:
   gefs_cyc=$(date -d "${CDATE:0:8} -2 day" +%Y%m%d)
   gefs_fn="${gefs_cyc}.gep${gefs_mem}.t18z.pgrb2.0p50.f030"
   gefs_fp="${GEFS_STAGING_DIR}/${gefs_fn}"
+
   print_info_msg "
-Copying GEFS file (gefs_fp) into GFS file (gfs_fp):
+Copying GEFS file (gefs_fp) into experiment's external model IC file
+location (gfs_dir):
   gefs_fp = \"${gefs_fp}\"
-  gfs_fp = \"${gfs_fp}\""
-  cp_vrfy "${gefs_fp}" "${gfs_fp}"
+  gfs_dir = \"${gfs_dir}\""
+  cp_vrfy "${gefs_fp}" "${gfs_dir}"
+
+  print_info_msg "
+Creating symlink (named identical to the GFS external model file (gfs_fn))
+to the GEFS file (gefs_fn):
+  gefs_fn = \"${gefs_fn}\"
+  gfs_fn = \"${gfs_fn}\""
+  ln_vrfy -fs --relative "${gefs_fn}" "${gfs_fn}"
 
 fi
 #
@@ -256,4 +266,3 @@ fi
 #-----------------------------------------------------------------------
 #
 { restore_shell_opts; } > /dev/null 2>&1
-

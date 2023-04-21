@@ -20,13 +20,13 @@ source "${scrfunc_dir}/DTC_ensemble_setup.sh"
 # numbering starts at 2 because the first member of the RRFS analog
 # workflow is an unperturbed control member.
 #
-for mem in ${GEFS_all_mems[@]}; do
+for mem_GEFS in ${GEFS_all_mems[@]}; do
 
-  GEFS_expt_subdir="GEFS_mem${mem}${uscore_test_or_null}"
+  GEFS_expt_subdir="GEFS_mem${mem_GEFS}${uscore_test_or_null}"
 
   print_info_msg "
-Creating experiment for GEFS member (mem):
-  mem = \"${mem}\"
+Creating experiment for GEFS member (mem_GEFS):
+  mem_GEFS = \"${mem_GEFS}\"
 Experiment name is:
   GEFS_expt_subdir = \"${GEFS_expt_subdir}\"
 "

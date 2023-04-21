@@ -27,11 +27,10 @@ for cyc in ${all_cycles[@]}; do
   echo
   echo "cyc = \"${cyc}\""
 
-  for mem in ${GEFS_all_mems[@]}; do
+  for mem_GEFS in ${GEFS_all_mems[@]}; do
 
-    echo "  mem = \"${mem}\""
-    mem_GEFS=$(printf "%02d" "$mem")
-    mem_RRFS=$(printf "%02d" "$mem")
+    echo "  mem_GEFS = \"${mem_GEFS}\""
+    mem_RRFS=$(printf "%02d" $((${mem_GEFS}+1)) )
 
     dn="${RRFS_analog_exptdir}/${cyc}/mem${mem_RRFS}/INPUT"
     for (( i=0; i<${#file_groups[@]}; i++ )); do
@@ -69,9 +68,12 @@ must exist, but neither do:
              "${ens_perts_dir}/${cyc}_GEFS_pert_mem${mem_GEFS}_${fn}" \
              "${fp_no_pert}" "${fp_with_pert}" || { \
       print_err_msg_exit "
-Call to python script \"add_ic_pert.py\" failed for:
+Call to python script \"add_ic_pert.py\" failed for the following cycle
+(cyc), GEFS member (mem_GEFS; and corresponding RRFS member mem_RRFS),
+and file group (file_group):
   cyc = \"${cyc}\"
-  mem = \"${mem}\"
+  mem_GEFS = \"${mem_GEFS}\"
+  mem_RRFS = \"${mem_RRFS}\"
   file_group = \"${file_group}\""
       }
 

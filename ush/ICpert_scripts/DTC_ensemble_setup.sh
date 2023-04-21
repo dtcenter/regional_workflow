@@ -36,9 +36,9 @@ echo "expt_basedir = \"${expt_basedir}\""
 #
 #-----------------------------------------------------------------------
 #
-# Source the DTC Ensemble Design default configuration file.  If a custom
-# configuration file exists, source that as well.  Finally, source the
-# bash utilities.
+# Source the DTC Ensemble Design Task's default configuration file.  If
+# a custom configuration file exists, source that as well.  Finally,
+# source the bash utilities.
 #
 #-----------------------------------------------------------------------
 #
@@ -47,6 +47,12 @@ if [ -f "${icpert_scripts_dir}/DTC_ensemble_config.sh" ]; then
   source "${icpert_scripts_dir}/DTC_ensemble_config.sh"
 fi
 source "${ushdir}/source_util_funcs.sh"
+
+echo
+echo "do_test_run = \"${do_test_run}\""
+echo "RRFS_do_stoch = \"${RRFS_do_stoch}\""
+echo "RRFS_do_get_obs = \"${RRFS_do_get_obs}\""
+echo "GEFS_staging_dir = \"${GEFS_staging_dir}\""
 #
 #-----------------------------------------------------------------------
 #
@@ -154,12 +160,21 @@ GEFS_expt_basedir="${expt_basedir}"
 #
 # List of all ensemble members for which an (non-ensemble) experiment
 # will be generated.  Each member experiment will be used to generate
-# initial conditions on the native RRFS grid from the GEFS external model
-# file for that member.  Note that we do not include member 01 in this
-# list because that corresponds to the unperturbed control forecast in
-# the RRFS analog experiment.
+# initial conditions on the native RRFS grid from the GEFS external
+# model file for that member.  Note that to emulate what is being done
+# in the RRFS (i.e. for the RRFS analogs we're running to be as similar
+# as possible to the actual RRFS), we take GEFS members 01 through 
+# num_RRFS_ens_members-1, where num_RRFS_ens_members is the number of
+# RRFS ensemble members.  Note also that member 01 of the RRFS is the
+# unperturbed control forecast to which no IC or stochastic physics
+# perturbations are applied.
 #
-GEFS_all_mems=( $(eval echo {02..${num_RRFS_ens_members}}) )
+nm1=$( printf "%02d" $((${num_RRFS_ens_members}-1)) )
+# Important note:
+# When using the bashism "{$start..$end} to create an array, there must
+# be no spaces between the opening { and the starting digit and no spaces
+# between the ending digit and the closing }.
+GEFS_all_mems=( $(eval echo "{01..${nm1}}" ) )
 
 echo
 echo "GEFS_expt_basedir = \"${GEFS_expt_basedir}\""

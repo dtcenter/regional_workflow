@@ -34,18 +34,12 @@ GEFS_staging_dir=${GEFS_staging_dir:-"/scratch2/BMC/fv3lam/ens_design_RRFS/data/
 # 3) running for fewer cycles
 # 4) using a shorter forecast length
 #
-do_test_run="TRUE"
+do_test_run="FALSE"
 #
 # Overrides to test run settings.  The following settings will be enforced
 # regardless of the value of dt_test_run above.
 #
-#predef_grid_name="RRFS_CONUScompact_25km"
-#date_last_cycl="20220430"
-#fcst_len_hrs="6"
-#num_RRFS_ens_members="03"
-
-echo
-echo "do_test_run = \"${do_test_run}\""
-echo "RRFS_do_stoch = \"${RRFS_do_stoch}\""
-echo "RRFS_do_get_obs = \"${RRFS_do_get_obs}\""
-echo "GEFS_staging_dir = \"${GEFS_staging_dir}\""
+#predef_grid_name="RRFS_CONUScompact_3km"
+#date_last_cycl="20220512"
+#fcst_len_hrs="36"
+#num_RRFS_ens_members="10"
