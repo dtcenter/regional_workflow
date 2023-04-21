@@ -15,13 +15,14 @@
 #
 # 1) using fewer members
 # 2) using a coarser grid
-# 4) running for fewer cycles
-# 3) using a shorter forecast length
+# 3) running for fewer cycles
+# 4) using a shorter forecast length
 #
 do_test_run="TRUE"
 #
 # Flag for running the RRFS analog workflow with stochastic physics.
 #
+#RRFS_do_stoch="FALSE"
 RRFS_do_stoch="TRUE"
 #
 # Flag for running the GET_OBS_... tasks as part of the RRFS analog

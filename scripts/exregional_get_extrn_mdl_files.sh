@@ -245,6 +245,7 @@ must exist, but neither do:
 Copying GEFS file (gefs_fp) into GFS file (gfs_fp):
   gefs_fp = \"${gefs_fp}\"
   gfs_fp = \"${gfs_fp}\""
+  cp_vrfy "${gefs_fp}" "${gfs_fp}"
 
 fi
 #
