@@ -16,12 +16,25 @@ echo "scrfunc_dir = \"${scrfunc_dir}\""
 #
 source "${scrfunc_dir}/DTC_ensemble_setup.sh"
 #
-# Get argument.  This specifies whether to calculate the GEFS perturbations,
-# to add them to the HRRR ICs in the RRFS analog experiment, or both.
-# Default value is "both".
+# Make sure that the correct number of arguments is passed in.
 #
-action=${1:-"both"}
-valid_vals_action=( "calc" "add" "both" )
+valid_vals_action=( "calc" "add" )
+nargs="$#"
+if [ ${nargs} -ne 1 ]; then
+  str=$( printf "\"%s\" " "${valid_vals_action[@]}" )
+  print_err_msg_exit "
+Exactly one argument must be passed to this script, but the actual number
+passed is:
+  nargs = ${nargs}
+Valid values for this argument are:
+  ${str}"
+fi
+#
+# Get argument and make sure it is set to a valid value.  The argument
+# specifies whether to calculate the GEFS perturbations ("calc") or to
+# add them to the HRRR ICs in the RRFS analog experiment ("add").  
+#
+action=${1}
 check_var_valid_value "action" "valid_vals_action"
 #
 # Load modules.
