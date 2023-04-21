@@ -403,8 +403,8 @@ file (template_xml_fp):
 # METPlus-specific information
 #
   'ccpa_obs_dir': $( eval echo ${CCPA_OBS_DIR} )
-  'mrms_obs_dir': ${MRMS_OBS_DIR}
-  'ndas_obs_dir': ${NDAS_OBS_DIR}
+  'mrms_obs_dir': $( eval echo ${MRMS_OBS_DIR} )
+  'ndas_obs_dir': $( eval echo ${NDAS_OBS_DIR} )
 # Move the variable NET to somewhere more appropriate.
   'net': ${NET}
 #
@@ -564,7 +564,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# If running the RUN_FCST_TN task...
+# If running the MAKE_OROG_TN or RUN_FCST_TN task...
 #
 #-----------------------------------------------------------------------
 #
