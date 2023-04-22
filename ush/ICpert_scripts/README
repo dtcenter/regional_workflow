@@ -64,7 +64,7 @@ stochastic physics perturbations are as follows:
     > git clone -b rrfs_ens_design https://github.com/dtcenter/ufs-srweather-app.git
     > cd ufs-srweather-app
     > ./manage_externals/checkout_externals
-    > ./devbuild --machine=hera
+    > ./devbuild --platform=hera
 
     In the following, we let SRW_HOMEDIR denote the directory in which the
     SRW App gets cloned (i.e. "/../ ... /ufs-srweather-app").
@@ -72,7 +72,7 @@ stochastic physics perturbations are as follows:
  2) Load the conda environment for generating and running the SRW App
     worklfow:
 
-    > cd ${SRW_HOMEDIR}/modulefiles
+    > cd ${SRW_HOMEDIR}
     > module use -a ${SRW_HOMEDIR}/modulefiles
     > module load wflow_hera
     > conda activate regional_workflow
