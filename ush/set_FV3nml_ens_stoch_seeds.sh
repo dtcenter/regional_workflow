@@ -93,73 +93,95 @@ function set_FV3nml_ens_stoch_seeds() {
 #-----------------------------------------------------------------------
 #
   ensmem_name="mem${ENSMEM_INDX}"
-
   fv3_nml_ensmem_fp="${CYCLE_BASEDIR}/${cdate}/${ensmem_name}/${FV3_NML_FN}"
-
   ensmem_num=$((10#${ENSMEM_INDX}))
-
+#
+# SPPT perturbations.
+#
   settings="\
 'nam_stochy': {"
 
   if [ ${DO_SPPT} = TRUE ]; then
-  
-  iseed_sppt=$(( cdate*1000 + ensmem_num*10 + 1 ))
+    iseed_sppt=$(( cdate*1000 + ensmem_num*10 + 1 ))
     settings="$settings
   'iseed_sppt': ${iseed_sppt},"
-  
   fi
 
   if [ ${DO_SHUM} = TRUE ]; then
-
-  iseed_shum=$(( cdate*1000 + ensmem_num*10 + 2 ))
+    iseed_shum=$(( cdate*1000 + ensmem_num*10 + 2 ))
     settings="$settings
   'iseed_shum': ${iseed_shum},"
-
   fi
 
   if [ ${DO_SKEB} = TRUE ]; then
-
-  iseed_skeb=$(( cdate*1000 + ensmem_num*10 + 3 ))
+    iseed_skeb=$(( cdate*1000 + ensmem_num*10 + 3 ))
     settings="$settings
   'iseed_skeb': ${iseed_skeb},"
-  
   fi
+
   settings="$settings
     }"
-
+#
+# SPP perturbations.
+#
   settings="$settings
 'nam_sppperts': {"
-
   if [ ${DO_SPP} = TRUE ]; then
-
-  num_iseed_spp=${#ISEED_SPP[@]}
-  for (( i=0; i<${num_iseed_spp}; i++ )); do
-    iseed_spp[$i]=$(( cdate*1000 + ensmem_num*10 + ${ISEED_SPP[$i]} ))
-  done
-
+    num_iseed_spp=${#ISEED_SPP[@]}
+    for (( i=0; i<${num_iseed_spp}; i++ )); do
+      iseed_spp[$i]=$(( cdate*1000 + ensmem_num*10 + ${ISEED_SPP[$i]} ))
+    done
     settings="$settings
   'iseed_spp': [ $( printf "%s, " "${iseed_spp[@]}" ) ],"
-  
   fi
-
   settings="$settings
     }"
-
+#
+# Surface perturbations.
+#
   settings="$settings
 'nam_sfcperts': {"
-
   if [ ${DO_LSM_SPP} = TRUE ]; then
-
-  iseed_lsm_spp=$(( cdate*1000 + ensmem_num*10 + 9))
- 
+    iseed_lsm_spp=$(( cdate*1000 + ensmem_num*10 + 9))
     settings="$settings
   'iseed_lndp': [ $( printf "%s, " "${iseed_lsm_spp[@]}" ) ],"
- 
   fi
-
   settings="$settings
     }"
-
+#
+# For the specific case of the DTC Ensemble Design task running with IC
+# perturbations, we want the first member to not have SPP and SPPT
+# perturbations, so turn those off.
+#
+  if [ "${ensmem_num}" -eq 1 ]; then
+    settings="$settings
+'gfs_physics_nml': {
+    'do_sppt': false,
+    'do_spp': false,
+    'n_var_spp': 0
+    }
+'nam_stochy':
+'nam_sppperts':
+'nam_sfcperts':
+"
+  fi
+#
+# Print out the "settings" variable to see what changes will be made to
+# the baseline namelist.
+#
+  print_info_msg $VERBOSE "
+Creating the weather model namelist for ensemble member (ensmem_num):
+  ensmem_num = ${ensmem_num}
+from the baseline namelist (FV3_NML_FP):
+  FV3_NML_FP = ${FV3_NML_FP}
+The variable \"settings\" specifying changes to values in the baseline
+namelist file has been set as follows (note that if variables are repated,
+only the last set of values will be used):
+  settings =
+$settings"
+#
+# Create new namelist for current ensemble member.
+#
   $USHDIR/set_namelist.py -q \
                           -n ${FV3_NML_FP} \
                           -u "$settings" \

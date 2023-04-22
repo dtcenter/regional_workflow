@@ -1,0 +1,254 @@
+This file describes how to generate and run the SRW App workflows for
+that portion of DTC Ensemble Design task that evaluates the relative 
+effects of initial condition (IC) perturbations and stochastic physics
+perturbations on the spread and skill of the resulting RRFS ensemble
+forecast.
+
+The main files (setup files and driver scripts) and their descriptions
+are as follows:
+
+* DTC_ensemble_config_defaults.sh
+  This is the configuration file that defines default values for various
+  user-specifiable configuration variables for generating and running
+  the SRW App workflows that run analogs of the RRFS with IC perturbations
+  from the GEFS and with or without stochastic physics perturbations.
+  This file gets sourced by the setup script DTC_ensemble_setup.sh (see
+  below), which is in turn sourced by the driver scripts described below.
+  This file also includes descriptions of the configuration variables.
+
+* DTC_ensemble_config.sh
+  This is the user configuration file used to specify values of the 
+  configuration variables that override the ones in the default values
+  file DTC_ensemble_config_defaults.sh.  Note that this file is NOT
+  under version control.  If this file exists, it is sourced by the
+  setup script DTC_ensemble_setup.sh (after the latter sources the
+  default configuration file).
+
+* DTC_ensemble_setup.sh
+  This script sets up various secondary variables based on the values of
+  the DTC Ensemble Design task's configuration variables in the default
+  configuration file DTC_ensemble_config_defaults.sh and, if it exists,
+  the user-created configuration file DTC_ensemble_config.sh.
+
+* generate_RRFS_analog_wflow.sh
+  This is the driver script that generates an RRFS analog ensemble
+  workflow.  Depending on the settings in the configuration files 
+  DTC_ensemble_config[_defaults].sh at the time this script is called,
+  the resulting workflow can be for an ensemble with or without stochastic
+  physics and for a full run or a test run (see variable descriptions in
+  DTC_ensemble_config_defaults.sh for more details).
+
+* generate_GEFS_member_wflows.sh
+  This is the driver script that generates the workflows for each of the
+  GEFS members, starting with member 01 and ending with num_RRFS_ens_members-1,
+  where num_RRFS_ens_members is the number of RRFS analog ensemble members.
+  Note that there a separate experiment/workflow is created for each GEFS
+  member, i.e. we are not creating a single ensemble workflow for the
+  GEFS members as a whole.
+
+* calc_add_GEFS_perts_to_RRFS_analog.sh
+  This is the driver script that calculates the GEFS perturbations and/or
+  adds them to an RRFS analog.  If called with the "calc" argument, it
+  calculates the GEFS perturbations but does not add them to any RRFS
+  analog.  In this case, the setting of "RRFS_do_stoch" in the configuration
+  files DTC_ensemble_config[_defaults].sh doesn't matter.  If called
+  with the "add" argument, it adds previously calculated GEFS perturbations
+  to the RRFS analog specified by the settings in DTC_ensemble_config[_defaults].sh.
+
+The steps to running a full set of RRFS analog workflows (using GEFS
+ensemble output to generate IC perturbations) and both without and with
+stochastic physics perturbations are as follows:
+
+ 1) Check out and build the following version of the SRW App on Hera:
+
+    > git clone -b rrfs_ens_design https://github.com/dtcenter/ufs-srweather-app.git
+    > cd ufs-srweather-app
+    > ./manage_externals/checkout_externals
+    > ./devbuild --machine=hera
+
+    In the following, we let SRW_HOMEDIR denote the directory in which the
+    SRW App gets cloned (i.e. "/../ ... /ufs-srweather-app").
+
+ 2) Load the conda environment for generating and running the SRW App
+    worklfow:
+
+    > cd ${SRW_HOMEDIR}/modulefiles
+    > module use -a ${SRW_HOMEDIR}/modulefiles
+    > module load wflow_hera
+    > conda activate regional_workflow
+
+ 3) Generate the RRFS analog workflow for an ensemble forecast WITHOUT
+    stochastic physics and run it up to the "make_ics_mem${mem}" and
+    "make_lbcs_mem${mem}" tasks, where ${mem} is the two-digit index of
+    the RRFS member.
+
+    a) Change location to the directory containing the scripts specific
+       to the DTC Ensemble Design task:
+
+       > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+
+    b) In a text editor, open the (possibly new) user configuration file
+       DTC_ensemble_config.sh.  Then:
+
+         i) Type in (or edit) the following line for "RRFS_do_stoch":
+
+              RRFS_do_stoch="FALSE"
+
+            This will cause stochastic physics to be turned off in the
+            RRFS analog experiment.
+
+        ii) If making a full run [where by "full run" we mean with all 9
+            GEFS members (01 through 09) and 10 RRFS members (01 through
+            10, where member 01 will be the unperturbed "control" member);
+            using the 3km CONUS grid; running for all 13 00Z cycles from
+            20220430 to 20220512; and running all forecasts out to the
+            full 36 hours], set "do_test_run" to "FALSE", i.e. include
+            (or edit) the follwing line:
+
+              do_test_run="FALSE"
+
+            If making a test run (i.e. with fewer members, on a coarser
+            grid, for fewer cycles, and/or with a shorter forecast length),
+            set "do_test_run" to "TRUE" instead.
+
+       iii) Set "GEFS_staging_dir" to the directory in which the GEFS
+            output (external model) files are staged.
+
+       Note that the above three parameters already have default values
+       in DTC_ensemble_config_defaults.sh, so if those values are already
+       identical to the ones above, they do not need to be included in
+       DTC_ensemble_config.sh.  In particular, note that the defaults
+       file already contains a value (path) for "GEFS_staging_dir".
+
+    b) Generate the RRFS workflow:
+
+       > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+       > ./generate_RRFS_analog_wflow.sh
+
+       This will create an experiment named "RRFS_analog_ICperts_nostoch"
+       if "do_test_run" is set to "FALSE", and it will create an experiment
+       named "RRFS_analog_ICperts_nostoch_test" if "do_test_run" is set
+       to "TRUE".
+
+    c) Change location to the experiment base directory and run the workflow
+       up to and including the "make_ics_mem${mem}" and "make_lbcs_mem${mem}"
+       tasks:
+
+       > cd ${SRW_HOMEDIR}/../expt_dirs
+       > cd RRFS_analog_ICperts_nostoch[_test]
+       > ./launch_FV3LAM_wflow.sh
+
+       Continue issuing the launch_FV3LAM_wflow.sh command until the
+       "make_ics_mem${mem}" and "make_lbcs_mem${mem}" tasks are launched.
+       You can check the status of the workflow by viewing the workflow
+       log file log.launch_FV3LAM_wflow in the experiment directory.  In
+       this log file, once the status of these tasks turn to "SUBMITTING"
+       or "QUEUED", stop calling the workflow launch script.
+
+ 4) Generate the experiment directories for GEFS members and run their
+    workflows.  These are inidividual (non-ensemble) workflows generated
+    for each GEFS member from 01 to num_RRFS_ens_members-1.  (Note that 
+    the number of GEFS members is one less than the number of RRFS analog
+    members because in the RRFS analog, member 01 is a control that will
+    remain unperturbed; thus GEFS members 01 to num_RRFS_ens_members-1
+    are mapped to RRFS analog members 02 through num_RRFS_ens_members.)
+    The resulting experiments are named "GEFS_mem${mem}", where ${mem}
+    is the two digit index of the GEFS member. The commands are:
+
+    > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+    > ./generate_GEFS_member_wflows.sh
+
+    This command will not only generate the GEFS individual member workflows
+    but it will also (re)launch them using cron jobs until they complete.
+    These workfows include only up to the "make_ics" task and thus should
+    complete fairly quickly.  Monitor the status of these workflows until
+    they all complete by monitoring the workflow log file.  For example,
+    for member 03:
+
+    > cd ${SRW_HOMEDIR}/../expt_dirs
+    > cd GEFS_mem03[_test]
+    > tail -n 40 log.launch_FV3LAM_wflow
+
+ 5) Calculate the GEFS ensemble means and perturbations as follows (do
+    this only after all the GEFS individual member experiments have
+    completed):
+
+    > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+    > ./calc_add_GEFS_perts_to_RRFS_analog.sh "calc"
+
+    The script "calc_add_GEFS_perts_to_RRFS_analog.sh" can calculate the
+    GEFS means and perturbations AND add them to the RRFS analog.  With
+    the "calc" argument, it only calculates these (but does not add them
+    to the RRFS analog).  Here, we perform the add step separately because
+    we only need to perform the calculate step once whereas we have to
+    perform the add step twice -- once for the RRFS analog without stochastic
+    physics and another with.
+
+ 6) Add the GEFS perturbations to the RRFS analog (without stochastic
+    physics):
+
+    > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+    > ./calc_add_GEFS_perts_to_RRFS_analog.sh "add"
+
+    This will modify the IC files in the RRFS analog so that they now
+    include the GEFS perturbations.
+
+ 7) Return to the RRFS analog experiment (without stochastic physics) and
+    continue by runnning the "run_fcst_mem${mem}" and subsequent tasks:
+
+    > cd ${SRW_HOMEDIR}/../expt_dirs
+    > cd RRFS_analog_ICperts_nostoch[_test]
+    > ./launch_FV3LAM_wflow.sh
+
+    Continue relaunching the workflow until the "run_post_${mem}_..."
+    tasks are launched.
+
+ 8) Generate the RRFS analog workflow for an ensemble forecast WITH
+    stochastic physics and run it up to the "make_[ics|lbcs]_${mem}"
+    tasks.  These steps are identical to those without stochastic physics
+    except that we now set "RRFS_do_stoch" to "TRUE".  The steps are:
+
+    > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+
+    > vi DTC_ensemble_config.sh
+      Edit this so that RRFS_do_stoch="TRUE"
+
+    > ./generate_RRFS_analog_wflow.sh
+      This will create an experiment named "RRFS_analog_ICperts_stoch" if
+      "do_test_run" is set to "FALSE" in the default/user configuration
+      file DTC_ensemble_config[_defaults].sh files, and it will create
+      an experiment named "RRFS_analog_ICperts_stoch_test" if "do_test_run"
+      is set to "TRUE".
+
+    > cd ${SRW_HOMEDIR}/../expt_dirs
+    > cd RRFS_analog_ICperts_stoch[_test]
+    > ./launch_FV3LAM_wflow.sh
+      Continue issuing the launch_FV3LAM_wflow.sh command until the
+      "make_[ics|lbcs]_mem${mem}" tasks are launched, but do not launch
+      the "run_fcst${mem}" tasks.
+
+ 9) Add the GEFS perturbations to the RRFS analog (with stochastic physics):
+
+    > cd ${SRW_HOMEDIR}/regional_workflow/ush/ICpert_scripts
+    > ./calc_add_GEFS_perts_to_RRFS_analog.sh "add"
+
+    This will modify the IC files in the RRFS analog so that they now
+    include the GEFS perturbations.  Note that whether these perturbations
+    are applied the RRFS analog without stochastic physics or the one
+    with is determined by the setting of "RRFS_do_stoch" in the default/
+    user configuration files DTC_ensemble_config[_defaults].sh.  Thus,
+    make sure this is set to "TRUE" when
+
+    > calc_add_GEFS_perts_to_RRFS_analog.sh "add"
+
+    is issued.
+
+10) Return to the RRFS analog experiment (with stochastic physics) and
+    continue by runnning the "run_fcst_mem${mem}" and subsequent tasks:
+
+    > cd ${SRW_HOMEDIR}/../expt_dirs
+    > cd RRFS_analog_ICperts_stoch[_test]
+    > ./launch_FV3LAM_wflow.sh
+
+    Continue relaunching the workflow until the "run_post_${mem}_..."
+    tasks are launched.

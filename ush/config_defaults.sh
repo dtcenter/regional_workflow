@@ -1399,15 +1399,15 @@ VX_APCP_ACCUMS_HRS=( "01" "03" "06" "24" )
 # These templates are used in the verification tasks, but they should 
 # also be used in the GET_OBS_... tasks.
 #
-CCPA_OBS_DIR=""
+CCPA_OBS_DIR='${EXPTDIR}/obs/ccpa/proc'
 OBS_CCPA_APCP01h_FN_TEMPLATE='{valid?fmt=%Y%m%d}/ccpa.t{valid?fmt=%H}z.01h.hrap.conus.gb2'
 OBS_CCPA_APCPgt01h_FN_TEMPLATE='${OBS_CCPA_APCP01h_FN_TEMPLATE}_a${ACCUM}h.nc'
 
-MRMS_OBS_DIR=""
+MRMS_OBS_DIR='${EXPTDIR}/obs/mrms/proc'
 OBS_MRMS_REFC_FN_TEMPLATE='{valid?fmt=%Y%m%d}/MergedReflectivityQCComposite_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
 OBS_MRMS_RETOP_FN_TEMPLATE='{valid?fmt=%Y%m%d}/EchoTop_18_00.50_{valid?fmt=%Y%m%d}-{valid?fmt=%H%M%S}.grib2'
 
-NDAS_OBS_DIR=""
+NDAS_OBS_DIR='${EXPTDIR}/obs/ndas/proc'
 OBS_NDAS_SFCorUPA_FN_TEMPLATE='prepbufr.ndas.{valid?fmt=%Y%m%d%H}'
 OBS_NDAS_SFCorUPA_FN_METPROC_TEMPLATE='${OBS_NDAS_SFCorUPA_FN_TEMPLATE}.nc'
 #
@@ -1685,7 +1685,7 @@ PPN_RUN_VXENS_POINTSTAT_PROB="1"
 # Walltimes.
 #
 WTIME_MAKE_GRID="00:20:00"
-WTIME_MAKE_OROG="01:00:00"
+WTIME_MAKE_OROG="00:20:00"
 WTIME_MAKE_SFC_CLIMO="00:20:00"
 WTIME_GET_EXTRN_ICS="00:45:00"
 WTIME_GET_EXTRN_LBCS="00:45:00"
@@ -1956,7 +1956,7 @@ USE_ZMTNBLCK="FALSE"
 #
 #-----------------------------------------------------------------------
 #
-DO_SPP="false"
+DO_SPP="FALSE"
 SPP_VAR_LIST=( "pbl" "sfc" "mp" "rad" "gwd" )
 SPP_MAG_LIST=( "0.2" "0.2" "0.75" "0.2" "0.2" ) #Variable "spp_prt_list" in input.nml
 SPP_LSCALE=( "150000.0" "150000.0" "150000.0" "150000.0" "150000.0" )
@@ -2104,3 +2104,12 @@ OMP_STACKSIZE_RUN_FCST="1024m"
 KMP_AFFINITY_RUN_POST="scatter"
 OMP_NUM_THREADS_RUN_POST="1"
 OMP_STACKSIZE_RUN_POST="1024m"
+#
+#-----------------------------------------------------------------------
+#
+# For the DTC Ensemble task, this specifies the directory in which the
+# GEFS external model files are staged.
+#
+#-----------------------------------------------------------------------
+#
+GEFS_STAGING_DIR=""

@@ -1,0 +1,156 @@
+MACHINE="hera"
+ACCOUNT="$account"
+EXPT_SUBDIR="${RRFS_analog_expt_subdir}"
+
+USE_CRON_TO_RELAUNCH="FALSE"
+CRON_RELAUNCH_INTVL_MNTS="01"
+
+COMPILER="intel"
+VERBOSE="TRUE"
+
+RUN_ENVIR="community"
+PREEXISTING_DIR_METHOD="rename"
+
+DATE_FIRST_CYCL="${date_first_cycl}"
+DATE_LAST_CYCL="${date_last_cycl}"
+CYCL_HRS=( "00" )
+
+FCST_LEN_HRS="${fcst_len_hrs}"
+LBC_SPEC_INTVL_HRS="6"
+
+PREDEF_GRID_NAME="${predef_grid_name}"
+QUILTING="TRUE"
+HALO_BLEND="20"
+
+CCPP_PHYS_SUITE="FV3_HRRR"
+
+EXTRN_MDL_NAME_ICS="HRRR"
+EXTRN_MDL_NAME_LBCS="FV3GFS"
+
+FV3GFS_FILE_FMT_ICS="grib2"
+FV3GFS_FILE_FMT_LBCS="grib2"
+#
+# Turn on MERRA climatology because these files are needed to simulate
+# forecasts as close as possible to those from GSL.
+#
+USE_MERRA_CLIMO="TRUE"
+#
+# Stochastic physics settings.
+#
+if [ "${RRFS_do_stoch}" = "TRUE" ]; then
+
+# Turn on stochastic physics
+  DO_SPPT="TRUE"
+  ISEED_SPPT="1"
+  SPPT_MAG="0.7" #Variable "sppt" in input.nml     
+  SPPT_LOGIT="TRUE"     
+  SPPT_LSCALE="150000"     
+  SPPT_TSCALE="21600" #Variable "sppt_tau" in input.nml     
+  SPPT_INT="3600" #Variable "spptint" in input.nml     
+  SPPT_SFCLIMIT="TRUE" 
+
+  DO_SPP="TRUE"     
+  SPP_VAR_LIST=( "pbl" "sfc" "mp" "rad" "gwd" )     
+  SPP_MAG_LIST=( "0.2" "0.2" "0.75" "0.2" "0.2" ) #Variable "spp_prt_list" in input.nml     
+  SPP_LSCALE=( "150000.0" "150000.0" "150000.0" "150000.0" "150000.0" )     
+  SPP_TSCALE=( "21600.0" "21600.0" "21600.0" "21600.0" "21600.0" ) #Variable "spp_tau" in input.nml     
+  SPP_SIGTOP1=( "0.1" "0.1" "0.1" "0.1" "0.1")     
+  SPP_SIGTOP2=( "0.025" "0.025" "0.025" "0.025" "0.025" )     
+  SPP_STDDEV_CUTOFF=( "1.5" "1.5" "2.5" "1.5" "1.5" )     
+  ISEED_SPP=( "4" "5" "6" "7" "8" ) 
+
+fi
+#
+# Normally, turn off GET_OBS tasks but turn on pre-processing, forecast,
+# and post-processing tasks.
+#
+RUN_TASK_GET_OBS_CCPA="FALSE"
+RUN_TASK_GET_OBS_MRMS="FALSE"
+RUN_TASK_GET_OBS_NDAS="FALSE"
+RUN_TASK_MAKE_GRID="TRUE"
+RUN_TASK_MAKE_OROG="TRUE"
+RUN_TASK_MAKE_SFC_CLIMO="TRUE"
+RUN_TASK_GET_EXTRN_ICS="TRUE"
+RUN_TASK_GET_EXTRN_LBCS="TRUE"
+RUN_TASK_MAKE_ICS="TRUE"
+RUN_TASK_MAKE_LBCS="TRUE"
+RUN_TASK_RUN_FCST="TRUE"
+RUN_TASK_RUN_POST="TRUE"
+
+if [ "${RRFS_do_get_obs}" = "TRUE" ]; then
+#
+# Turn on GET_OBS tasks.
+#
+  RUN_TASK_GET_OBS_CCPA="TRUE"
+  RUN_TASK_GET_OBS_MRMS="TRUE"
+  RUN_TASK_GET_OBS_NDAS="TRUE"
+#
+# Custom locations where to stage the obs.  If not specified, the obs
+# will be staged under the experiment directory.
+#
+#  obs_basedir="/scratch2/BMC/fv3lam/ens_design_RRFS/obs_data_IC_perts"
+#  CCPA_OBS_DIR="${obs_basedir}/ccpa/proc"
+#  MRMS_OBS_DIR="${obs_basedir}/mrms/proc"
+#  NDAS_OBS_DIR="${obs_basedir}/ndas/proc"
+#
+# Turn off all other tasks.
+#
+  RUN_TASK_MAKE_GRID="FALSE"
+  RUN_TASK_MAKE_OROG="FALSE"
+  RUN_TASK_MAKE_SFC_CLIMO="FALSE"
+  RUN_TASK_GET_EXTRN_ICS="FALSE"
+  RUN_TASK_GET_EXTRN_LBCS="FALSE"
+  RUN_TASK_MAKE_ICS="FALSE"
+  RUN_TASK_MAKE_LBCS="FALSE"
+  RUN_TASK_RUN_FCST="FALSE"
+  RUN_TASK_RUN_POST="FALSE"
+
+else
+#
+# Turn off GET_OBS tasks.
+#
+  RUN_TASK_GET_OBS_CCPA="FALSE"
+  RUN_TASK_GET_OBS_MRMS="FALSE"
+  RUN_TASK_GET_OBS_NDAS="FALSE"
+#
+# Custom locations where obs are already staged.
+#
+  CCPA_OBS_DIR="${obs_basedir}/ccpa/proc"
+  MRMS_OBS_DIR="${obs_basedir}/mrms/proc"
+  NDAS_OBS_DIR="${obs_basedir}/ndas/proc"
+
+fi
+#
+# Whether to run an ensemble forecast (with or without ensemble vx).
+#
+IS_ENS_FCST="TRUE"
+#
+# If running an ensemble forecast, specify the number of ensemble members
+# and the time lag for each member (ENS_TIME_LAG_HRS).  Also specify 
+# whether to run ensemble vx.
+#
+NUM_ENS_MEMBERS="${num_RRFS_ens_members}"
+ENS_TIME_LAG_HRS=( $( for (( i=0; i<${num_RRFS_ens_members}; i++ )); do echo "0"; done ) )
+#
+# Whether to run deterministic vx.  If running an ensemble forecast, this
+# will cause deterministic verification to be run on each member.
+#
+RUN_TASKS_VXDET="TRUE"
+#
+# Whether to run ensemble vx.
+#
+RUN_TASKS_VXENS="TRUE"
+
+NET="RRFSE_CONUS_ICperts_${RRFS_no_or_null}stoch"
+
+MAXTRIES_RUN_VXAUX_PB2NC_OBS="2"
+MAXTRIES_RUN_VXAUX_PCPCOMBINE_OBS="2"
+MAXTRIES_RUN_VXAUX_PCPCOMBINE_FCST="2"
+MAXTRIES_RUN_VXDET_GRIDSTAT="2"
+MAXTRIES_RUN_VXDET_POINTSTAT="2"
+MAXTRIES_RUN_VXENS_GEPES_GRIDDED="2"
+MAXTRIES_RUN_VXENS_GEPES_POINT="2"
+MAXTRIES_RUN_VXENS_GRIDSTAT_MEAN="2"
+MAXTRIES_RUN_VXENS_POINTSTAT_MEAN="2"
+MAXTRIES_RUN_VXENS_GRIDSTAT_PROB="2"
+MAXTRIES_RUN_VXENS_POINTSTAT_PROB="2"

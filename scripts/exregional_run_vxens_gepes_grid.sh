@@ -173,6 +173,11 @@ else
   FCST_INPUT_DIR="${VX_FCST_INPUT_BASEDIR}"
 fi
 #
+# Hard-coding to be compatible with latest changes for the DTC Ensemble
+# Design task.
+#
+NDIGITS_ENSMEM_NAMES="2"
+#
 # Construct variable that contains a METplus template of the paths to
 # the files that the pcp_combine tool has generated (in previous workflow
 # tasks).  This will be exported to the environment and read by the
@@ -185,7 +190,7 @@ for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
   mem_indx_fmt=$(printf "%0${NDIGITS_ENSMEM_NAMES}d" "${mem_indx}")
   time_lag=$(( ${ENS_TIME_LAG_HRS[$i]}*${secs_per_hour} ))
 
-  SLASH_ENSMEM_SUBDIR_OR_NULL="/mem${mem_indx}"
+  SLASH_ENSMEM_SUBDIR_OR_NULL="/mem${mem_indx_fmt}"
   if [ "${field_is_APCPgt01h}" = "TRUE" ]; then
     template="${CDATE}${SLASH_ENSMEM_SUBDIR_OR_NULL}/metprd/pcp_combine_fcst/${FCST_FN_METPROC_TEMPLATE}"
   else

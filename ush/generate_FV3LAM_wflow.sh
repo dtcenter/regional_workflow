@@ -402,9 +402,9 @@ file (template_xml_fp):
 #
 # METPlus-specific information
 #
-  'ccpa_obs_dir': ${CCPA_OBS_DIR}
-  'mrms_obs_dir': ${MRMS_OBS_DIR}
-  'ndas_obs_dir': ${NDAS_OBS_DIR}
+  'ccpa_obs_dir': $( eval echo ${CCPA_OBS_DIR} )
+  'mrms_obs_dir': $( eval echo ${MRMS_OBS_DIR} )
+  'ndas_obs_dir': $( eval echo ${NDAS_OBS_DIR} )
 # Move the variable NET to somewhere more appropriate.
   'net': ${NET}
 #
@@ -564,11 +564,12 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# If running the RUN_FCST_TN task...
+# If running the MAKE_OROG_TN or RUN_FCST_TN task...
 #
 #-----------------------------------------------------------------------
 #
-if [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
+if [ "${RUN_TASK_MAKE_OROG}" = "TRUE" ] || \
+   [ "${RUN_TASK_RUN_FCST}" = "TRUE" ]; then
 #
 # Create the FIXam directory under the experiment directory.  In NCO mode, 
 # this will be a symlink to the directory specified in FIXgsm, while in 
@@ -979,6 +980,102 @@ file failed."
   fi
 
 fi
+#
+#-----------------------------------------------------------------------
+#
+# This is specifically for the DTC Ensemble Design task.  Rename the FV3
+# namelist file created above and create a new namelist file by copying
+# over a preconfigured version to the experiment directory and then
+# modifying it to account for certain differences (e.g. the predefined
+# grid).
+#
+#-----------------------------------------------------------------------
+#
+check_for_preexist_dir_file "${EXPTDIR}/${FV3_NML_FN}" "rename"
+
+DTC_ens_fv3_nml_fn="${FV3_NML_FN}_ICpert_${RRFS_no_or_null}stoch"
+DTC_ens_fv3_nml_fp="${USHDIR}/ICpert_scripts/${DTC_ens_fv3_nml_fn}"
+print_info_msg "
+For the DTC Ensmeble Task, copying prepared namelist file (DTC_ens_fv3_nml_fp)
+to the experiment directory (EXPTDIR):
+  DTC_ens_fv3_nml_fp = \"${DTC_ens_fv3_nml_fp}\"
+  EXPTDIR = \"${EXPTDIR}\"
+"
+cp_vrfy "${DTC_ens_fv3_nml_fp}" "${EXPTDIR}/${FV3_NML_FN}"
+#
+# The following are changes that may need to be made to the preconfigured
+# DTC Ensemble Task namelist file in order to make it consistent with
+# a subset of differences between it and the parameters for the current
+# experiment (e.g. the config.sh file for the current experiment may 
+# specify a different predefined grid than assumed in the preconfigured
+# namelist file).
+#
+
+# The following need to be defined to work with the DTC Ensemble Task
+# setup since for the GEFS individual member workflows, the RUN_TASK_TN
+# is turned off, so these do not get defined above.
+npx=$((NX+1))
+npy=$((NY+1))
+
+settings="\
+'atmos_model_nml': {
+    'blocksize': $BLOCKSIZE,
+    'ccpp_suite': ${CCPP_PHYS_SUITE},
+  }
+'fv_core_nml': {
+    'target_lon': ${LON_CTR},
+    'target_lat': ${LAT_CTR},
+    'nrows_blend': ${HALO_BLEND},
+#
+# Question:
+# For a ESGgrid type grid, what should stretch_fac be set to?  This depends
+# on how the FV3 code uses the stretch_fac parameter in the namelist file.
+# Recall that for a ESGgrid, it gets set in the function set_gridparams_ESGgrid(.sh)
+# to something like 0.9999, but is it ok to set it to that here in the
+# FV3 namelist file?
+#
+    'stretch_fac': ${STRETCH_FAC},
+    'npx': $npx,
+    'npy': $npy,
+    'layout': [${LAYOUT_X}, ${LAYOUT_Y}],
+    'bc_update_interval': ${LBC_SPEC_INTVL_HRS},
+  }
+"
+
+  print_info_msg $VERBOSE "
+The variable \"settings\" specifying values of the weather model's 
+namelist variables has been set as follows:
+
+settings =
+$settings"
+#
+# Call the set_namelist.py script to create the namelist file that the
+# weather model will read in (full path to namelist file specified by 
+# FV3_NML_FP).  To create the namelist file, this script first makes 
+# physics-suite-dependent modifications to (a copy of) a base namelist 
+# file (FV3_NML_BASE_SUITE_FP) using a yaml configuration file 
+# (FV3_NML_YAML_CONFIG_FP) and then makes further physics-suite-
+# independent modificaitons as specified in the yaml-formatted variable 
+# "settings" set above.
+#
+$USHDIR/set_namelist.py -q \
+                        -n ${FV3_NML_FP} \
+                        -u "$settings" \
+                        -o ${FV3_NML_FP} || \
+  print_err_msg_exit "\
+Call to python script set_namelist.py to generate an FV3 namelist file
+failed.  Parameters passed to this script are:
+  Full path to base namelist file:
+    FV3_NML_BASE_SUITE_FP = \"${FV3_NML_BASE_SUITE_FP}\"
+  Full path to yaml configuration file for various physics suites:
+    FV3_NML_YAML_CONFIG_FP = \"${FV3_NML_YAML_CONFIG_FP}\"
+  Physics suite to extract from yaml configuration file:
+    CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"
+  Full path to output namelist file:
+    FV3_NML_FP = \"${FV3_NML_FP}\"
+  Namelist settings specified on command line:
+    settings =
+$settings"
 #
 #-----------------------------------------------------------------------
 #
