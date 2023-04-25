@@ -30,7 +30,7 @@ for cyc in ${all_cycles[@]}; do
   for mem_GEFS in ${GEFS_all_mems[@]}; do
 
     echo "  mem_GEFS = \"${mem_GEFS}\""
-    mem_RRFS=$(printf "%02d" $((${mem_GEFS}+1)) )
+    mem_RRFS=$(printf "%02d" $((10#${mem_GEFS}+1)) )
 
     dn="${RRFS_analog_exptdir}/${cyc}/mem${mem_RRFS}/INPUT"
     for (( i=0; i<${#file_groups[@]}; i++ )); do

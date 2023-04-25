@@ -118,7 +118,7 @@ set_vx_params \
 #
 #-----------------------------------------------------------------------
 #
-time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[${MEM_INDX_OR_NULL}-1]}}+0)*${secs_per_hour} ))
+time_lag=$(( (${MEM_INDX_OR_NULL:+${ENS_TIME_LAG_HRS[10#${MEM_INDX_OR_NULL}-1]}}+0)*${secs_per_hour} ))
 #
 #-----------------------------------------------------------------------
 #
