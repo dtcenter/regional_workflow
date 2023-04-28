@@ -170,7 +170,7 @@ GEFS_expt_basedir="${expt_basedir}"
 # unperturbed control forecast to which no IC or stochastic physics
 # perturbations are applied.
 #
-nm1=$( printf "%02d" $((${num_RRFS_ens_members}-1)) )
+nm1=$( printf "%02d" $((10#${num_RRFS_ens_members}-1)) )
 # Important note:
 # When using the bashism "{$start..$end} to create an array, there must
 # be no spaces between the opening { and the starting digit and no spaces
